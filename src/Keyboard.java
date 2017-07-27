@@ -47,6 +47,7 @@ public class Keyboard {
 	private JFrame frame;
 	private JPanel panel;
 	private JLabel label;
+	private ImageIcon image;
 	ImageIcon background;
 	
 	private JButton space, enter, delete;
@@ -137,10 +138,16 @@ public class Keyboard {
 				(int)((frame.getWidth() - 100) * 1.18), java.awt.Image.SCALE_SMOOTH);
 		background = new ImageIcon(imagea);
 		
-		// Label again
+		// Display
 		label.setIcon(background);
-		label.repaint();
 		label.revalidate();
+		label.repaint();
+		panel.add(label);
+		frame.add(panel);
+		panel.revalidate();
+		panel.repaint();
+		frame.revalidate();
+		frame.repaint();
 	}
 	
 	public Keyboard() {
