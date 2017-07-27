@@ -74,8 +74,7 @@ public class Keyboard {
 			letterButtons[i].setContentAreaFilled(false);
 			letterButtons[i].setOpaque(false);
 			
-			double degree = 9.5;
-			double radian = Math.toRadians(degree);
+			double radian = Math.toRadians(9.5);
 			int midX = (int)((frame.getWidth() - 100) / 2.8 + 50);
 			int midY = (int)((frame.getWidth() - 100) / 2.8 * 1.5 + 50);
 			int radius = (int)((frame.getWidth() - 100) / 2.8 * 1.5);
@@ -106,7 +105,7 @@ public class Keyboard {
 		frame = new JFrame("Soft Keyboard");
 		frame.pack();
 		frame.setVisible(true);
-		frame.setSize(450, 600);
+		frame.setSize(600, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
 		frame.setLayout(new BorderLayout());
@@ -132,18 +131,75 @@ public class Keyboard {
 		label.revalidate();
 		
 		// Background image
-		background = new ImageIcon(getClass().getResource("/bg.jpg"));
-		Image imagey = background.getImage();
+		background = new ImageIcon(getClass().getResource("/bg.png"));
+		/*Image imagey = background.getImage();
 		Image imagea = imagey.getScaledInstance(frame.getWidth() - 100,  
 				(int)((frame.getWidth() - 100) * 1.18), java.awt.Image.SCALE_SMOOTH);
-		background = new ImageIcon(imagea);
+		background = new ImageIcon(imagea);*/
+		
+		// Numbers
+		numberButtons[0] = new JButton("0");
+		numberButtons[1] = new JButton("1");
+		numberButtons[2] = new JButton("2");
+		numberButtons[3] = new JButton("3");
+		numberButtons[4] = new JButton("4");
+		numberButtons[5] = new JButton("5");
+		numberButtons[6] = new JButton("6");
+		numberButtons[7] = new JButton("7");
+		numberButtons[8] = new JButton("8");
+		numberButtons[9] = new JButton("9");
+		
+		double radian;
+		int midX, midY, radius, xValue, yValue;
+		
+		for(int i = 0; i < 10; i++) {
+			numberButtons[i].setBorder(null);
+			numberButtons[i].setBorderPainted(false);
+			numberButtons[i].setContentAreaFilled(false);
+			numberButtons[i].setOpaque(false);
+			
+			radian = Math.toRadians(25);
+			midX = (int)((frame.getWidth() - 100) / 2.8 + 50);
+			midY = (int)((frame.getWidth() - 100) / 2.8 * 1.6 + 42);
+			radius = (int)((frame.getWidth() - 100) / 2.8 * 0.67);
+			xValue = (int)(radius * (Math.sin(radian * (i - 6))));
+			yValue = (int)(Math.sqrt(Math.pow(radius, 2) - Math.pow(xValue, 2)));
+			if(i < 5) {
+				yValue *= -1;
+			}
+			
+			xValue += midX;
+			yValue += midY;
+			numberButtons[i].setBounds(xValue, yValue, (int)(BUTTON_SIZE_X * 0.8), (int)(BUTTON_SIZE_Y * 0.8));
+			numberButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
+			numberButtons[i].setForeground(Color.WHITE);
+			
+			final Integer x = new Integer(i);
+			numberButtons[x].addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseEntered(MouseEvent e) {
+					numberButtons[x].setBackground(Color.PINK);
+					numberButtons[x].setContentAreaFilled(true);
+				}
+				
+				public void mouseExited(MouseEvent e) {
+					numberButtons[x].setBackground(null);
+					numberButtons[x].setContentAreaFilled(false);
+				}
+			});
+		}
 		
 		// Display
 		label.setIcon(background);
 		label.revalidate();
 		label.repaint();
+		
+		for(int i = 0; i < 10; i++) {
+			panel.add(numberButtons[i]);
+		}
 		panel.add(label);
+		
 		frame.add(panel);
+		
 		panel.revalidate();
 		panel.repaint();
 		frame.revalidate();
