@@ -272,13 +272,12 @@ public class Keyboard {
 	public void letterInit() {
 		int xValue, yValue;
 		
-		double initDegree = 9.5;
-		double incrementDegree = 28;
-		
+		double initDegree = 10;
+
 		double radian = Math.toRadians(initDegree);
-		int midX = (int)((frame.getWidth() - 100) / 2.8 + 50);
-		int midY = (int)((frame.getWidth() - 100) / 2.8 * 1.5 + 50);
-		int radius = (int)((frame.getWidth() - 100) / 2.8 * 1.5);
+		int midX = (int)((frame.getWidth()) / 2) - 20;
+		int midY = (int)((frame.getHeight()) / 2) - 32;
+		int radius = (int)((frame.getWidth()) / 2.5) - 10;
 		
 		for(int i = 0; i < 26; i++) {
 			char temp = (char)('a' + i);
@@ -293,6 +292,8 @@ public class Keyboard {
 			letterButtons[i].setContentAreaFilled(false);
 			letterButtons[i].setOpaque(false);
 
+			// Calculates coordinates of each letter
+			radian = Math.toRadians(initDegree);
 			xValue = (int)(radius * (Math.sin(radian * (i - 3))));
 			yValue = (int)(Math.sqrt(Math.pow(radius,  2) - Math.pow(xValue,  2)));
 			if(i < 13) {
@@ -300,6 +301,7 @@ public class Keyboard {
 			}
 			xValue += midX;
 			yValue += midY;
+			
 			letterButtons[i].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
 			letterButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
 			letterButtons[i].setForeground(Color.WHITE);
@@ -346,18 +348,18 @@ public class Keyboard {
 		
 		double initDegree = 55;
 		double incrementDegree = 28;
-		int midX = (int)((frame.getWidth())/2)-20;
-		int midY = (int)((frame.getHeight())/2)-32;
-		int radius = (int)((frame.getWidth())/6);
+		int midX = (int)((frame.getWidth()) / 2) - 20;
+		int midY = (int)((frame.getHeight()) / 2) - 32;
+		int radius = (int)((frame.getWidth()) / 6);
 
 		for(int i = 0; i < 10; i++) {
 			numberButtons[i].setBorder(null);
 			numberButtons[i].setBorderPainted(false);
 			numberButtons[i].setContentAreaFilled(false);
 			numberButtons[i].setOpaque(false);
-			radian = Math.toRadians(initDegree);
 
-			// Places each number on the keyboard
+			// Calculates coordinates of each number
+			radian = Math.toRadians(initDegree);
 			xValue = -1 * (int)(Math.cos(radian)*radius) + midX;
 			yValue = -1 * (int)(Math.sin(radian)*radius) + midY;
 			//xValue = (int)(radius * (Math.sin(radian * (i - 6))));
