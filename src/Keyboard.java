@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.print.DocFlavor.URL;
@@ -48,19 +49,21 @@ public class Keyboard {
 	private JPanel panel;
 	private JLabel label;
 	private ImageIcon image;
-	ImageIcon background;
+	private ImageIcon background;
 
 	private JButton space, enter, delete;
-	JButton[] numberButtons = new JButton[10];
-	JButton[] letterButtons = new JButton[26];
+	private JButton[] numberButtons = new JButton[10];
+	private JButton[] letterButtons = new JButton[26];
 
-	boolean shiftClick = false;
-	boolean capsClick = false;
+	private boolean shiftClick = false;
+	private boolean capsClick = false;
+	
+	private Vector<String> mathSymbols = new Vector<String>();
 
-	final int BUTTON_WIDTH = 25;	// Button width
-	final int BUTTON_HEIGHT = 25;	// Button height
-	final int FRAME_WIDTH = 450;	// Frame width
-	final int FRAME_HEIGHT = 420;	// Frame height
+	private final int BUTTON_WIDTH = 25;	// Button width
+	private final int BUTTON_HEIGHT = 25;	// Button height
+	private final int FRAME_WIDTH = 450;	// Frame width
+	private final int FRAME_HEIGHT = 420;	// Frame height
 
 	/* Converts Soft Keyboard key presses into actual keyboard presses */
 	private ActionListener typing = new ActionListener() {
@@ -224,8 +227,43 @@ public class Keyboard {
 		}
 	};
 
+	/* Gets list of math functions and assigns them to an array */
+	
+	/* Loads special math symbols and stores them in a String Vector */
+	private void loadSymbols() {
+		try {
+			String path = System.getProperty("user.dir") + "/res/symbols.txt"; 
+
+			File file = new File(path);
+			if(file.exists()){
+				System.out.println("symbols.txt file exists");
+			}
+			else{
+				System.out.println("symbols.txt does not exist");
+			}
+			
+			FileReader fileReader = new FileReader(file);
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+			StringBuffer stringBuffer = new StringBuffer();
+			String line;
+			while ((line = bufferedReader.readLine()) != null) {
+//				stringBuffer.append(line);
+//				stringBuffer.append("\n");
+				mathSymbols.add(line);
+			}
+			fileReader.close();
+			System.out.println("Contents of file:");
+//			System.out.println(stringBuffer.toString());
+			for(int i = 0; i < mathSymbols.size(); i++) {
+				System.out.println(mathSymbols.elementAt(i).toString());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/* Sets up background */
-	public void backgroundInit() {
+	private void backgroundInit() {
 		// Frame
 		frame = new JFrame("Soft Keyboard");
 		frame.pack();
@@ -269,7 +307,7 @@ public class Keyboard {
 	}
 
 	/* Sets up letter buttons */
-	public void letterInit() {
+	private void letterInit() {
 		int xValue, yValue;
 		
 		double initDegree = 10;
@@ -331,7 +369,7 @@ public class Keyboard {
 	}
 
 	/* Sets up number buttons */
-	public void numberInit() {
+	private void numberInit() {
 		numberButtons[0] = new JButton("0");
 		numberButtons[1] = new JButton("1");
 		numberButtons[2] = new JButton("2");
@@ -388,7 +426,7 @@ public class Keyboard {
 		}
 	}
 
-	public void gui() {
+	private void loadGui() {
 		// Background
 		backgroundInit();
 
@@ -418,7 +456,8 @@ public class Keyboard {
 	}
 
 	public Keyboard() {
-		gui();
+		loadSymbols();
+		loadGui();
 	}
 
 	public static void main(String[] args) {
