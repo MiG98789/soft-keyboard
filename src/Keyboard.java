@@ -57,12 +57,12 @@ public class Keyboard {
 	boolean shiftClick = false;
 	boolean capsClick = false;
 
-	final int BUTTON_WIDTH = 20;      // Button width
-	final int BUTTON_HEIGHT = 20;      // Button height
-	final int FRAME_WIDTH = 450;       // Frame width
-	final int FRAME_HEIGHT = 420;      // Frame height
+	final int BUTTON_WIDTH = 25;	// Button width
+	final int BUTTON_HEIGHT = 25;	// Button height
+	final int FRAME_WIDTH = 450;	// Frame width
+	final int FRAME_HEIGHT = 420;	// Frame height
 
-
+	/* Converts Soft Keyboard key presses into actual keyboard presses */
 	private ActionListener typing = new ActionListener() {
 		public void actionPerformed(ActionEvent event) {
 			String actionCommand = event.getActionCommand();
@@ -224,7 +224,8 @@ public class Keyboard {
 		}
 	};
 
-	public void background() {
+	/* Sets up background */
+	public void backgroundInit() {
 		// Frame
 		frame = new JFrame("Soft Keyboard");
 		frame.pack();
@@ -247,22 +248,38 @@ public class Keyboard {
 		panel.setPreferredSize(null);
 		panel.setLayout(new BorderLayout());
 
+		// Background image
+		background = new ImageIcon(getClass().getResource("/bg.png"));
+		
 		// Label
-		label = new JLabel();
-		label.setBounds(50,  50, frame.getWidth() - 100,  (int)((frame.getWidth() - 100) * 1.18));
+		label = new JLabel(background, JLabel.CENTER);
+//		label.setBounds(50,  50, frame.getWidth() - 100,  (int)((frame.getWidth() - 100) * 1.18));
 		label.setBackground(Color.DARK_GRAY);
 		label.repaint();
 		label.revalidate();
 
-		// Background image
-		background = new ImageIcon(getClass().getResource("/bg.png"));
 		/*Image imagey = background.getImage();
 				Image imagea = imagey.getScaledInstance(frame.getWidth() - 100,  
 						(int)((frame.getWidth() - 100) * 1.18), java.awt.Image.SCALE_SMOOTH);
 				background = new ImageIcon(imagea);*/
+		
+//		label.setIcon(background);
+//		label.revalidate();
+//		label.repaint();
 	}
 
-	public void letters() {
+	/* Sets up letter buttons */
+	public void letterInit() {
+		int xValue, yValue;
+		
+		double initDegree = 9.5;
+		double incrementDegree = 28;
+		
+		double radian = Math.toRadians(initDegree);
+		int midX = (int)((frame.getWidth() - 100) / 2.8 + 50);
+		int midY = (int)((frame.getWidth() - 100) / 2.8 * 1.5 + 50);
+		int radius = (int)((frame.getWidth() - 100) / 2.8 * 1.5);
+		
 		for(int i = 0; i < 26; i++) {
 			char temp = (char)('a' + i);
 			letterButtons[i] = new JButton(Character.toString(temp));
@@ -276,20 +293,16 @@ public class Keyboard {
 			letterButtons[i].setContentAreaFilled(false);
 			letterButtons[i].setOpaque(false);
 
-			double radian = Math.toRadians(9.5);
-			int midX = (int)((frame.getWidth() - 100) / 2.8 + 50);
-			int midY = (int)((frame.getWidth() - 100) / 2.8 * 1.5 + 50);
-			int radius = (int)((frame.getWidth() - 100) / 2.8 * 1.5);
-
-			int xValue = (int)(radius * (Math.sin(radian * (i - 3))));
-			int yValue = (int)(Math.sqrt(Math.pow(radius,  2) - Math.pow(xValue,  2)));
+			xValue = (int)(radius * (Math.sin(radian * (i - 3))));
+			yValue = (int)(Math.sqrt(Math.pow(radius,  2) - Math.pow(xValue,  2)));
 			if(i < 13) {
 				yValue = -1 * yValue;
 			}
 			xValue += midX;
 			yValue += midY;
 			letterButtons[i].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
-			letterButtons[i].setFont(new Font("Arial", Font.PLAIN, 30));
+			letterButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
+			letterButtons[i].setForeground(Color.WHITE);
 
 			letterButtons[i].addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent ae) {
@@ -297,13 +310,26 @@ public class Keyboard {
 
 					}
 				}
+			});
+			
+			// Changes button appearance based on cursor
+			final Integer x = new Integer(i);
+			letterButtons[x].addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseEntered(MouseEvent e) {
+					letterButtons[x].setBackground(Color.PINK);
+					letterButtons[x].setContentAreaFilled(true);
+				}
 
+				public void mouseExited(MouseEvent e) {
+					letterButtons[x].setBackground(null);
+					letterButtons[x].setContentAreaFilled(false);
+				}
 			});
 		}
 	}
 
-	public void numbers() {
-		// Numbers
+	/* Sets up number buttons */
+	public void numberInit() {
 		numberButtons[0] = new JButton("0");
 		numberButtons[1] = new JButton("1");
 		numberButtons[2] = new JButton("2");
@@ -315,9 +341,14 @@ public class Keyboard {
 		numberButtons[8] = new JButton("8");
 		numberButtons[9] = new JButton("9");
 
-		double radian = Math.toRadians(45);
+		double radian;
+		int xValue, yValue;
+		
 		double initDegree = 55;
-		int midX, midY, radius, xValue, yValue;
+		double incrementDegree = 28;
+		int midX = (int)((frame.getWidth())/2)-20;
+		int midY = (int)((frame.getHeight())/2)-32;
+		int radius = (int)((frame.getWidth())/6);
 
 		for(int i = 0; i < 10; i++) {
 			numberButtons[i].setBorder(null);
@@ -326,27 +357,20 @@ public class Keyboard {
 			numberButtons[i].setOpaque(false);
 			radian = Math.toRadians(initDegree);
 
-			midX = (int)((frame.getWidth())/2)-35;
-			midY = (int)((frame.getWidth())/2)-45;
-			radius = (int)((frame.getWidth())/6);
+			// Places each number on the keyboard
+			xValue = -1 * (int)(Math.cos(radian)*radius) + midX;
+			yValue = -1 * (int)(Math.sin(radian)*radius) + midY;
 			//xValue = (int)(radius * (Math.sin(radian * (i - 6))));
-			xValue = (int)(Math.cos(radian)*radius);
-			yValue = (int)(Math.sin(radian)*radius);
 			//yValue = (int)(Math.sqrt(Math.pow(radius, 2) - Math.pow(xValue, 2))+midY);
 			//					if(i < 5) {
 			//						xValue *= -1;
 			//					}
-
-			xValue *= -1;
-			yValue *= -1;
-
-			initDegree += 28;
-			xValue += midX;
-			yValue += midY;
+			initDegree += incrementDegree;
 			numberButtons[i].setBounds(xValue, yValue, (int)(BUTTON_WIDTH * 0.8), (int)(BUTTON_HEIGHT * 0.8));
 			numberButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
 			numberButtons[i].setForeground(Color.WHITE);
 
+			// Changes button appearance based on cursor
 			final Integer x = new Integer(i);
 			numberButtons[x].addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseEntered(MouseEvent e) {
@@ -364,17 +388,17 @@ public class Keyboard {
 
 	public void gui() {
 		// Background
-		background();
+		backgroundInit();
 
 		// Letters
-
+		letterInit();
+		
+		for(int i = 0; i < 26; i++) {
+			panel.add(letterButtons[i]);
+		}
+		
 		// Numbers
-		numbers();
-
-		// Display
-		label.setIcon(background);
-		label.revalidate();
-		label.repaint();
+		numberInit();
 
 		for(int i = 0; i < 10; i++) {
 			numberButtons[i].removeActionListener(typing);
