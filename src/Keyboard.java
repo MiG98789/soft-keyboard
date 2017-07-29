@@ -3,6 +3,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -51,6 +53,7 @@ public class Keyboard {
 	private ImageIcon image;
 	private ImageIcon background;
 
+	private JToggleButton mathMode = new JToggleButton("Normal Mode", false);
 	private JButton space, enter, delete;
 	private JButton[] numberButtons = new JButton[10];
 	private JButton[] letterButtons = new JButton[26];
@@ -65,6 +68,20 @@ public class Keyboard {
 	private final int FRAME_WIDTH = 450;	// Frame width
 	private final int FRAME_HEIGHT = 420;	// Frame height
 
+	/* Switches between math mode and typing mode */
+	private ItemListener modeToggle = new ItemListener() {
+		public void itemStateChanged(ItemEvent itemEvent) {
+	        int state = itemEvent.getStateChange();
+	        if (state == ItemEvent.SELECTED) {
+	          System.out.println("Math Mode");
+	          mathMode.setText("Math Mode");
+	        } else {
+	          System.out.println("Normal Mode");
+	          mathMode.setText("Normal Mode");
+	        }
+	      }
+	};
+	
 	/* Converts Soft Keyboard key presses into actual keyboard presses */
 	private ActionListener typing = new ActionListener() {
 		public void actionPerformed(ActionEvent event) {
@@ -227,8 +244,6 @@ public class Keyboard {
 		}
 	};
 
-	/* Gets list of math functions and assigns them to an array */
-	
 	/* Loads special math symbols and stores them in a String Vector */
 	private void loadSymbols() {
 		try {
@@ -244,7 +259,7 @@ public class Keyboard {
 			
 			FileReader fileReader = new FileReader(file);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
-			StringBuffer stringBuffer = new StringBuffer();
+//			StringBuffer stringBuffer = new StringBuffer();
 			String line;
 			while ((line = bufferedReader.readLine()) != null) {
 //				stringBuffer.append(line);
@@ -439,14 +454,19 @@ public class Keyboard {
 		
 		// Numbers
 		numberInit();
-
 		for(int i = 0; i < 10; i++) {
 			numberButtons[i].removeActionListener(typing);
 			numberButtons[i].addActionListener(typing);
 			panel.add(numberButtons[i]);
 		}
+		
+		// Add mode toggle button
+		mathMode.setBounds(0,0, 110,30);
+		mathMode.setFont(new Font("Arial", Font.PLAIN, 12));
+		mathMode.addItemListener(modeToggle);
+		panel.add(mathMode);
+		
 		panel.add(label);
-
 		frame.add(panel);
 
 		panel.revalidate();
