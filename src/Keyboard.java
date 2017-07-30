@@ -456,14 +456,18 @@ public class Keyboard{
 		letterButtons[24] = new JButton("y");
 		letterButtons[25] = new JButton("z");
 		
-		int xValue, yValue;
-		
-		double initDegree = 10;
 
-		double radian = Math.toRadians(initDegree);
+		
+		double radian;
+		int xValue, yValue;
+		double initDegree = 50;
+		double incrementDegree = 10.3;
+
+
+		radian = Math.toRadians(initDegree);
 		int midX = (int)((frame.getWidth()) / 2) - 20;
-		int midY = (int)((frame.getHeight()) / 2) - 32;
-		int radius = (int)((frame.getWidth()) / 2.5) - 10;
+		int midY = (int)((frame.getHeight()) / 2) - 35;
+		int radius = (int)((frame.getWidth()) / 2.5) - 13;
 		
 		for(int i = 0; i < 26; i++) {
 			char temp = (char)('a' + i);
@@ -480,13 +484,10 @@ public class Keyboard{
 
 			// Calculates coordinates of each letter
 			radian = Math.toRadians(initDegree);
-			xValue = (int)(radius * (Math.sin(radian * (i - 3))));
-			yValue = (int)(Math.sqrt(Math.pow(radius,  2) - Math.pow(xValue,  2)));
-			if(i < 13) {
-				yValue = -1 * yValue;
-			}
-			xValue += midX;
-			yValue += midY;
+			xValue = -1 * (int)(Math.cos(radian)*radius) + midX;
+			yValue = -1 * (int)(Math.sin(radian)*radius) + midY;
+			initDegree += incrementDegree;
+
 			
 			letterButtons[i].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
 			letterButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
