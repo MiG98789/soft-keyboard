@@ -5,7 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowFocusListener;
@@ -280,6 +282,12 @@ public class Keyboard {
 		}
 	}
 	
+	private void presort(){
+		
+		
+	}
+	
+	
 	/* Sets up background */
 	private void backgroundInit() {
 		// Frame
@@ -545,6 +553,18 @@ public class Keyboard {
 	private void loadGui() {
 		// Background
 		backgroundInit();
+		
+		frame.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e){
+				if(e.getKeyCode()==KeyEvent.VK_0){
+					System.out.println("Success");
+				}
+				else{
+					System.out.println("NO:(");
+				}
+			}
+		});
+		
 		
 		// Special symbols
 		specialInit();
