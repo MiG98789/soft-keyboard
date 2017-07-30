@@ -48,7 +48,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-public class Keyboard {
+public class Keyboard{
 	private JFrame frame;
 	private JPanel panel;
 	private JLabel label;
@@ -550,20 +550,24 @@ public class Keyboard {
 		}
 	}
 
+
+
+
 	private void loadGui() {
 		// Background
 		backgroundInit();
 		
 		frame.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e){
-				if(e.getKeyCode()==KeyEvent.VK_0){
-					System.out.println("Success");
-				}
-				else{
-					System.out.println("NO:(");
+				System.out.println("Pressed");
+				int i = 0;
+				for(;i<mathSymbols.size();i++){
+					if(e.getKeyChar()==mathSymbols.get(i).charAt(1)){
+						System.out.println(mathSymbols.get(i));
+					}
 				}
 			}
-		});
+		}); 
 		
 		
 		// Special symbols
@@ -611,4 +615,6 @@ public class Keyboard {
 	public static void main(String[] args) {
 		new Keyboard();
 	}
+
+
 }
