@@ -44,6 +44,7 @@ import javax.print.DocFlavor.URL;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
+import javax.swing.event.*;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -72,6 +73,7 @@ public class Keyboard{
 	private boolean capsClick = false;
 	
 	private Vector<String> mathSymbols = new Vector<String>();
+	private Vector<String> predictions = new Vector<String>();
 	private boolean isPredict = false;
 
 	private final int BUTTON_WIDTH = 25;	// Button width
@@ -302,7 +304,12 @@ public class Keyboard{
 		predictionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		predictionFrame.setLocationRelativeTo(null);
 		predictionFrame.setAlwaysOnTop(true);
-		predictionFrame.setFocusableWindowState(true);
+
+		predictionFrame.addMouseListener(new java.awt.event.MouseAdapter() {
+			public void mouseEntered(MouseEvent e) {
+				predictionFrame.setFocusableWindowState(false);
+			}
+		});
 		
 		// Panel
 		predictionPanel = new JPanel();
@@ -316,6 +323,32 @@ public class Keyboard{
 	    predictionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    predictionList.setSelectedIndex(0);
 	    predictionList.setVisibleRowCount(3);
+	    predictionList.addListSelectionListener(new ListSelectionListener(){ // Automatically types out selected list item
+	    	@Override
+	    	public void valueChanged(ListSelectionEvent arg0){
+	    		if(!arg0.getValueIsAdjusting()) {
+	    			String selection = predictionList.getSelectedValue().toString();
+	    			System.out.println("You selected: " + selection);
+    				try {
+    					Robot robot = new Robot();
+    					for(int i = 0; i < selection.length(); i++) {
+    						char temp = selection.charAt(i);
+    						if(Character.isUpperCase(temp)) {
+    							robot.keyPress(KeyEvent.VK_SHIFT);
+    						}
+    						int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)temp);
+	    					robot.keyPress(keyCode); robot.keyRelease(keyCode);
+    						if(Character.isUpperCase(temp)) {
+    							robot.keyRelease(KeyEvent.VK_SHIFT);
+    						}
+	    					
+    					}
+    				} catch (AWTException e) {
+    					e.printStackTrace();
+	    			}
+	    		}
+	    	}
+	    });
 	    
 	    // Scroll pane
 		predictionScrollPane = new JScrollPane(predictionList);
