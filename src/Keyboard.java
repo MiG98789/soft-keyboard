@@ -49,6 +49,11 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 public class Keyboard{
+	private JFrame predictionFrame;
+	private JPanel predictionPanel;
+	private final DefaultListModel predictionDLM = new DefaultListModel();
+	private JScrollPane predictionScrollPane;
+	
 	private JFrame frame;
 	private JPanel panel;
 	private JLabel label;
@@ -67,6 +72,7 @@ public class Keyboard{
 	private boolean capsClick = false;
 	
 	private Vector<String> mathSymbols = new Vector<String>();
+	private boolean isPredict = false;
 
 	private final int BUTTON_WIDTH = 25;	// Button width
 	private final int BUTTON_HEIGHT = 25;	// Button height
@@ -218,6 +224,8 @@ public class Keyboard{
 					robot.keyPress(KeyEvent.VK_SHIFT);
 					robot.keyPress(KeyEvent.VK_QUOTE);robot.keyRelease(KeyEvent.VK_QUOTE);
 					robot.keyRelease(KeyEvent.VK_SHIFT);
+					
+					isPredict = true;
 				}
 
 				else if(actionCommand == ",") {robot.keyPress(KeyEvent.VK_COMMA);robot.keyRelease(KeyEvent.VK_COMMA);}
@@ -284,6 +292,42 @@ public class Keyboard{
 		
 	}
 	
+	/* Sets up prediction list */
+	private void predictionListInit() {
+		// Frame
+		predictionFrame = new JFrame("Prediction List");
+		predictionFrame.pack();
+		predictionFrame.setVisible(true);
+		predictionFrame.setSize(FRAME_WIDTH - 50, FRAME_HEIGHT / 3);
+		predictionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		predictionFrame.setLocationRelativeTo(null);
+		predictionFrame.setAlwaysOnTop(true);
+		predictionFrame.setFocusableWindowState(true);
+		
+		// Panel
+		predictionPanel = new JPanel();
+		
+		// Default List Model
+		predictionDLM.addElement("Test 1");
+		predictionDLM.addElement("Test 2");
+		
+		// List
+		final JList predictionList = new JList(predictionDLM);
+	    predictionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	    predictionList.setSelectedIndex(0);
+	    predictionList.setVisibleRowCount(3);
+	    
+	    // Scroll pane
+		predictionScrollPane = new JScrollPane(predictionList);
+		
+		predictionFrame.add(predictionPanel);
+		predictionPanel.add(predictionScrollPane);
+
+		predictionPanel.revalidate();
+		predictionPanel.repaint();
+		predictionFrame.revalidate();
+		predictionFrame.repaint();
+	}
 	
 	/* Sets up background */
 	private void backgroundInit() {
@@ -387,6 +431,9 @@ public class Keyboard{
 				});
 			}
 			else { // \, =, (
+				
+
+				
 				specialButtons[i].removeActionListener(typing);
 				specialButtons[i].addActionListener(typing);
 				specialButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
@@ -599,26 +646,25 @@ public class Keyboard{
 		}
 	}
 
-
-
-
 	private void loadGui() {
+		// Prediction list
+		predictionListInit();
+		
 		// Background
 		backgroundInit();
 		
-		frame.addKeyListener(new KeyAdapter() {
-			public void keyPressed(KeyEvent e){
-				System.out.println("Pressed");
-				int i = 0;
-				for(;i<mathSymbols.size();i++){
-					if(e.getKeyChar()==mathSymbols.get(i).charAt(1)){
-						System.out.println(mathSymbols.get(i));
-					}
-				}
-			}
-		}); 
-		
-		
+//		frame.addKeyListener(new KeyAdapter() {
+//			public void keyPressed(KeyEvent e){
+//				System.out.println("Pressed");
+//				int i = 0;
+//				for(;i<mathSymbols.size();i++){
+//					if(e.getKeyChar()==mathSymbols.get(i).charAt(1)){
+//						System.out.println(mathSymbols.get(i));
+//					}
+//				}
+//			}
+//		}); 
+			
 		// Special symbols
 		specialInit();
 		for(int i = 0; i < 6; i++) {
