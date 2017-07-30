@@ -5,7 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowFocusListener;
@@ -46,7 +48,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-public class Keyboard {
+public class Keyboard{
 	private JFrame frame;
 	private JPanel panel;
 	private JLabel label;
@@ -276,6 +278,12 @@ public class Keyboard {
 			e.printStackTrace();
 		}
 	}
+	
+	private void presort(){
+		
+		
+	}
+	
 	
 	/* Sets up background */
 	private void backgroundInit() {
@@ -591,9 +599,25 @@ public class Keyboard {
 		}
 	}
 
+
+
+
 	private void loadGui() {
 		// Background
 		backgroundInit();
+		
+		frame.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e){
+				System.out.println("Pressed");
+				int i = 0;
+				for(;i<mathSymbols.size();i++){
+					if(e.getKeyChar()==mathSymbols.get(i).charAt(1)){
+						System.out.println(mathSymbols.get(i));
+					}
+				}
+			}
+		}); 
+		
 		
 		// Special symbols
 		specialInit();
@@ -642,4 +666,6 @@ public class Keyboard {
 	public static void main(String[] args) {
 		new Keyboard();
 	}
+
+
 }
