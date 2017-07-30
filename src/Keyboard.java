@@ -70,7 +70,7 @@ public class Keyboard{
 	private JButton[] letterButtons = new JButton[26];
 
 	private boolean shiftClick = false;
-	private boolean capsClick = false;
+//	private boolean capsClick = false;
 	
 	private Vector<String> mathSymbols = new Vector<String>();
 	private Vector<String> predictions = new Vector<String>();
@@ -94,6 +94,35 @@ public class Keyboard{
 	        }
 	      }
 	};
+	
+	/* Automatically types out selected list item */
+	private ListSelectionListener predictionListener = new ListSelectionListener(){
+    	@Override
+    	public void valueChanged(ListSelectionEvent arg0){
+    		if(!arg0.getValueIsAdjusting()) {
+    			JList tempList = (JList)arg0.getSource();
+    			String selection = tempList.getSelectedValue().toString();
+    			System.out.println("You selected: " + selection);
+				try {
+					Robot robot = new Robot();
+					for(int i = 0; i < selection.length(); i++) {
+						char temp = selection.charAt(i);
+						if(Character.isUpperCase(temp)) {
+							robot.keyPress(KeyEvent.VK_SHIFT);
+						}
+						int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)temp);
+    					robot.keyPress(keyCode); robot.keyRelease(keyCode);
+						if(Character.isUpperCase(temp)) {
+							robot.keyRelease(KeyEvent.VK_SHIFT);
+						}
+    					
+					}
+				} catch (AWTException e) {
+					e.printStackTrace();
+    			}
+    		}
+    	}
+    };
 	
 	/* Converts Soft Keyboard key presses into actual keyboard presses */
 	private ActionListener typing = new ActionListener() {
@@ -323,32 +352,7 @@ public class Keyboard{
 	    predictionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    predictionList.setSelectedIndex(0);
 	    predictionList.setVisibleRowCount(3);
-	    predictionList.addListSelectionListener(new ListSelectionListener(){ // Automatically types out selected list item
-	    	@Override
-	    	public void valueChanged(ListSelectionEvent arg0){
-	    		if(!arg0.getValueIsAdjusting()) {
-	    			String selection = predictionList.getSelectedValue().toString();
-	    			System.out.println("You selected: " + selection);
-    				try {
-    					Robot robot = new Robot();
-    					for(int i = 0; i < selection.length(); i++) {
-    						char temp = selection.charAt(i);
-    						if(Character.isUpperCase(temp)) {
-    							robot.keyPress(KeyEvent.VK_SHIFT);
-    						}
-    						int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)temp);
-	    					robot.keyPress(keyCode); robot.keyRelease(keyCode);
-    						if(Character.isUpperCase(temp)) {
-    							robot.keyRelease(KeyEvent.VK_SHIFT);
-    						}
-	    					
-    					}
-    				} catch (AWTException e) {
-    					e.printStackTrace();
-	    			}
-	    		}
-	    	}
-	    });
+	    predictionList.addListSelectionListener(predictionListener);
 	    
 	    // Scroll pane
 		predictionScrollPane = new JScrollPane(predictionList);
@@ -578,28 +582,38 @@ public class Keyboard{
 					try {
 						Robot robot = new Robot();
 						
-						if(!shiftClick && !capsClick) { // Lower case
+						if(!shiftClick) {
 							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(lowercase));
 							robot.keyPress(keyCode);robot.keyRelease(keyCode);
-						} 
-						else if (!shiftClick && capsClick) { // Upper case
-							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(uppercase));
-							robot.keyPress(KeyEvent.VK_SHIFT);
-							robot.keyPress(keyCode);robot.keyRelease(keyCode);
-							robot.keyRelease(KeyEvent.VK_SHIFT);
-						} 
-						else if(shiftClick && !capsClick) { // Upper case
-							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(uppercase));
-							robot.keyPress(KeyEvent.VK_SHIFT);
-							robot.keyPress(keyCode);robot.keyRelease(keyCode);
-							robot.keyRelease(KeyEvent.VK_SHIFT);
-							shiftClick = false;
 						}
-						else { // Lower case
+						else {
 							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(lowercase));
 							robot.keyPress(keyCode);robot.keyRelease(keyCode);
 							shiftClick = false;
 						}
+						
+//						if(!shiftClick && !capsClick) { // Lower case
+//							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(lowercase));
+//							robot.keyPress(keyCode);robot.keyRelease(keyCode);
+//						} 
+//						else if (!shiftClick && capsClick) { // Upper case
+//							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(uppercase));
+//							robot.keyPress(KeyEvent.VK_SHIFT);
+//							robot.keyPress(keyCode);robot.keyRelease(keyCode);
+//							robot.keyRelease(KeyEvent.VK_SHIFT);
+//						} 
+//						else if(shiftClick && !capsClick) { // Upper case
+//							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(uppercase));
+//							robot.keyPress(KeyEvent.VK_SHIFT);
+//							robot.keyPress(keyCode);robot.keyRelease(keyCode);
+//							robot.keyRelease(KeyEvent.VK_SHIFT);
+//							shiftClick = false;
+//						}
+//						else { // Lower case
+//							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(lowercase));
+//							robot.keyPress(keyCode);robot.keyRelease(keyCode);
+//							shiftClick = false;
+//						}
 					} catch(AWTException e) {
 						e.printStackTrace();
 					}
