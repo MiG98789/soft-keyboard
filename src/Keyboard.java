@@ -50,11 +50,14 @@ public class Keyboard {
 	private JFrame frame;
 	private JPanel panel;
 	private JLabel label;
-	private ImageIcon image;
-	private ImageIcon background;
+	private ImageIcon background = new ImageIcon(getClass().getResource("/bg.png"));
+	private ImageIcon backspaceIcon = new ImageIcon(getClass().getResource("/backspace.png"));
+	private ImageIcon spaceIcon = new ImageIcon(getClass().getResource("/backspace.png"));
+	private ImageIcon enterIcon = new ImageIcon(getClass().getResource("/backspace.png"));
 
 	private JToggleButton mathMode = new JToggleButton("Normal Mode", false);
-	private JButton space, enter, delete;
+	private JButton[] specialButtons = new JButton[6]; // Backspace, space, enter, \, =, (
+	private JButton[] arithmeticButtons = new JButton[5];
 	private JButton[] numberButtons = new JButton[10];
 	private JButton[] letterButtons = new JButton[26];
 
@@ -300,9 +303,6 @@ public class Keyboard {
 		panel.setBackground(Color.WHITE);
 		panel.setPreferredSize(null);
 		panel.setLayout(new BorderLayout());
-
-		// Background image
-		background = new ImageIcon(getClass().getResource("/bg.png"));
 		
 		// Label
 		label = new JLabel(background, JLabel.CENTER);
@@ -321,6 +321,107 @@ public class Keyboard {
 //		label.repaint();
 	}
 
+	/* Set up left buttons */
+	private void specialInit() {
+		specialButtons[0] = new JButton(backspaceIcon);
+		Image temp = backspaceIcon.getImage();	
+		int tempWidth = temp.getWidth(null);
+		int tempHeight = temp.getHeight(null);
+		temp = temp.getScaledInstance((int)(tempWidth / 7 * (double)(frame.getWidth() / 450.0)), 
+										(int)(tempHeight / 7 * (double)(frame.getWidth() / 450.0)), Image.SCALE_SMOOTH);
+		backspaceIcon.setImage(temp);
+		
+		specialButtons[1] = new JButton(spaceIcon);
+		specialButtons[2] = new JButton(enterIcon);
+		specialButtons[3] = new JButton("\\");
+		specialButtons[4] = new JButton("=");
+		specialButtons[5] = new JButton("(");
+		
+		for(int i = 0; i < 6; i++) {
+			specialButtons[i].setBorder(null);
+			specialButtons[i].setBorderPainted(false);
+			specialButtons[i].setContentAreaFilled(false);
+			specialButtons[i].setOpaque(false);
+			
+			// Changes button appearance based on cursor
+			final Integer x = new Integer(i);
+			specialButtons[x].addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseEntered(MouseEvent e) {
+					specialButtons[x].setBackground(Color.PINK);
+					specialButtons[x].setContentAreaFilled(true);
+				}
+
+				public void mouseExited(MouseEvent e) {
+					specialButtons[x].setBackground(null);
+					specialButtons[x].setContentAreaFilled(false);
+				}
+			});
+
+			if(i < 3) { // Backspace, space, enter
+				specialButtons[i].addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent ae){
+						try {
+							Robot robot = new Robot();
+							
+							switch(x) {
+							case 0: // Backspace
+								robot.keyPress(KeyEvent.VK_BACK_SPACE); robot.keyRelease(KeyEvent.VK_BACK_SPACE);
+								break;
+							case 1: // Space
+								robot.keyPress(KeyEvent.VK_SPACE); robot.keyRelease(KeyEvent.VK_SPACE);
+								break;
+							case 2: // Enter
+								robot.keyPress(KeyEvent.VK_ENTER); robot.keyRelease(KeyEvent.VK_ENTER);
+								break;
+							}
+							
+						} catch(AWTException e) {
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+			else { // \, =, (
+				specialButtons[i].removeActionListener(typing);
+				specialButtons[i].addActionListener(typing);
+				specialButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
+			}
+		}
+		
+		int xValue, yValue;
+		
+		// Backspace
+		xValue = (int)(frame.getWidth() / 2) - 10;
+		yValue = (int)(frame.getHeight() / 2) - 35;
+		specialButtons[0].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
+		
+		// Space
+		xValue = (int)(frame.getWidth());
+		yValue = (int)(frame.getHeight());
+		specialButtons[1].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
+		
+		// Enter
+		xValue = (int)(frame.getWidth());
+		yValue = (int)(frame.getHeight());
+		specialButtons[2].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
+		
+		// \
+		xValue = (int)(frame.getWidth() / 2) - 55;
+		yValue = (int)(frame.getHeight() / 2) - 35;
+		specialButtons[3].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
+
+		
+		// =
+		xValue = (int)(frame.getWidth());
+		yValue = (int)(frame.getHeight());
+		specialButtons[4].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
+		
+		// (
+		xValue = (int)(frame.getWidth());
+		yValue = (int)(frame.getHeight());
+		specialButtons[5].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
+	}
+	
 	/* Sets up letter buttons */
 	private void letterInit() {
 		int xValue, yValue;
@@ -444,13 +545,14 @@ public class Keyboard {
 	private void loadGui() {
 		// Background
 		backgroundInit();
-
-		// Letters
-		letterInit();
 		
-		for(int i = 0; i < 26; i++) {
-			panel.add(letterButtons[i]);
+		// Special symbols
+		specialInit();
+		for(int i = 0; i < 6; i++) {
+			panel.add(specialButtons[i]);
 		}
+		
+		// Arithmetic symbols
 		
 		// Numbers
 		numberInit();
@@ -458,6 +560,12 @@ public class Keyboard {
 			numberButtons[i].removeActionListener(typing);
 			numberButtons[i].addActionListener(typing);
 			panel.add(numberButtons[i]);
+		}
+		
+		// Letters
+		letterInit();
+		for(int i = 0; i < 26; i++) {
+			panel.add(letterButtons[i]);
 		}
 		
 		// Add mode toggle button
