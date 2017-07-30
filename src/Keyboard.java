@@ -92,7 +92,7 @@ public class Keyboard {
 
 			try {
 				Robot robot = new Robot();
-
+				
 				// Numbers
 				if(actionCommand == "0") {robot.keyPress(KeyEvent.VK_0);robot.keyRelease(KeyEvent.VK_0);}
 				else if(actionCommand == "1") {robot.keyPress(KeyEvent.VK_1);robot.keyRelease(KeyEvent.VK_1);}
@@ -238,9 +238,6 @@ public class Keyboard {
 					robot.keyPress(KeyEvent.VK_SLASH);robot.keyRelease(KeyEvent.VK_SLASH);
 					robot.keyRelease(KeyEvent.VK_SHIFT);
 				}
-
-				// Letters
-
 			} catch (AWTException e) {
 				e.printStackTrace();
 			}
@@ -424,6 +421,33 @@ public class Keyboard {
 	
 	/* Sets up letter buttons */
 	private void letterInit() {
+		letterButtons[0] = new JButton("a");
+		letterButtons[1] = new JButton("b");
+		letterButtons[2] = new JButton("c");
+		letterButtons[3] = new JButton("d");
+		letterButtons[4] = new JButton("e");
+		letterButtons[5] = new JButton("f");
+		letterButtons[6] = new JButton("g");
+		letterButtons[7] = new JButton("h");
+		letterButtons[8] = new JButton("i");
+		letterButtons[9] = new JButton("j");
+		letterButtons[10] = new JButton("k");
+		letterButtons[11] = new JButton("l");
+		letterButtons[12] = new JButton("m");
+		letterButtons[13] = new JButton("n");
+		letterButtons[14] = new JButton("o");
+		letterButtons[15] = new JButton("p");
+		letterButtons[16] = new JButton("q");
+		letterButtons[17] = new JButton("r");
+		letterButtons[18] = new JButton("s");
+		letterButtons[19] = new JButton("t");
+		letterButtons[20] = new JButton("u");
+		letterButtons[21] = new JButton("v");
+		letterButtons[22] = new JButton("w");
+		letterButtons[23] = new JButton("x");
+		letterButtons[24] = new JButton("y");
+		letterButtons[25] = new JButton("z");
+		
 		int xValue, yValue;
 		
 		double initDegree = 10;
@@ -435,7 +459,7 @@ public class Keyboard {
 		
 		for(int i = 0; i < 26; i++) {
 			char temp = (char)('a' + i);
-			letterButtons[i] = new JButton(Character.toString(temp));
+//			letterButtons[i] = new JButton(Character.toString(temp));
 			char lowercase = (char)('a' + i);
 			String lowerTemp = Character.toString(lowercase);
 			char uppercase = (char)('A' + i);
@@ -462,8 +486,33 @@ public class Keyboard {
 
 			letterButtons[i].addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent ae) {
-					if(!shiftClick && !capsClick) {
-
+					try {
+						Robot robot = new Robot();
+						
+						if(!shiftClick && !capsClick) { // Lower case
+							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(lowercase));
+							robot.keyPress(keyCode);robot.keyRelease(keyCode);
+						} 
+						else if (!shiftClick && capsClick) { // Upper case
+							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(uppercase));
+							robot.keyPress(KeyEvent.VK_SHIFT);
+							robot.keyPress(keyCode);robot.keyRelease(keyCode);
+							robot.keyRelease(KeyEvent.VK_SHIFT);
+						} 
+						else if(shiftClick && !capsClick) { // Upper case
+							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(uppercase));
+							robot.keyPress(KeyEvent.VK_SHIFT);
+							robot.keyPress(keyCode);robot.keyRelease(keyCode);
+							robot.keyRelease(KeyEvent.VK_SHIFT);
+							shiftClick = false;
+						}
+						else { // Lower case
+							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(lowercase));
+							robot.keyPress(keyCode);robot.keyRelease(keyCode);
+							shiftClick = false;
+						}
+					} catch(AWTException e) {
+						e.printStackTrace();
 					}
 				}
 			});
@@ -565,6 +614,8 @@ public class Keyboard {
 		// Letters
 		letterInit();
 		for(int i = 0; i < 26; i++) {
+			letterButtons[i].removeActionListener(typing);
+			letterButtons[i].addActionListener(typing);
 			panel.add(letterButtons[i]);
 		}
 		
