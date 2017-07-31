@@ -325,9 +325,9 @@ public class Keyboard {
 
 		// Loop through each symbol, and add predictions to Prediction List Frame
 		for(int i = 0; i < mathSymbols.size(); i++) {
-			System.out.println("Predicted: ");
 			if(str.length() <= mathSymbols.elementAt(i).length()) {
 				if(str.equals(mathSymbols.elementAt(i).substring(0, str.length()))) {
+					System.out.println("Predicted: ");
 					predictionDLM.addElement(mathSymbols.elementAt(i));
 					System.out.println(mathSymbols.elementAt(i));
 				}
@@ -348,15 +348,21 @@ public class Keyboard {
 		                int index = predictionList.locationToIndex(evt.getPoint());
 		                String selection = (String)predictionList.getModel().getElementAt(index);
 		    			System.out.println("You selected: " + selection);
+		    			
+		    			
+
     					
 						isPredict = false;
 						predictionInput = "";
 		    			
 		    			try {
 							Robot robot = new Robot();
-							
+
+			    			
 							// Type out selection
-							for(int i = 0; i < selection.length(); i++) {
+		    				
+		    				
+							for(int i = str.length(); i < selection.length(); i++) {
 								char temp = selection.charAt(i);
 								if(Character.isUpperCase(temp)) {
 									robot.keyPress(KeyEvent.VK_SHIFT);
@@ -367,8 +373,12 @@ public class Keyboard {
 									robot.keyRelease(KeyEvent.VK_SHIFT);
 								}
 								
+
+								
 								predictionDLM.clear();
 							}
+							robot.keyPress(KeyEvent.VK_SPACE);
+
 						} catch (AWTException e) {
 							e.printStackTrace();
 		    			}
