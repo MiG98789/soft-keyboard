@@ -489,8 +489,12 @@ public class Keyboard {
 										(int)(tempHeight / 7 * (double)(frame.getWidth() / 450.0)), Image.SCALE_SMOOTH);
 		backspaceIcon.setImage(temp);
 		
+		// TODO: Follow backspace code to scale properly
 		specialButtons[1] = new JButton(spaceIcon);
+		
+		// TODO: Follow backspace code to scale properly
 		specialButtons[2] = new JButton(enterIcon);
+		
 		specialButtons[3] = new JButton("\\");
 		specialButtons[4] = new JButton("=");
 		specialButtons[5] = new JButton("(");
@@ -551,6 +555,7 @@ public class Keyboard {
 			}
 		}
 		
+		// TODO: Properly position space, enter, =, (
 		int xValue, yValue;
 		
 		// Backspace
@@ -584,6 +589,17 @@ public class Keyboard {
 		specialButtons[5].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
 	}
 	
+	/* Set up arithmetic buttons */
+	private void arithmeticInit() {
+		arithmeticButtons[0] = new JButton("+");
+		arithmeticButtons[1] = new JButton("-");
+		arithmeticButtons[2] = new JButton(".");
+		arithmeticButtons[3] = new JButton("*");
+		arithmeticButtons[4] = new JButton("/");
+		
+		// TODO: Position buttons
+	}
+	
 	/* Sets up letter buttons */
 	private void letterInit() {
 		letterButtons[0] = new JButton("a");
@@ -612,13 +628,12 @@ public class Keyboard {
 		letterButtons[23] = new JButton("x");
 		letterButtons[24] = new JButton("y");
 		letterButtons[25] = new JButton("z");
-		
+				
 		double radian;
-		int xValue, yValue;
 		double initDegree = 50;
 		double incrementDegree = 10.3;
-
-		radian = Math.toRadians(initDegree);
+		
+		int xValue, yValue;
 		int midX = (int)((frame.getWidth()) / 2) - 20;
 		int midY = (int)((frame.getHeight()) / 2) - 35;
 		int radius = (int)((frame.getWidth()) / 2.5) - 13;
@@ -722,12 +737,12 @@ public class Keyboard {
 		numberButtons[7] = new JButton("7");
 		numberButtons[8] = new JButton("8");
 		numberButtons[9] = new JButton("9");
-
-		double radian;
-		int xValue, yValue;
 		
+		double radian;
 		double initDegree = 55;
 		double incrementDegree = 28;
+		
+		int xValue, yValue;
 		int midX = (int)((frame.getWidth()) / 2) - 20;
 		int midY = (int)((frame.getHeight()) / 2) - 32;
 		int radius = (int)((frame.getWidth()) / 6);
@@ -742,13 +757,9 @@ public class Keyboard {
 			radian = Math.toRadians(initDegree);
 			xValue = -1 * (int)(Math.cos(radian)*radius) + midX;
 			yValue = -1 * (int)(Math.sin(radian)*radius) + midY;
-			//xValue = (int)(radius * (Math.sin(radian * (i - 6))));
-			//yValue = (int)(Math.sqrt(Math.pow(radius, 2) - Math.pow(xValue, 2))+midY);
-			//					if(i < 5) {
-			//						xValue *= -1;
-			//					}
 			initDegree += incrementDegree;
-			numberButtons[i].setBounds(xValue, yValue, (int)(BUTTON_WIDTH * 0.8), (int)(BUTTON_HEIGHT * 0.8));
+			
+			numberButtons[i].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
 			numberButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
 			numberButtons[i].setForeground(Color.WHITE);
 
@@ -769,6 +780,8 @@ public class Keyboard {
 	}
 
 	private void loadGui() {
+		//TODO: Special, arithmetic, 2 other layers
+		
 		// Prediction list
 		predictionListInit();
 		
@@ -794,6 +807,12 @@ public class Keyboard {
 		}
 		
 		// Arithmetic symbols
+		arithmeticInit();
+		for(int i = 0; i < 5; i++) {
+			arithmeticButtons[i].removeActionListener(typing);
+			arithmeticButtons[i].addActionListener(typing);
+			panel.add(arithmeticButtons[i]);
+		}
 		
 		// Numbers
 		numberInit();
