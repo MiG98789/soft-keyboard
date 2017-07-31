@@ -56,6 +56,7 @@ public class Keyboard {
 	private final DefaultListModel predictionDLM = new DefaultListModel();
 	private JScrollPane predictionScrollPane;
 	private final int NUM_OF_PREDICTIONS = 5;
+	private final float PREDICTION_LIST_FONT_SIZE = 22.0f;
 	
 	private JFrame frame;
 	private JPanel panel;
@@ -322,6 +323,9 @@ public class Keyboard {
 		
 		// Reset Prediction List Frame
 		predictionDLM.clear();
+		if(str.isEmpty()) {
+			return;
+		}
 
 		// Loop through each symbol, and add predictions to Prediction List Frame
 		for(int i = 0; i < mathSymbols.size(); i++) {
@@ -339,6 +343,7 @@ public class Keyboard {
 	    predictionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    predictionList.setSelectedIndex(0);
 	    predictionList.setVisibleRowCount(NUM_OF_PREDICTIONS);
+	    predictionList.setFont(predictionList.getFont().deriveFont(PREDICTION_LIST_FONT_SIZE));
 	    
 	    predictionList.addMouseListener(new MouseAdapter() {
 			@Override
@@ -348,20 +353,11 @@ public class Keyboard {
 		                int index = predictionList.locationToIndex(evt.getPoint());
 		                String selection = (String)predictionList.getModel().getElementAt(index);
 		    			System.out.println("You selected: " + selection);
-		    			
-		    			
-
-    					
-						isPredict = false;
-						predictionInput = "";
-		    			
+		    			    			
 		    			try {
 							Robot robot = new Robot();
-
-			    			
-							// Type out selection
-		    				
-		    				
+	
+							// Type out selection	    				
 							for(int i = str.length(); i < selection.length(); i++) {
 								char temp = selection.charAt(i);
 								if(Character.isUpperCase(temp)) {
@@ -372,13 +368,11 @@ public class Keyboard {
 								if(Character.isUpperCase(temp)) {
 									robot.keyRelease(KeyEvent.VK_SHIFT);
 								}
-								
-
-								
-								predictionDLM.clear();
 							}
 							robot.keyPress(KeyEvent.VK_SPACE);
-
+							isPredict = false;
+							predictionInput = "";
+							predictionDLM.clear();
 						} catch (AWTException e) {
 							e.printStackTrace();
 		    			}
@@ -403,7 +397,7 @@ public class Keyboard {
 		predictionFrame = new JFrame("Prediction List");
 		predictionFrame.pack();
 		predictionFrame.setVisible(true);
-		predictionFrame.setSize(FRAME_WIDTH - 50, FRAME_HEIGHT / 3);
+		predictionFrame.setSize(FRAME_WIDTH - 50, FRAME_HEIGHT / 2);
 		predictionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		predictionFrame.setLocationRelativeTo(null);
 		predictionFrame.setAlwaysOnTop(true);
@@ -426,6 +420,7 @@ public class Keyboard {
 	    predictionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    predictionList.setSelectedIndex(0);
 	    predictionList.setVisibleRowCount(NUM_OF_PREDICTIONS);
+	    predictionList.setFont(predictionList.getFont().deriveFont(PREDICTION_LIST_FONT_SIZE));
 //	    predictionList.addListSelectionListener(predictionListener);
 	    
 	    // Scroll pane
@@ -846,6 +841,4 @@ public class Keyboard {
 	public static void main(String[] args) {
 		new Keyboard();
 	}
-
-
 }
