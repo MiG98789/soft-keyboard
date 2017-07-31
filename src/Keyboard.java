@@ -73,8 +73,11 @@ public class Keyboard {
 	private JButton[] specialButtons = new JButton[6]; // Backspace, space, enter, \, =, (
 	private JButton[] arithmeticButtons = new JButton[5];
 	private JButton[] numberButtons = new JButton[10];
+	private JButton[] layer3Buttons = new JButton[10]; // TODO: Decide which keys to put
+	private JButton[] layer4Buttons = new JButton[10]; // TODO: Decide which keys to put
 	private JButton[] letterButtons = new JButton[26];
 
+	// TODO: Decide where to put shift and/or caps
 	private boolean shiftClick = false;
 //	private boolean capsClick = false;
 	
@@ -537,7 +540,7 @@ public class Keyboard {
 							case 1: // Space
 								robot.keyPress(KeyEvent.VK_SPACE); robot.keyRelease(KeyEvent.VK_SPACE);
 								break;
-							case 2: // Enter
+							case 2: // Enter TODO: Press alt and = simultaneously
 								robot.keyPress(KeyEvent.VK_ENTER); robot.keyRelease(KeyEvent.VK_ENTER);
 								break;
 							}
