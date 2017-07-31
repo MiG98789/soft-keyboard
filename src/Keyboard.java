@@ -49,6 +49,9 @@ import javax.swing.event.*;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class Keyboard {
 	private JFrame predictionFrame;
@@ -282,28 +285,16 @@ public class Keyboard {
 	/* Loads special math symbols and stores them in a String Vector */
 	private void loadSymbols() {
 		try {
-			String path = System.getProperty("user.dir") + "/res/symbols.txt"; 
+			InputStream is = getClass().getResourceAsStream("/symbols.txt");		
 
-			File file = new File(path);
-			if(file.exists()) {
-				System.out.println("symbols.txt file exists");
-			}
-			else{
-				System.out.println("symbols.txt does not exist");
-			}
 			
-			FileReader fileReader = new FileReader(file);
-			BufferedReader bufferedReader = new BufferedReader(fileReader);
-//			StringBuffer stringBuffer = new StringBuffer();
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
 			String line;
 			while ((line = bufferedReader.readLine()) != null) {
-//				stringBuffer.append(line);
-//				stringBuffer.append("\n");
-				mathSymbols.add(line);
+
+				mathSymbols.add(line); 
 			}
-			fileReader.close();
 			System.out.println("Contents of file:");
-//			System.out.println(stringBuffer.toString());
 			for(int i = 0; i < mathSymbols.size(); i++) {
 				System.out.println(mathSymbols.elementAt(i).toString());
 			}
