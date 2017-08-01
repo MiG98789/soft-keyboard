@@ -66,8 +66,8 @@ public class Keyboard {
 	private JLabel label;
 	private ImageIcon background = new ImageIcon(getClass().getResource("/bg.png"));
 	private ImageIcon backspaceIcon = new ImageIcon(getClass().getResource("/backspace.png"));
-	private ImageIcon spaceIcon = new ImageIcon(getClass().getResource("/backspace.png"));
-	private ImageIcon enterIcon = new ImageIcon(getClass().getResource("/backspace.png"));
+	private ImageIcon spaceIcon = new ImageIcon(getClass().getResource("/space.png"));
+	private ImageIcon enterIcon = new ImageIcon(getClass().getResource("/enter.png"));
 
 	private JToggleButton mathMode = new JToggleButton("Normal Mode", false);
 	private JButton[] specialButtons = new JButton[6]; // Backspace, space, enter, \, =, (
@@ -405,10 +405,6 @@ public class Keyboard {
 		// Panel
 		predictionPanel = new JPanel();
 		
-		// Default List Model
-//		predictionDLM.addElement("Test 1");
-//		predictionDLM.addElement("Test 2");
-		
 		// List
 		final JList predictionList = new JList(predictionDLM);
 	    predictionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -468,14 +464,27 @@ public class Keyboard {
 		int tempWidth = temp.getWidth(null);
 		int tempHeight = temp.getHeight(null);
 		temp = temp.getScaledInstance((int)(tempWidth / 7 * (double)(frame.getWidth() / 450.0)), 
-										(int)(tempHeight / 7 * (double)(frame.getWidth() / 450.0)), Image.SCALE_SMOOTH);
+										(int)(tempHeight / 7 * (double)(frame.getWidth() / 450.0)),
+										Image.SCALE_SMOOTH);
 		backspaceIcon.setImage(temp);
 		
-		// TODO: Follow backspace code to scale properly
 		specialButtons[1] = new JButton(spaceIcon);
+		temp = spaceIcon.getImage();	
+		tempWidth = temp.getWidth(null);
+		tempHeight = temp.getHeight(null);
+		temp = temp.getScaledInstance((int)(tempWidth / 7 * (double)(frame.getWidth() / 450.0)), 
+										(int)(tempHeight / 7 * (double)(frame.getWidth() / 450.0)),
+										Image.SCALE_SMOOTH);
+		spaceIcon.setImage(temp);
 		
-		// TODO: Follow backspace code to scale properly
 		specialButtons[2] = new JButton(enterIcon);
+		temp = enterIcon.getImage();	
+		tempWidth = temp.getWidth(null);
+		tempHeight = temp.getHeight(null);
+		temp = temp.getScaledInstance((int)(tempWidth / 20 * (double)(frame.getWidth() / 450.0)), 
+										(int)(tempHeight / 20 * (double)(frame.getWidth() / 450.0)),
+										Image.SCALE_SMOOTH);
+		enterIcon.setImage(temp);
 		
 		specialButtons[3] = new JButton("\\");
 		specialButtons[4] = new JButton("=");
@@ -569,6 +578,40 @@ public class Keyboard {
 		xValue = (int)(frame.getWidth());
 		yValue = (int)(frame.getHeight());
 		specialButtons[5].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
+		
+		// (1) Space, (2) enter
+		double radian;
+		double initDegree = 23;
+		double incrementDegree = -40;
+		
+		int midX = (int)((frame.getWidth()) / 2) - 20;
+		int midY = (int)((frame.getHeight()) / 2) - 32;
+		int radius = (int)((frame.getWidth()) / 4) - 15;
+		
+		for(int i = 1; i <= 2; i++) {
+			// Calculates coordinates of each number
+			radian = Math.toRadians(initDegree);
+			xValue = -1 * (int)(Math.cos(radian)*radius) + midX;
+			yValue = -1 * (int)(Math.sin(radian)*radius) + midY;
+			initDegree += incrementDegree;
+			
+			specialButtons[i].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
+		}
+		
+		// (4) =, (5) (
+		initDegree = 23;
+		incrementDegree = -40;
+		radius = (int)((frame.getWidth()) / 3) - 5;
+		
+		for(int i = 4; i <= 5; i++) {
+			// Calculates coordinates of each number
+			radian = Math.toRadians(initDegree);
+			xValue = -1 * (int)(Math.cos(radian)*radius) + midX;
+			yValue = -1 * (int)(Math.sin(radian)*radius) + midY;
+			initDegree += incrementDegree;
+			
+			specialButtons[i].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
+		}
 	}
 	
 	/* Set up arithmetic buttons */
