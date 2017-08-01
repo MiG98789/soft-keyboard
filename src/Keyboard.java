@@ -427,18 +427,6 @@ public class Keyboard {
 		predictionPanel.repaint();
 		predictionFrame.revalidate();
 		predictionFrame.repaint();
-		
-//		predictionDLM.addElement("Test 2");
-//		final JList predictionList2 = new JList(predictionDLM);
-//	    predictionList2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//	    predictionList2.setSelectedIndex(0);
-//	    predictionList2.setVisibleRowCount(3);
-//	    predictionList2.addListSelectionListener(predictionListener);
-//		predictionScrollPane = new JScrollPane(predictionList);
-//		predictionPanel.removeAll();
-//		predictionPanel.add(predictionScrollPane);
-//		predictionPanel.revalidate();
-//		predictionPanel.repaint();
 	}
 	
 	/* Sets up background */
@@ -471,15 +459,6 @@ public class Keyboard {
 		label.setBackground(Color.DARK_GRAY);
 		label.repaint();
 		label.revalidate();
-
-		/*Image imagey = background.getImage();
-				Image imagea = imagey.getScaledInstance(frame.getWidth() - 100,  
-						(int)((frame.getWidth() - 100) * 1.18), java.awt.Image.SCALE_SMOOTH);
-				background = new ImageIcon(imagea);*/
-		
-//		label.setIcon(background);
-//		label.revalidate();
-//		label.repaint();
 	}
 
 	/* Set up left buttons */
@@ -600,7 +579,45 @@ public class Keyboard {
 		arithmeticButtons[3] = new JButton("*");
 		arithmeticButtons[4] = new JButton("/");
 		
-		// TODO: Position buttons
+		double radian;
+		int xValue, yValue;
+		double initDegree = 65;
+		double incrementDegree = 56;
+		
+		int midX = (int)((frame.getWidth()) / 2) - 20;
+		int midY = (int)((frame.getHeight()) / 2) - 32;
+		int radius = (int)((frame.getWidth()) / 9) - 5;
+
+		for(int i = 0; i < 5; i++) {
+			arithmeticButtons[i].setBorder(null);
+			arithmeticButtons[i].setBorderPainted(false);
+			arithmeticButtons[i].setContentAreaFilled(false);
+			arithmeticButtons[i].setOpaque(false);
+
+			// Calculates coordinates of each number
+			radian = Math.toRadians(initDegree);
+			xValue = -1 * (int)(Math.cos(radian)*radius) + midX;
+			yValue = -1 * (int)(Math.sin(radian)*radius) + midY;
+			initDegree += incrementDegree;
+			
+			arithmeticButtons[i].setBounds(xValue, yValue, (int)(BUTTON_WIDTH * 0.8), (int)(BUTTON_HEIGHT * 0.8));
+			arithmeticButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
+			arithmeticButtons[i].setForeground(Color.WHITE);
+
+			// Changes button appearance based on cursor
+			final Integer x = new Integer(i);
+			arithmeticButtons[x].addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseEntered(MouseEvent e) {
+					arithmeticButtons[x].setBackground(Color.PINK);
+					arithmeticButtons[x].setContentAreaFilled(true);
+				}
+
+				public void mouseExited(MouseEvent e) {
+					arithmeticButtons[x].setBackground(null);
+					arithmeticButtons[x].setContentAreaFilled(false);
+				}
+			});
+		}
 	}
 	
 	/* Sets up letter buttons */
