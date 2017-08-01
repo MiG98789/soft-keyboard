@@ -334,7 +334,7 @@ public class Keyboard {
 					predictionDLM.addElement(mathSymbols.elementAt(i));
 					System.out.println(mathSymbols.elementAt(i));
 				}
-			}
+			}	
 		}
 		
 		// Update Prediction List Frame
@@ -535,6 +535,12 @@ public class Keyboard {
 								break;
 							case 2: // Enter TODO: Press alt and = simultaneously
 								robot.keyPress(KeyEvent.VK_ENTER); robot.keyRelease(KeyEvent.VK_ENTER);
+								robot.keyPress(KeyEvent.VK_ALT);
+								robot.keyPress(KeyEvent.VK_EQUALS);
+								robot.keyRelease(KeyEvent.VK_EQUALS);
+								robot.keyRelease(KeyEvent.VK_ALT);
+
+								
 								break;
 							}
 							
