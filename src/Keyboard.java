@@ -74,7 +74,7 @@ public class Keyboard {
 	private JButton[] arithmeticButtons = new JButton[5];
 	private JButton[] numberButtons = new JButton[10];
 	private JButton[] layer3Buttons = new JButton[12];
-	private JButton[] layer4Buttons = new JButton[11]; // TODO: Put shift and caps
+	private JButton[] layer4Buttons = new JButton[12]; // TODO: Put shift and caps
 	private JButton[] letterButtons = new JButton[26];
 
 	private boolean shiftClick = false;
@@ -187,6 +187,12 @@ public class Keyboard {
 
 					// Go between ( and )
 					robot.keyPress(KeyEvent.VK_LEFT);robot.keyRelease(KeyEvent.VK_LEFT);
+				}
+				
+				else if(actionCommand == ")") {
+					robot.keyPress(KeyEvent.VK_SHIFT);
+					robot.keyPress(KeyEvent.VK_0);robot.keyRelease(KeyEvent.VK_0);
+					robot.keyRelease(KeyEvent.VK_SHIFT);
 				}
 
 				else if(actionCommand == "-") {robot.keyPress(KeyEvent.VK_MINUS);robot.keyRelease(KeyEvent.VK_MINUS);}
@@ -846,17 +852,18 @@ public class Keyboard {
 		layer4Buttons[8] = new JButton("#");
 		layer4Buttons[9] = new JButton("&");
 		layer4Buttons[10] = new JButton("$");
+		layer4Buttons[11] = new JButton(")");
 
 		double radian;
 		double initDegree = 55;
-		double incrementDegree = 28;
+		double incrementDegree = 23;
 		
 		int xValue, yValue;
 		int midX = (int)((frame.getWidth()) / 2) - 20;
 		int midY = (int)((frame.getHeight()) / 2) - 32;
 		int radius = (int)((frame.getWidth()) / 3) - 15;
 
-		for(int i = 0; i < 10; i++) {
+		for(int i = 0; i < 12; i++) {
 			layer4Buttons[i].setBorder(null);
 			layer4Buttons[i].setBorderPainted(false);
 			layer4Buttons[i].setContentAreaFilled(false);
@@ -995,7 +1002,7 @@ public class Keyboard {
 		
 		// Layer 4
 		layer4Init();
-		for(int i = 0; i < 11; i++) {
+		for(int i = 0; i < 12; i++) {
 			layer4Buttons[i].removeActionListener(typing);
 			layer4Buttons[i].addActionListener(typing);
 			panel.add(layer4Buttons[i]);
