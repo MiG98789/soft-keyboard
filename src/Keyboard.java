@@ -74,12 +74,11 @@ public class Keyboard {
 	private JButton[] arithmeticButtons = new JButton[5];
 	private JButton[] numberButtons = new JButton[10];
 	private JButton[] layer3Buttons = new JButton[12];
-	private JButton[] layer4Buttons = new JButton[10]; // TODO: Decide which keys to put
+	private JButton[] layer4Buttons = new JButton[11]; // TODO: Put shift and caps
 	private JButton[] letterButtons = new JButton[26];
 
-	// TODO: Decide where to put shift and/or caps
 	private boolean shiftClick = false;
-//	private boolean capsClick = false;
+	private boolean capsClick = false;
 	
 	private Vector<String> mathSymbols = new Vector<String>();
 	private String predictionInput;
@@ -233,7 +232,7 @@ public class Keyboard {
 				else if(actionCommand == ";") {robot.keyPress(KeyEvent.VK_SEMICOLON);robot.keyRelease(KeyEvent.VK_SEMICOLON);}
 				else if(actionCommand == ":") {
 					robot.keyPress(KeyEvent.VK_SHIFT);
-					robot.keyPress(KeyEvent.VK_COLON);robot.keyRelease(KeyEvent.VK_COLON);
+					robot.keyPress(KeyEvent.VK_SEMICOLON);robot.keyRelease(KeyEvent.VK_SEMICOLON);
 					robot.keyRelease(KeyEvent.VK_SHIFT);
 				}
 
@@ -690,23 +689,23 @@ public class Keyboard {
 		letterButtons[23] = new JButton("x");
 		letterButtons[24] = new JButton("y");
 		letterButtons[25] = new JButton("z");
-				
+
 		double radian;
 		double initDegree = 50;
 		double incrementDegree = 10.3;
-		
+
 		int xValue, yValue;
-		int midX = (int)((frame.getWidth()) / 2) - 20;
-		int midY = (int)((frame.getHeight()) / 2) - 35;
-		int radius = (int)((frame.getWidth()) / 2.5) - 13;
-		
-		for(int i = 0; i < 26; i++) {
-			char temp = (char)('a' + i);
-//			letterButtons[i] = new JButton(Character.toString(temp));
-			char lowercase = (char)('a' + i);
-//			String lowerTemp = Character.toString(lowercase);
-			char uppercase = (char)('A' + i);
-//			String upperTemp = Character.toString(uppercase);
+		int midX = (int) ((frame.getWidth()) / 2) - 20;
+		int midY = (int) ((frame.getHeight()) / 2) - 35;
+		int radius = (int) ((frame.getWidth()) / 2.5) - 13;
+
+		for (int i = 0; i < 26; i++) {
+			char temp = (char) ('a' + i);
+			// letterButtons[i] = new JButton(Character.toString(temp));
+			char lowercase = (char) ('a' + i);
+			// String lowerTemp = Character.toString(lowercase);
+			char uppercase = (char) ('A' + i);
+			// String upperTemp = Character.toString(uppercase);
 
 			letterButtons[i].setBorder(null);
 			letterButtons[i].setBorderPainted(false);
@@ -715,62 +714,53 @@ public class Keyboard {
 
 			// Calculates coordinates of each letter
 			radian = Math.toRadians(initDegree);
-			xValue = -1 * (int)(Math.cos(radian)*radius) + midX;
-			yValue = -1 * (int)(Math.sin(radian)*radius) + midY;
+			xValue = -1 * (int) (Math.cos(radian) * radius) + midX;
+			yValue = -1 * (int) (Math.sin(radian) * radius) + midY;
 			initDegree += incrementDegree;
 
 			letterButtons[i].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
-			letterButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
+			letterButtons[i].setFont(new Font("Arial", Font.PLAIN, (int) (25 * (double) (frame.getWidth() / 500.0))));
 			letterButtons[i].setForeground(Color.WHITE);
 
 			letterButtons[i].addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
 					try {
 						Robot robot = new Robot();
-						
-						if(!shiftClick) {
-							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(lowercase));
-							robot.keyPress(keyCode);robot.keyRelease(keyCode);
-						}
-						else {
-							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(lowercase));
-							robot.keyPress(keyCode);robot.keyRelease(keyCode);
+
+						if (!shiftClick && !capsClick) { // Lower case
+							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (lowercase));
+							robot.keyPress(keyCode);
+							robot.keyRelease(keyCode);
+						} else if (!shiftClick && capsClick) { // Upper case
+							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (uppercase));
+							robot.keyPress(KeyEvent.VK_SHIFT);
+							robot.keyPress(keyCode);
+							robot.keyRelease(keyCode);
+							robot.keyRelease(KeyEvent.VK_SHIFT);
+						} else if (shiftClick && !capsClick) { // Upper case
+							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (uppercase));
+							robot.keyPress(KeyEvent.VK_SHIFT);
+							robot.keyPress(keyCode);
+							robot.keyRelease(keyCode);
+							robot.keyRelease(KeyEvent.VK_SHIFT);
+							shiftClick = false;
+						} else { // Lower case
+							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (lowercase));
+							robot.keyPress(keyCode);
+							robot.keyRelease(keyCode);
 							shiftClick = false;
 						}
-						
-						if(isPredict) {
+
+						if (isPredict) {
 							predictionInput += temp;
 							predictSymbol(predictionInput);
 						}
-						
-//						if(!shiftClick && !capsClick) { // Lower case
-//							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(lowercase));
-//							robot.keyPress(keyCode);robot.keyRelease(keyCode);
-//						} 
-//						else if (!shiftClick && capsClick) { // Upper case
-//							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(uppercase));
-//							robot.keyPress(KeyEvent.VK_SHIFT);
-//							robot.keyPress(keyCode);robot.keyRelease(keyCode);
-//							robot.keyRelease(KeyEvent.VK_SHIFT);
-//						} 
-//						else if(shiftClick && !capsClick) { // Upper case
-//							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(uppercase));
-//							robot.keyPress(KeyEvent.VK_SHIFT);
-//							robot.keyPress(keyCode);robot.keyRelease(keyCode);
-//							robot.keyRelease(KeyEvent.VK_SHIFT);
-//							shiftClick = false;
-//						}
-//						else { // Lower case
-//							int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(lowercase));
-//							robot.keyPress(keyCode);robot.keyRelease(keyCode);
-//							shiftClick = false;
-//						}
-					} catch(AWTException e) {
+					} catch (AWTException e) {
 						e.printStackTrace();
 					}
 				}
 			});
-			
+
 			// Changes button appearance based on cursor
 			final Integer x = new Integer(i);
 			letterButtons[x].addMouseListener(new java.awt.event.MouseAdapter() {
@@ -786,7 +776,7 @@ public class Keyboard {
 			});
 		}
 	}
-	
+
 	/* Sets up layer 3 buttons */
 	private void layer3Init() {
 		layer3Buttons[0] = new JButton("[");
@@ -801,29 +791,29 @@ public class Keyboard {
 		layer3Buttons[9] = new JButton("_");
 		layer3Buttons[10] = new JButton("}");
 		layer3Buttons[11] = new JButton("{");
-		
+
 		double radian;
 		double initDegree = 55;
 		double incrementDegree = 28.5;
-		
-		int xValue, yValue;
-		int midX = (int)((frame.getWidth()) / 2) - 20;
-		int midY = (int)((frame.getHeight()) / 2) - 35;
-		int radius = (int)((frame.getWidth()) / 4) - 6;
 
-		for(int i = 0; i < 10; i++) {
+		int xValue, yValue;
+		int midX = (int) ((frame.getWidth()) / 2) - 20;
+		int midY = (int) ((frame.getHeight()) / 2) - 35;
+		int radius = (int) ((frame.getWidth()) / 4) - 6;
+
+		for (int i = 0; i < 10; i++) {
 			layer3Buttons[i].setBorder(null);
 			layer3Buttons[i].setBorderPainted(false);
 			layer3Buttons[i].setContentAreaFilled(false);
 			layer3Buttons[i].setOpaque(false);
 
 			radian = Math.toRadians(initDegree);
-			xValue = -1 * (int)(Math.cos(radian)*radius) + midX;
-			yValue = -1 * (int)(Math.sin(radian)*radius) + midY;
+			xValue = -1 * (int) (Math.cos(radian) * radius) + midX;
+			yValue = -1 * (int) (Math.sin(radian) * radius) + midY;
 			initDegree += incrementDegree;
-			
+
 			layer3Buttons[i].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
-			layer3Buttons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
+			layer3Buttons[i].setFont(new Font("Arial", Font.PLAIN, (int) (25 * (double) (frame.getWidth() / 500.0))));
 			layer3Buttons[i].setForeground(Color.WHITE);
 
 			// Changes button appearance based on cursor
@@ -841,11 +831,61 @@ public class Keyboard {
 			});
 		}
 	}
-	
+
 	/* Sets up layer 4 buttons */
-	// TODO
+	// TODO: Add shift and caps in the middle
 	private void layer4Init() {
+		layer4Buttons[0] = new JButton(",");
+		layer4Buttons[1] = new JButton(";");
+		layer4Buttons[2] = new JButton(":");
+		layer4Buttons[3] = new JButton("?");
+		layer4Buttons[4] = new JButton("!");
+		layer4Buttons[5] = new JButton("\"");
+		layer4Buttons[6] = new JButton("'");
+		layer4Buttons[7] = new JButton("@");
+		layer4Buttons[8] = new JButton("#");
+		layer4Buttons[9] = new JButton("&");
+		layer4Buttons[10] = new JButton("$");
+
+		double radian;
+		double initDegree = 55;
+		double incrementDegree = 28;
 		
+		int xValue, yValue;
+		int midX = (int)((frame.getWidth()) / 2) - 20;
+		int midY = (int)((frame.getHeight()) / 2) - 32;
+		int radius = (int)((frame.getWidth()) / 3) - 15;
+
+		for(int i = 0; i < 10; i++) {
+			layer4Buttons[i].setBorder(null);
+			layer4Buttons[i].setBorderPainted(false);
+			layer4Buttons[i].setContentAreaFilled(false);
+			layer4Buttons[i].setOpaque(false);
+
+			// Calculates coordinates of each layer4
+			radian = Math.toRadians(initDegree);
+			xValue = -1 * (int)(Math.cos(radian)*radius) + midX;
+			yValue = -1 * (int)(Math.sin(radian)*radius) + midY;
+			initDegree += incrementDegree;
+			
+			layer4Buttons[i].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
+			layer4Buttons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
+			layer4Buttons[i].setForeground(Color.WHITE);
+
+			// Changes button appearance based on cursor
+			final Integer x = new Integer(i);
+			layer4Buttons[x].addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseEntered(MouseEvent e) {
+					layer4Buttons[x].setBackground(Color.PINK);
+					layer4Buttons[x].setContentAreaFilled(true);
+				}
+
+				public void mouseExited(MouseEvent e) {
+					layer4Buttons[x].setBackground(null);
+					layer4Buttons[x].setContentAreaFilled(false);
+				}
+			});
+		}
 	}
 
 	/* Sets up number buttons */
@@ -955,11 +995,11 @@ public class Keyboard {
 		
 		// Layer 4
 		layer4Init();
-//		for(int i = 0; i < 10; i++) {
-//			layer4Buttons[i].removeActionListener(typing);
-//			layer4Buttons[i].addActionListener(typing);
-//			panel.add(layer4Buttons[i]);
-//		}
+		for(int i = 0; i < 11; i++) {
+			layer4Buttons[i].removeActionListener(typing);
+			layer4Buttons[i].addActionListener(typing);
+			panel.add(layer4Buttons[i]);
+		}
 		
 		// Letters
 		letterInit();
