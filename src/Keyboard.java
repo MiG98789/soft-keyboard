@@ -546,7 +546,6 @@ public class Keyboard {
 			}
 		}
 		
-		// TODO: Properly position space, enter, =, (
 		int xValue, yValue;
 		
 		// Backspace
@@ -787,6 +786,18 @@ public class Keyboard {
 			});
 		}
 	}
+	
+	/* Sets up layer 3 buttons */
+	// TODO
+	private void layer3Init() {
+		
+	}
+	
+	/* Sets up layer 4 buttons */
+	// TODO
+	private void layer4Init() {
+		
+	}
 
 	/* Sets up number buttons */
 	private void numberInit() {
@@ -843,7 +854,7 @@ public class Keyboard {
 	}
 
 	private void loadGui() {
-		//TODO: Special, arithmetic, 2 other layers
+		//TODO: 2 other layers
 		
 		// Prediction list
 		predictionListInit();
@@ -884,6 +895,22 @@ public class Keyboard {
 			numberButtons[i].addActionListener(typing);
 			panel.add(numberButtons[i]);
 		}
+		
+		// Layer 3
+		layer3Init();
+//		for(int i = 0; i < 10; i++) {
+//			layer3Buttons[i].removeActionListener(typing);
+//			layer3Buttons[i].addActionListener(typing);
+//			panel.add(layer3Buttons[i]);
+//		}
+		
+		// Layer 4
+		layer4Init();
+//		for(int i = 0; i < 10; i++) {
+//			layer4Buttons[i].removeActionListener(typing);
+//			layer4Buttons[i].addActionListener(typing);
+//			panel.add(layer4Buttons[i]);
+//		}
 		
 		// Letters
 		letterInit();
