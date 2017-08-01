@@ -533,7 +533,7 @@ public class Keyboard {
 							case 1: // Space
 								robot.keyPress(KeyEvent.VK_SPACE); robot.keyRelease(KeyEvent.VK_SPACE);
 								break;
-							case 2: // Enter TODO: Press alt and = simultaneously
+							case 2: // Enter
 								robot.keyPress(KeyEvent.VK_ENTER); robot.keyRelease(KeyEvent.VK_ENTER);
 								robot.keyPress(KeyEvent.VK_ALT);
 								robot.keyPress(KeyEvent.VK_EQUALS);
