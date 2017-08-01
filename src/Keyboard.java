@@ -73,7 +73,7 @@ public class Keyboard {
 	private JButton[] specialButtons = new JButton[6]; // Backspace, space, enter, \, =, (
 	private JButton[] arithmeticButtons = new JButton[5];
 	private JButton[] numberButtons = new JButton[10];
-	private JButton[] layer3Buttons = new JButton[10]; // TODO: Decide which keys to put
+	private JButton[] layer3Buttons = new JButton[12];
 	private JButton[] layer4Buttons = new JButton[10]; // TODO: Decide which keys to put
 	private JButton[] letterButtons = new JButton[26];
 
@@ -788,9 +788,58 @@ public class Keyboard {
 	}
 	
 	/* Sets up layer 3 buttons */
-	// TODO
 	private void layer3Init() {
+		layer3Buttons[0] = new JButton("[");
+		layer3Buttons[1] = new JButton("]");
+		layer3Buttons[2] = new JButton("|");
+		layer3Buttons[3] = new JButton("<");
+		layer3Buttons[4] = new JButton(">");
+		layer3Buttons[5] = new JButton("%");
+		layer3Buttons[6] = new JButton("^");
+		layer3Buttons[7] = new JButton("~");
+		layer3Buttons[8] = new JButton("`");
+		layer3Buttons[9] = new JButton("_");
+		layer3Buttons[10] = new JButton("}");
+		layer3Buttons[11] = new JButton("{");
 		
+		double radian;
+		double initDegree = 55;
+		double incrementDegree = 28.5;
+		
+		int xValue, yValue;
+		int midX = (int)((frame.getWidth()) / 2) - 20;
+		int midY = (int)((frame.getHeight()) / 2) - 35;
+		int radius = (int)((frame.getWidth()) / 4) - 6;
+
+		for(int i = 0; i < 10; i++) {
+			layer3Buttons[i].setBorder(null);
+			layer3Buttons[i].setBorderPainted(false);
+			layer3Buttons[i].setContentAreaFilled(false);
+			layer3Buttons[i].setOpaque(false);
+
+			radian = Math.toRadians(initDegree);
+			xValue = -1 * (int)(Math.cos(radian)*radius) + midX;
+			yValue = -1 * (int)(Math.sin(radian)*radius) + midY;
+			initDegree += incrementDegree;
+			
+			layer3Buttons[i].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
+			layer3Buttons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
+			layer3Buttons[i].setForeground(Color.WHITE);
+
+			// Changes button appearance based on cursor
+			final Integer x = new Integer(i);
+			layer3Buttons[x].addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseEntered(MouseEvent e) {
+					layer3Buttons[x].setBackground(Color.PINK);
+					layer3Buttons[x].setContentAreaFilled(true);
+				}
+
+				public void mouseExited(MouseEvent e) {
+					layer3Buttons[x].setBackground(null);
+					layer3Buttons[x].setContentAreaFilled(false);
+				}
+			});
+		}
 	}
 	
 	/* Sets up layer 4 buttons */
@@ -898,11 +947,11 @@ public class Keyboard {
 		
 		// Layer 3
 		layer3Init();
-//		for(int i = 0; i < 10; i++) {
-//			layer3Buttons[i].removeActionListener(typing);
-//			layer3Buttons[i].addActionListener(typing);
-//			panel.add(layer3Buttons[i]);
-//		}
+		for(int i = 0; i < 12; i++) {
+			layer3Buttons[i].removeActionListener(typing);
+			layer3Buttons[i].addActionListener(typing);
+			panel.add(layer3Buttons[i]);
+		}
 		
 		// Layer 4
 		layer4Init();
