@@ -111,7 +111,8 @@ public class Keyboard {
 			try {
 				Robot robot = new Robot();
 				
-				isPredict = false; // Will turn true ONLY IF typing \
+				isPredict = false; // Will turn true ONLY IF starting with \
+				// TODO: Make it work for any input in Math Mode
 				
 				// Numbers
 				if(actionCommand == "0") {robot.keyPress(KeyEvent.VK_0);robot.keyRelease(KeyEvent.VK_0);}
