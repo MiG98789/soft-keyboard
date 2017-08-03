@@ -61,6 +61,8 @@ public class Keyboard {
 	private final int NUM_OF_PREDICTIONS = 5;
 	private final float PREDICTION_LIST_FONT_SIZE = 22.0f;
 	
+	// TODO: Use buttons to change size of frame
+	// TODO: Fix UI layout
 	private JFrame frame;
 	private JPanel panel;
 	private JLabel label;
@@ -531,17 +533,21 @@ public class Keyboard {
 								}
 								predictSymbol(predictionInput);
 								break;
+							
 							case 1: // Space
 								robot.keyPress(KeyEvent.VK_SPACE); robot.keyRelease(KeyEvent.VK_SPACE);
 								break;
-							case 2: // Enter TODO: alt= should only work in Math Mode
-								robot.keyPress(KeyEvent.VK_ENTER); robot.keyRelease(KeyEvent.VK_ENTER);
-								robot.keyPress(KeyEvent.VK_ALT);
-								robot.keyPress(KeyEvent.VK_EQUALS);
-								robot.keyRelease(KeyEvent.VK_EQUALS);
-								robot.keyRelease(KeyEvent.VK_ALT);
-
-								
+							
+							case 2:
+								if(mathMode.isSelected()) { // Math mode
+									robot.keyPress(KeyEvent.VK_ENTER);robot.keyRelease(KeyEvent.VK_ENTER);
+									robot.keyPress(KeyEvent.VK_ALT);
+									robot.keyPress(KeyEvent.VK_EQUALS);robot.keyRelease(KeyEvent.VK_EQUALS);
+									robot.keyRelease(KeyEvent.VK_ALT);
+								}
+								else { // Normal mode
+									robot.keyPress(KeyEvent.VK_ENTER);robot.keyRelease(KeyEvent.VK_ENTER);
+								}
 								break;
 							}
 							
@@ -903,6 +909,7 @@ public class Keyboard {
 	}
 
 	/* Sets up number buttons */
+	// TODO: Scroll through numbers
 	private void numberInit() {
 		numberButtons[0] = new JButton("0");
 		numberButtons[1] = new JButton("1");
@@ -956,9 +963,7 @@ public class Keyboard {
 		}
 	}
 
-	private void loadGui() {
-		//TODO: 2 other layers
-		
+	private void loadGui() {		
 		// Prediction list
 		predictionListInit();
 		
