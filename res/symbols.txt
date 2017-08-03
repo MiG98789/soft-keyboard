@@ -11,6 +11,7 @@
 \atop
 \bar
 \Bar
+\because
 \begin
 \below
 \bet
@@ -208,6 +209,7 @@
 \swarrow
 \tau
 \Tau
+\therefore
 \theta
 \Theta
 \times
