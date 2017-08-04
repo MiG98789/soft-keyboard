@@ -633,14 +633,21 @@ public class Keyboard {
 		}
 	}
 	
+	
+	
+	
+	
 	/* Set up arithmetic buttons */
-	private void arithmeticInit() {
+	private void arithmeticInit_1() {
 		arithmeticButtons[0] = new JButton("+");
 		arithmeticButtons[1] = new JButton("-");
 		arithmeticButtons[2] = new JButton(".");
 		arithmeticButtons[3] = new JButton("*");
 		arithmeticButtons[4] = new JButton("/");
-		
+	}
+	
+	
+	private void arithmeticInit_2() {
 		double radian;
 		int xValue, yValue;
 		double initDegree = 65;
@@ -682,8 +689,19 @@ public class Keyboard {
 		}
 	}
 	
+	private void arithmeticInit() {
+		arithmeticInit_1();
+		arithmeticInit_2(); 
+		
+	}
+	
+	
+	
+	
+	
 	/* Sets up letter buttons */
-	private void letterInit() {
+
+	private void letterInit_1() {
 		letterButtons[0] = new JButton("a");
 		letterButtons[1] = new JButton("b");
 		letterButtons[2] = new JButton("c");
@@ -710,6 +728,10 @@ public class Keyboard {
 		letterButtons[23] = new JButton("x");
 		letterButtons[24] = new JButton("y");
 		letterButtons[25] = new JButton("z");
+	}
+	
+	
+	private void letterInit_2() {
 
 		double radian;
 		double initDegree = 50;
@@ -797,9 +819,16 @@ public class Keyboard {
 			});
 		}
 	}
+	
+	
+	private void letterInit() {
+		letterInit_1();
+		letterInit_2();
+		
+	}
 
-	/* Sets up layer 3 buttons */
-	private void layer3Init() {
+	/* Sets up layer 3 buttons */	
+	private void layer3Init_1(){
 		layer3Buttons[0] = new JButton("[");
 		layer3Buttons[1] = new JButton("]");
 		layer3Buttons[2] = new JButton("|");
@@ -812,7 +841,9 @@ public class Keyboard {
 		layer3Buttons[9] = new JButton("_");
 		layer3Buttons[10] = new JButton("}");
 		layer3Buttons[11] = new JButton("{");
-
+	}
+	
+	private void layer3Init_2() {
 		double radian;
 		double initDegree = 55;
 		double incrementDegree = 28.5;
@@ -852,10 +883,21 @@ public class Keyboard {
 			});
 		}
 	}
+	
+	private void layer3Init(){
+		layer3Init_1();
+		layer3Init_2();
+	}
 
+	
+	
+	
+	
+	
 	/* Sets up layer 4 buttons */
 	// TODO: Add shift and caps in the middle
-	private void layer4Init() {
+	
+	private void layer4Init_1(){
 		layer4Buttons[0] = new JButton(",");
 		layer4Buttons[1] = new JButton(";");
 		layer4Buttons[2] = new JButton(":");
@@ -868,6 +910,8 @@ public class Keyboard {
 		layer4Buttons[9] = new JButton("&");
 		layer4Buttons[10] = new JButton("$");
 		layer4Buttons[11] = new JButton(")");
+	}
+	private void layer4Init_2() {
 
 		double radian;
 		double initDegree = 55;
@@ -909,6 +953,14 @@ public class Keyboard {
 			});
 		}
 	}
+	private void layer4Init(){
+		layer4Init_1();
+		layer4Init_2();
+		
+	}
+	
+
+	
 	
 	//set up change size buttons
 	private void changeSizeInit(){
@@ -938,14 +990,14 @@ public class Keyboard {
 					//if smaller
 					if(x==0){
 						frame.setSize((int)(frame.getWidth()*0.8),(int)(frame.getHeight()*0.8));
-						loadGui();
+						changeSizeLoad();
 						
 
 					}
 					//if larger
 					else{
 						frame.setSize((int)(frame.getWidth()*1.2),(int)(frame.getHeight()*1.2));
-						loadGui();
+						changeSizeLoad();
 
 						
 					}
@@ -957,8 +1009,9 @@ public class Keyboard {
 	
 
 	/* Sets up number buttons */
-	// TODO: Scroll through numbers  
-	private void numberInit() {
+	// TODO: Scroll through numbers 
+
+	private void numberInit_1() {
 		numberButtons[0] = new JButton("0");
 		numberButtons[1] = new JButton("1");
 		numberButtons[2] = new JButton("2");
@@ -969,7 +1022,8 @@ public class Keyboard {
 		numberButtons[7] = new JButton("7");
 		numberButtons[8] = new JButton("8");
 		numberButtons[9] = new JButton("9");
-		
+		}
+	private void numberInit_2() {
 		double radian;
 		double initDegree = 55;
 		double incrementDegree = 28;
@@ -1010,8 +1064,30 @@ public class Keyboard {
 			});
 		}
 	}
+	private void numberInit(){
+		numberInit_1();
+		numberInit_2();
+	}
+	
+	
+	
+	
+	private void changeSizeLoad(){
+		specialInit();
+		arithmeticInit_2();
+		numberInit_2();
+		layer3Init_2();
+		layer4Init_2();
+		letterInit_2();
+	}
 
-	private void loadGui() {		
+	private void loadGui() {
+		
+		// Prediction list
+		predictionListInit();
+		// Background
+		backgroundInit();
+
 
 		
 
@@ -1096,10 +1172,6 @@ public class Keyboard {
 	}
 
 	public Keyboard() {
-		// Prediction list
-		predictionListInit();
-		// Background
-		backgroundInit();
 
 		loadSymbols();
 		loadGui();
