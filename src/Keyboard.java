@@ -465,7 +465,8 @@ public class Keyboard {
 		label.revalidate();
 	}
 
-	/* Set up left buttons */
+	/* Set up left-side buttons */
+	// TODO: Adjust bounds to fit better (increase size, and if possible, shape)
 	private void specialInit() {
 		specialButtons[0] = new JButton(backspaceIcon);
 		Image temp = backspaceIcon.getImage();	
