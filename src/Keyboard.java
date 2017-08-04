@@ -78,6 +78,7 @@ public class Keyboard {
 	private JButton[] layer3Buttons = new JButton[12];
 	private JButton[] layer4Buttons = new JButton[12]; // TODO: Put shift and caps
 	private JButton[] letterButtons = new JButton[26];
+	private JButton[] changeSizeButtons = new JButton[2];
 
 	private boolean shiftClick = false;
 	private boolean capsClick = false;
@@ -908,9 +909,55 @@ public class Keyboard {
 			});
 		}
 	}
+	
+	//set up change size buttons
+	private void changeSizeInit(){
+		changeSizeButtons[0] = new JButton("-");
+		changeSizeButtons[1] = new JButton("+");
+		
+		int xValue = (int)(frame.getWidth()*0.8);
+		int yValue = (int)(frame.getHeight()*0.8);
+		
+		for(int i=0; i<2; i++){
+			changeSizeButtons[i].setBorder(BorderFactory.createBevelBorder(10, Color.red, Color.gray));
+			changeSizeButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
+		}
+		changeSizeButtons[0].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
+		changeSizeButtons[1].setBounds(xValue+BUTTON_WIDTH, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
+	
+	}
+	
+	// change size as person presses the button
+	private void changeSize(){
+		
+		
+		for(int i=0; i<2; i++){
+			final Integer x = new Integer(i);
+			changeSizeButtons[x].addMouseListener(new java.awt.event.MouseAdapter() {
+				public void mouseClicked (MouseEvent e) {
+					//if smaller
+					if(x==0){
+						frame.setSize((int)(frame.getWidth()*0.8),(int)(frame.getHeight()*0.8));
+						loadGui();
+						
+
+					}
+					//if larger
+					else{
+						frame.setSize((int)(frame.getWidth()*1.2),(int)(frame.getHeight()*1.2));
+						loadGui();
+
+						
+					}
+				}
+			});
+		}
+
+	}
+	
 
 	/* Sets up number buttons */
-	// TODO: Scroll through numbers
+	// TODO: Scroll through numbers  
 	private void numberInit() {
 		numberButtons[0] = new JButton("0");
 		numberButtons[1] = new JButton("1");
@@ -965,11 +1012,9 @@ public class Keyboard {
 	}
 
 	private void loadGui() {		
-		// Prediction list
-		predictionListInit();
+
 		
-		// Background
-		backgroundInit();
+
 		
 //		frame.addKeyListener(new KeyAdapter() {
 //			public void keyPressed(KeyEvent e) {
@@ -1033,6 +1078,14 @@ public class Keyboard {
 		mathMode.addItemListener(modeToggle);
 		panel.add(mathMode);
 		
+		//change size buttons
+		changeSizeInit();
+		for(int i=0; i<2; i++){
+			panel.add(changeSizeButtons[i]);
+		}
+		changeSize();
+	
+		
 		panel.add(label);
 		frame.add(panel);
 
@@ -1043,6 +1096,11 @@ public class Keyboard {
 	}
 
 	public Keyboard() {
+		// Prediction list
+		predictionListInit();
+		// Background
+		backgroundInit();
+
 		loadSymbols();
 		loadGui();
 	}
