@@ -476,6 +476,8 @@ public class Keyboard {
 		temp = temp.getScaledInstance((int)(tempWidth / 7 * (double)(frame.getWidth() / 450.0)), 
 										(int)(tempHeight / 7 * (double)(frame.getWidth() / 450.0)),
 										Image.SCALE_SMOOTH);
+		System.out.println("Height = " + (int)(tempHeight / 7 * (double)(frame.getWidth() / 450.0)));
+		System.out.println("Width = " + (int)(tempWidth / 7 * (double)(frame.getWidth() / 450.0)));
 		backspaceIcon.setImage(temp);
 		
 		specialButtons[1] = new JButton(spaceIcon);
@@ -632,11 +634,7 @@ public class Keyboard {
 			specialButtons[i].setBounds(xValue, yValue, BUTTON_WIDTH, BUTTON_HEIGHT);
 		}
 	}
-	
-	
-	
-	
-	
+
 	/* Set up arithmetic buttons */
 	private void arithmeticInit_1() {
 		arithmeticButtons[0] = new JButton("+");
@@ -645,7 +643,6 @@ public class Keyboard {
 		arithmeticButtons[3] = new JButton("*");
 		arithmeticButtons[4] = new JButton("/");
 	}
-	
 	
 	private void arithmeticInit_2() {
 		double radian;
@@ -695,12 +692,7 @@ public class Keyboard {
 		
 	}
 	
-	
-	
-	
-	
 	/* Sets up letter buttons */
-
 	private void letterInit_1() {
 		letterButtons[0] = new JButton("a");
 		letterButtons[1] = new JButton("b");
@@ -730,9 +722,7 @@ public class Keyboard {
 		letterButtons[25] = new JButton("z");
 	}
 	
-	
 	private void letterInit_2() {
-
 		double radian;
 		double initDegree = 50;
 		double incrementDegree = 10.3;
@@ -820,7 +810,6 @@ public class Keyboard {
 		}
 	}
 	
-	
 	private void letterInit() {
 		letterInit_1();
 		letterInit_2();
@@ -889,14 +878,8 @@ public class Keyboard {
 		layer3Init_2();
 	}
 
-	
-	
-	
-	
-	
 	/* Sets up layer 4 buttons */
 	// TODO: Add shift and caps in the middle
-	
 	private void layer4Init_1(){
 		layer4Buttons[0] = new JButton(",");
 		layer4Buttons[1] = new JButton(";");
@@ -911,8 +894,8 @@ public class Keyboard {
 		layer4Buttons[10] = new JButton("$");
 		layer4Buttons[11] = new JButton(")");
 	}
+	
 	private void layer4Init_2() {
-
 		double radian;
 		double initDegree = 55;
 		double incrementDegree = 23;
@@ -953,14 +936,12 @@ public class Keyboard {
 			});
 		}
 	}
+	
 	private void layer4Init(){
 		layer4Init_1();
 		layer4Init_2();
 		
 	}
-	
-
-	
 	
 	//set up change size buttons
 	private void changeSizeInit(){
@@ -981,8 +962,6 @@ public class Keyboard {
 	
 	// change size as person presses the button
 	private void changeSize(){
-		
-		
 		for(int i=0; i<2; i++){
 			final Integer x = new Integer(i);
 			changeSizeButtons[x].addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1006,11 +985,9 @@ public class Keyboard {
 		}
 
 	}
-	
 
 	/* Sets up number buttons */
 	// TODO: Scroll through numbers 
-
 	private void numberInit_1() {
 		numberButtons[0] = new JButton("0");
 		numberButtons[1] = new JButton("1");
@@ -1022,7 +999,8 @@ public class Keyboard {
 		numberButtons[7] = new JButton("7");
 		numberButtons[8] = new JButton("8");
 		numberButtons[9] = new JButton("9");
-		}
+	}
+	
 	private void numberInit_2() {
 		double radian;
 		double initDegree = 55;
@@ -1064,13 +1042,11 @@ public class Keyboard {
 			});
 		}
 	}
+	
 	private void numberInit(){
 		numberInit_1();
 		numberInit_2();
 	}
-	
-	
-	
 	
 	private void changeSizeLoad(){
 		specialInit();
@@ -1081,17 +1057,12 @@ public class Keyboard {
 		letterInit_2();
 	}
 
-	private void loadGui() {
-		
+	private void loadGui() {		
 		// Prediction list
 		predictionListInit();
 		// Background
 		backgroundInit();
 
-
-		
-
-		
 //		frame.addKeyListener(new KeyAdapter() {
 //			public void keyPressed(KeyEvent e) {
 //				System.out.println("Pressed");
