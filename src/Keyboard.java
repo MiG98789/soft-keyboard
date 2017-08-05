@@ -315,10 +315,6 @@ public class Keyboard {
 		}
 	}
 	
-	private void presort() {
-		
-		
-	}
 	
 	/* Predicts the symbols to be typed */
 	private void predictSymbol(String str) {
@@ -970,13 +966,17 @@ public class Keyboard {
 					if(x==0){
 						frame.setSize((int)(frame.getWidth()*0.8),(int)(frame.getHeight()*0.8));
 						changeSizeLoad();
-						
+					
 
 					}
 					//if larger
 					else{
+						
 						frame.setSize((int)(frame.getWidth()*1.2),(int)(frame.getHeight()*1.2));
 						changeSizeLoad();
+						background = new ImageIcon(getClass().getResource("/bg3.png"));
+
+
 
 						
 					}
@@ -1047,6 +1047,9 @@ public class Keyboard {
 		numberInit_1();
 		numberInit_2();
 	}
+	
+	
+	
 	
 	private void changeSizeLoad(){
 		specialInit();
