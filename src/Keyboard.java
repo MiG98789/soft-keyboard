@@ -315,7 +315,6 @@ public class Keyboard {
 		}
 	}
 	
-	
 	/* Predicts the symbols to be typed */
 	private void predictSymbol(String str) {
 		System.out.println("Prediction input: " + str);
@@ -809,7 +808,6 @@ public class Keyboard {
 	private void letterInit() {
 		letterInit_1();
 		letterInit_2();
-		
 	}
 
 	/* Sets up layer 3 buttons */	
@@ -974,11 +972,7 @@ public class Keyboard {
 						
 						frame.setSize((int)(frame.getWidth()*1.2),(int)(frame.getHeight()*1.2));
 						changeSizeLoad();
-						background = new ImageIcon(getClass().getResource("/bg3.png"));
-
-
-
-						
+						background = new ImageIcon(getClass().getResource("/bg3.png"));						
 					}
 				}
 			});
@@ -1047,10 +1041,7 @@ public class Keyboard {
 		numberInit_1();
 		numberInit_2();
 	}
-	
-	
-	
-	
+
 	private void changeSizeLoad(){
 		specialInit();
 		arithmeticInit_2();
@@ -1134,7 +1125,6 @@ public class Keyboard {
 			panel.add(changeSizeButtons[i]);
 		}
 		changeSize();
-	
 		
 		panel.add(label);
 		frame.add(panel);
@@ -1146,7 +1136,6 @@ public class Keyboard {
 	}
 
 	public Keyboard() {
-
 		loadSymbols();
 		loadGui();
 	}
