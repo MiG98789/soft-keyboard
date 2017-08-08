@@ -55,7 +55,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class Keyboard {
+public class Keyboard extends JFrame {
 //    private JFrame predictionFrame;
 //    private JPanel predictionPanel;
 //    private final DefaultListModel predictionDLM = new DefaultListModel();
@@ -68,14 +68,12 @@ public class Keyboard {
     // TODO: Fix UI layout
     private int FRAME_WIDTH = 450;
     private int FRAME_HEIGHT = 420;
-    private JFrame frame;
     private JPanel panel;
     private JLabel label;
     private ImageIcon background = new ImageIcon(getClass().getResource("/bg.png"));
     
     private int KEY_WIDTH = 25;
     private int KEY_HEIGHT = 25;
-    private int NUM_OF_ICONS = 3;
     private ImageIcon[] specialIcons = new ImageIcon[3];
     private String[] specialURLs = {"/backspace.png", "/space.png", "/enter.png"};
 
@@ -84,8 +82,15 @@ public class Keyboard {
     private double SCALE_FACTOR = 1.2;
     private JButton[] changeSizeKeys = new JButton[2];
     
+    /* 1) Special (left-side): backspace, space, enter, \, =, (
+     * 2) Arithmetic
+     * 3) Numbers
+     * 4) Symbols
+     * 5) Symbols
+     * 6) Letters
+     */
     private int NUM_OF_KEY_LAYERS = 6;
-    private JButton[][] keyLayout = new JButton[NUM_OF_KEY_LAYERS][];
+    private JButton[][] keys = new JButton[NUM_OF_KEY_LAYERS][];
     
     private JButton[] specialKeys = new JButton[6]; // Backspace, space, enter, \, =, (
     private JButton[] arithmeticKeys = new JButton[5];
@@ -400,18 +405,17 @@ public class Keyboard {
     /* Sets up background */
     private void loadBackground() {
         // Frame
-        frame = new JFrame("Soft Keyboard");
-        frame.pack();
-        frame.setVisible(true);
-        frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setLayout(new BorderLayout());
-        frame.setAlwaysOnTop(true);
+        this.pack();
+        this.setVisible(true);
+        this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
+        this.setLayout(new BorderLayout());
+        this.setAlwaysOnTop(true);
 
-        frame.addMouseListener(new java.awt.event.MouseAdapter() {
+        this.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(MouseEvent e) {
-                frame.setFocusableWindowState(false);
+                setFocusableWindowState(false);
             }
         });
 
@@ -423,47 +427,28 @@ public class Keyboard {
         
         // Label
         label = new JLabel(background, JLabel.CENTER);
-//        label.setBounds(50,  50, frame.getWidth() - 100,  (int)((frame.getWidth() - 100) * 1.18));
+//        label.setBounds(50,  50, this.getWidth() - 100,  (int)((this.getWidth() - 100) * 1.18));
         label.setBackground(Color.DARK_GRAY);
         label.repaint();
         label.revalidate();
     }
     
-    /* Initialises special icon images by scaling them to the appropriate size */
-    private void initSpecialIcons() {
-//        for(int i = 0; i < NUM_OF_ICONS; i++) {
-//            specialIcons[i] = new ImageIcon(getClass().getResource(specialURLs[i]));
-//            Image temp = specialIcons[i].getImage();    
-//            int tempWidth = temp.getWidth(null);
-//            int tempHeight = temp.getHeight(null);
-//            if(specialURLs[i] == "/enter.png") {
-//                temp = temp.getScaledInstance((int)(tempWidth / 7 * (double)(frame.getWidth() / 450.0)), 
-//                                            (int)(tempHeight / 7 * (double)(frame.getWidth() / 450.0)),
-//                                            Image.SCALE_SMOOTH);
-//            } else {
-//                temp = temp.getScaledInstance((int)(tempWidth / 7 * (double)(frame.getWidth() / 450.0)), 
-//                        (int)(tempHeight / 7 * (double)(frame.getWidth() / 450.0)),
-//                        Image.SCALE_SMOOTH);
-//            }
-//            specialIcons[i].setImage(temp);
-//        }
-    }
-
     /* Set up left-side buttons */
     // TODO: Adjust bounds to fit better (increase size, and if possible, shape)
     private void specialInit() {
-        for(int i = 0; i < NUM_OF_ICONS; i++) {
+        // Scale icon sizes
+        for(int i = 0; i < specialIcons.length; i++) {
             specialIcons[i] = new ImageIcon(getClass().getResource(specialURLs[i]));
             Image temp = specialIcons[i].getImage();    
             int tempWidth = temp.getWidth(null);
             int tempHeight = temp.getHeight(null);
             if(specialURLs[i] == "/enter.png") {
-                temp = temp.getScaledInstance((int)(tempWidth / 20 * (double)(frame.getWidth() / 450.0)), 
-                                            (int)(tempHeight / 20 * (double)(frame.getWidth() / 450.0)),
+                temp = temp.getScaledInstance((int)(tempWidth / 20 * (double)(this.getWidth() / 450.0)), 
+                                            (int)(tempHeight / 20 * (double)(this.getWidth() / 450.0)),
                                             Image.SCALE_SMOOTH);
             } else {
-                temp = temp.getScaledInstance((int)(tempWidth / 7 * (double)(frame.getWidth() / 450.0)), 
-                        (int)(tempHeight / 7 * (double)(frame.getWidth() / 450.0)),
+                temp = temp.getScaledInstance((int)(tempWidth / 7 * (double)(this.getWidth() / 450.0)), 
+                        (int)(tempHeight / 7 * (double)(this.getWidth() / 450.0)),
                         Image.SCALE_SMOOTH);
             }
             specialIcons[i].setImage(temp);
@@ -539,50 +524,30 @@ public class Keyboard {
             else { // \, =, (
                 specialKeys[i].removeActionListener(numericSymbolicListener);
                 specialKeys[i].addActionListener(numericSymbolicListener);
-                specialKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
+                specialKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(this.getWidth() / 500.0))));
             }
         }
         
         int xValue, yValue;
         
         // Backspace
-        xValue = (int)(frame.getWidth() / 2) - 10;
-        yValue = (int)(frame.getHeight() / 2) - 35;
+        xValue = (int)(this.getWidth() / 2) - 10;
+        yValue = (int)(this.getHeight() / 2) - 35;
         specialKeys[0].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
         
-        // Space
-        xValue = (int)(frame.getWidth());
-        yValue = (int)(frame.getHeight());
-        specialKeys[1].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
-        
-        // Enter
-        xValue = (int)(frame.getWidth());
-        yValue = (int)(frame.getHeight());
-        specialKeys[2].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
-        
         // \
-        xValue = (int)(frame.getWidth() / 2) - 55;
-        yValue = (int)(frame.getHeight() / 2) - 35;
+        xValue = (int)(this.getWidth() / 2) - 55;
+        yValue = (int)(this.getHeight() / 2) - 35;
         specialKeys[3].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
-
-        // =
-        xValue = (int)(frame.getWidth());
-        yValue = (int)(frame.getHeight());
-        specialKeys[4].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
-        
-        // (
-        xValue = (int)(frame.getWidth());
-        yValue = (int)(frame.getHeight());
-        specialKeys[5].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
         
         // (1) Space, (2) enter
         double radian;
         double initDegree = 23;
         double incrementDegree = -40;
         
-        int midX = (int)((frame.getWidth()) / 2) - 20;
-        int midY = (int)((frame.getHeight()) / 2) - 32;
-        int radius = (int)((frame.getWidth()) / 4) - 15;
+        int midX = (int)((this.getWidth()) / 2) - 20;
+        int midY = (int)((this.getHeight()) / 2) - 32;
+        int radius = (int)((this.getWidth()) / 4) - 15;
         
         for (int i = 1; i <= 2; i++) {
             // Calculates coordinates of each number
@@ -597,7 +562,7 @@ public class Keyboard {
         // (4) =, (5) (
         initDegree = 23;
         incrementDegree = -40;
-        radius = (int)((frame.getWidth()) / 3) - 5;
+        radius = (int)((this.getWidth()) / 3) - 5;
         
         for (int i = 4; i <= 5; i++) {
             // Calculates coordinates of each number
@@ -625,9 +590,9 @@ public class Keyboard {
         double initDegree = 65;
         double incrementDegree = 56;
         
-        int midX = (int)((frame.getWidth()) / 2) - 20;
-        int midY = (int)((frame.getHeight()) / 2) - 32;
-        int radius = (int)((frame.getWidth()) / 9) - 5;
+        int midX = (int)((this.getWidth()) / 2) - 20;
+        int midY = (int)((this.getHeight()) / 2) - 32;
+        int radius = (int)((this.getWidth()) / 9) - 5;
 
         for (int i = 0; i < 5; i++) {
             arithmeticKeys[i].setBorder(null);
@@ -642,7 +607,7 @@ public class Keyboard {
             initDegree += incrementDegree;
             
             arithmeticKeys[i].setBounds(xValue, yValue, (int)(KEY_WIDTH * 0.8), (int)(KEY_HEIGHT * 0.8));
-            arithmeticKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
+            arithmeticKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(this.getWidth() / 500.0))));
             arithmeticKeys[i].setForeground(Color.WHITE);
 
             // Changes button appearance based on cursor
@@ -680,9 +645,9 @@ public class Keyboard {
         double incrementDegree = 10.3;
 
         int xValue, yValue;
-        int midX = (int) ((frame.getWidth()) / 2) - 20;
-        int midY = (int) ((frame.getHeight()) / 2) - 35;
-        int radius = (int) ((frame.getWidth()) / 2.5) - 13;
+        int midX = (int) ((this.getWidth()) / 2) - 20;
+        int midY = (int) ((this.getHeight()) / 2) - 35;
+        int radius = (int) ((this.getWidth()) / 2.5) - 13;
 
         for (int i = 0; i < 26; i++) {
             char temp = (char) ('a' + i);
@@ -704,7 +669,7 @@ public class Keyboard {
             initDegree += incrementDegree;
 
             letterKeys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
-            letterKeys[i].setFont(new Font("Arial", Font.PLAIN, (int) (25 * (double) (frame.getWidth() / 500.0))));
+            letterKeys[i].setFont(new Font("Arial", Font.PLAIN, (int) (25 * (double) (this.getWidth() / 500.0))));
             letterKeys[i].setForeground(Color.WHITE);
 
             letterKeys[i].addActionListener(new ActionListener() {
@@ -789,9 +754,9 @@ public class Keyboard {
         double incrementDegree = 28.5;
 
         int xValue, yValue;
-        int midX = (int) ((frame.getWidth()) / 2) - 20;
-        int midY = (int) ((frame.getHeight()) / 2) - 35;
-        int radius = (int) ((frame.getWidth()) / 4) - 6;
+        int midX = (int) ((this.getWidth()) / 2) - 20;
+        int midY = (int) ((this.getHeight()) / 2) - 35;
+        int radius = (int) ((this.getWidth()) / 4) - 6;
 
         for (int i = 0; i < 10; i++) {
             layer3Keys[i].setBorder(null);
@@ -805,7 +770,7 @@ public class Keyboard {
             initDegree += incrementDegree;
 
             layer3Keys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
-            layer3Keys[i].setFont(new Font("Arial", Font.PLAIN, (int) (25 * (double) (frame.getWidth() / 500.0))));
+            layer3Keys[i].setFont(new Font("Arial", Font.PLAIN, (int) (25 * (double) (this.getWidth() / 500.0))));
             layer3Keys[i].setForeground(Color.WHITE);
 
             // Changes button appearance based on cursor
@@ -852,9 +817,9 @@ public class Keyboard {
         double incrementDegree = 23;
         
         int xValue, yValue;
-        int midX = (int)((frame.getWidth()) / 2) - 20;
-        int midY = (int)((frame.getHeight()) / 2) - 32;
-        int radius = (int)((frame.getWidth()) / 3) - 15;
+        int midX = (int)((this.getWidth()) / 2) - 20;
+        int midY = (int)((this.getHeight()) / 2) - 32;
+        int radius = (int)((this.getWidth()) / 3) - 15;
 
         for (int i = 0; i < 12; i++) {
             layer4Keys[i].setBorder(null);
@@ -869,7 +834,7 @@ public class Keyboard {
             initDegree += incrementDegree;
             
             layer4Keys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
-            layer4Keys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
+            layer4Keys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(this.getWidth() / 500.0))));
             layer4Keys[i].setForeground(Color.WHITE);
 
             // Changes button appearance based on cursor
@@ -899,12 +864,12 @@ public class Keyboard {
         changeSizeKeys[0] = new JButton("-");
         changeSizeKeys[1] = new JButton("+");
         
-        int xValue = (int)(frame.getWidth()*0.8);
-        int yValue = (int)(frame.getHeight()*0.8);
+        int xValue = (int)(this.getWidth()*0.8);
+        int yValue = (int)(this.getHeight()*0.8);
         
         for (int i=0; i<2; i++){
             changeSizeKeys[i].setBorder(BorderFactory.createBevelBorder(10, Color.red, Color.gray));
-            changeSizeKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
+            changeSizeKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(this.getWidth() / 500.0))));
         }
         changeSizeKeys[0].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
         changeSizeKeys[1].setBounds(xValue+KEY_WIDTH, yValue, KEY_WIDTH, KEY_HEIGHT);
@@ -920,7 +885,7 @@ public class Keyboard {
                 public void mouseClicked (MouseEvent e) {
                     //if smaller
                     if (x==0){
-                        frame.setSize((int)(frame.getWidth()/1.2),(int)(frame.getHeight()/1.2));
+                        setSize((int)(getWidth()/1.2),(int)(getHeight()/1.2));
                         changeSizeLoad();
                         background = new ImageIcon(getClass().getResource("/bg.png"));                
                     
@@ -929,7 +894,7 @@ public class Keyboard {
                     //if larger
                     else{
                         
-                        frame.setSize((int)(frame.getWidth()*1.2),(int)(frame.getHeight()*1.2));
+                        setSize((int)(getWidth()*1.2),(int)(getHeight()*1.2));
                         changeSizeLoad();
                         background = new ImageIcon(getClass().getResource("/bg3.png"));                        
                     }
@@ -960,9 +925,9 @@ public class Keyboard {
         double incrementDegree = 28;
         
         int xValue, yValue;
-        int midX = (int)((frame.getWidth()) / 2) - 20;
-        int midY = (int)((frame.getHeight()) / 2) - 32;
-        int radius = (int)((frame.getWidth()) / 6);
+        int midX = (int)((this.getWidth()) / 2) - 20;
+        int midY = (int)((this.getHeight()) / 2) - 32;
+        int radius = (int)((this.getWidth()) / 6);
 
         for (int i = 0; i < 10; i++) {
             numberKeys[i].setBorder(null);
@@ -977,7 +942,7 @@ public class Keyboard {
             initDegree += incrementDegree;
             
             numberKeys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
-            numberKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(frame.getWidth() / 500.0))));
+            numberKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(this.getWidth() / 500.0))));
             numberKeys[i].setForeground(Color.WHITE);
 
             // Changes button appearance based on cursor
@@ -1016,7 +981,7 @@ public class Keyboard {
         // Background
 //        loadBackground();
 
-//        frame.addKeyListener(new KeyAdapter() {
+//        this.addKeyListener(new KeyAdapter() {
 //            public void keyPressed(KeyEvent e) {
 //                System.out.println("Pressed");
 //                int i = 0;
@@ -1098,17 +1063,17 @@ public class Keyboard {
         changeSize();
         
         panel.add(label);
-        frame.add(panel);
+        this.add(panel);
 
         panel.revalidate();
         panel.repaint();
-        frame.revalidate();
-        frame.repaint();
+        this.revalidate();
+        this.repaint();
     }
 
-    public Keyboard() {
+    public Keyboard(String title) {
+        super(title);
         loadBackground();
-        initSpecialIcons();
         loadGUI();
         predictionModel = new PredictionModel("Prediction List");    
     }

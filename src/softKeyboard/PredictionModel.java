@@ -13,7 +13,7 @@ import java.io.InputStreamReader;
 import java.util.Vector;
 import javax.swing.*;
 
-public class PredictionModel extends JFrame implements MouseListener {
+public class PredictionModel extends JFrame {
     private int FRAME_WIDTH = 400;
     private int FRAME_HEIGHT = 210;
     private int NUM_OF_PREDICTIONS = 5;
@@ -23,27 +23,6 @@ public class PredictionModel extends JFrame implements MouseListener {
     private JScrollPane scrollPane;
     
     private Vector<String> mathSymbols = new Vector<String>();
-    
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        setFocusableWindowState(false);
-    }
-    
-    @Override
-    public void mouseClicked(MouseEvent e) {
-    }
-    
-    @Override
-    public void mouseReleased(MouseEvent e) {
-    }
-    
-    @Override
-    public void mousePressed(MouseEvent e) {
-    }
-    
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
     
     /**
      * Loads special math symbols from a text file
@@ -151,12 +130,12 @@ public class PredictionModel extends JFrame implements MouseListener {
         this.setLocationRelativeTo(null);
         this.setAlwaysOnTop(true);
 
-//        this.addMouseListener(new java.awt.event.MouseAdapter() {
-//            @Override
-//            public void mouseEntered(MouseEvent e) {
-//                setFocusableWindowState(false);
-//            }
-//        });
+        this.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                setFocusableWindowState(false);
+            }
+        });
         
         // Panel
         panel = new JPanel();

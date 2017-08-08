@@ -15,7 +15,7 @@ public class SoftKeyboard {
     private PredictionModel predictionModel;
     
     public SoftKeyboard() {
-        keyboard = new Keyboard();
+        keyboard = new Keyboard("Soft Keyboard");
     }
     
     public static void main(String[] args) {
