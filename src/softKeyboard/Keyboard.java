@@ -262,8 +262,8 @@ public class Keyboard extends JFrame {
     };
 
     /* Highlights key background when cursor is hovering over it */
-    private void addHighlightKeyAdapter(JButton b) {
-        b.addMouseListener(new MouseAdapter() {
+    private void addKeyHighlightAdapter(JButton b) {
+        MouseAdapter keyHighlightAdapter = new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 b.setBackground(Color.PINK);
@@ -275,7 +275,8 @@ public class Keyboard extends JFrame {
                 b.setBackground(null);
                 b.setContentAreaFilled(false);
             }
-        });
+        };
+        b.addMouseListener(keyHighlightAdapter);
     }
     
     /* Helper function for backspace */
@@ -349,12 +350,6 @@ public class Keyboard extends JFrame {
         specialKeys[5] = new JButton("(");
         
         for (int i = 0; i < 6; i++) {
-            specialKeys[i].setBorder(null);
-            specialKeys[i].setBorderPainted(false);
-            specialKeys[i].setContentAreaFilled(false);
-            specialKeys[i].setOpaque(false);
-            addHighlightKeyAdapter(specialKeys[i]);
-
             final Integer x = new Integer(i);
             if (i < 3) { // Backspace, space, enter
                 specialKeys[i].addActionListener(new ActionListener() {
@@ -372,6 +367,8 @@ public class Keyboard extends JFrame {
                             
                             case 1: // Space
                                 robot.keyPress(KeyEvent.VK_SPACE);robot.keyRelease(KeyEvent.VK_SPACE);
+                                isPredict = false;
+                                predictionModel.predictSymbol("");
                                 break;
                             
                             case 2: // Enter
@@ -450,7 +447,6 @@ public class Keyboard extends JFrame {
         }
     }
     
-    
     /* Set up arithmetic buttons */
     private void arithmeticInit_1() {
         arithmeticKeys[0] = new JButton("+");
@@ -460,7 +456,7 @@ public class Keyboard extends JFrame {
         arithmeticKeys[4] = new JButton("/");
     }
     
-    private void arithmeticInit_2() {
+    private void scaleArithmetic() {
         double radian;
         int xValue, yValue;
         double initDegree = 65;
@@ -470,13 +466,7 @@ public class Keyboard extends JFrame {
         int midY = (int)((this.getHeight())/2) - 32;
         int radius = (int)((this.getWidth())/9) - 5;
 
-        for (int i = 0; i < 5; i++) {
-            arithmeticKeys[i].setBorder(null);
-            arithmeticKeys[i].setBorderPainted(false);
-            arithmeticKeys[i].setContentAreaFilled(false);
-            arithmeticKeys[i].setOpaque(false);
-            addHighlightKeyAdapter(arithmeticKeys[i]);
-            
+        for (int i = 0; i < arithmeticKeys.length; i++) {          
             // Calculates coordinates of each number
             radian = Math.toRadians(initDegree);
             xValue = -1*(int)(Math.cos(radian)*radius) + midX;
@@ -485,13 +475,12 @@ public class Keyboard extends JFrame {
             
             arithmeticKeys[i].setBounds(xValue, yValue, (int)(KEY_WIDTH*0.8), (int)(KEY_HEIGHT*0.8));
             arithmeticKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
-            arithmeticKeys[i].setForeground(Color.WHITE);
         }
     }
     
     private void arithmeticInit() {
         arithmeticInit_1();
-        arithmeticInit_2(); 
+        scaleArithmetic(); 
         
     }
     
@@ -512,18 +501,13 @@ public class Keyboard extends JFrame {
         int midY = (int) ((this.getHeight())/2) - 35;
         int radius = (int) ((this.getWidth())/2.5) - 13;
 
-        for (int i = 0; i < 26; i++) {
+        for (int i = 0; i < letterKeys.length; i++) {
             char temp = (char) ('a' + i);
             // letterKeys[i] = new JButton(Character.toString(temp));
             char lowercase = (char) ('a' + i);
             // String lowerTemp = Character.toString(lowercase);
             char uppercase = (char) ('A' + i);
             // String upperTemp = Character.toString(uppercase);
-
-            letterKeys[i].setBorder(null);
-            letterKeys[i].setBorderPainted(false);
-            letterKeys[i].setContentAreaFilled(false);
-            letterKeys[i].setOpaque(false);
 
             // Calculates coordinates of each letter
             radian = Math.toRadians(initDegree);
@@ -533,8 +517,6 @@ public class Keyboard extends JFrame {
 
             letterKeys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
             letterKeys[i].setFont(new Font("Arial", Font.PLAIN, (int) (25*(double) (this.getWidth()/500.0))));
-            letterKeys[i].setForeground(Color.WHITE);
-            addHighlightKeyAdapter(letterKeys[i]);
 
             letterKeys[i].addActionListener(new ActionListener() {
                 @Override
@@ -602,19 +584,14 @@ public class Keyboard extends JFrame {
     private void layer3Init_2() {
         double radian;
         double initDegree = 55;
-        double incrementDegree = 28.5;
+        double incrementDegree = 23;
 
         int xValue, yValue;
         int midX = (int) ((this.getWidth())/2) - 20;
         int midY = (int) ((this.getHeight())/2) - 35;
         int radius = (int) ((this.getWidth())/4) - 6;
 
-        for (int i = 0; i < 10; i++) {
-            layer3Keys[i].setBorder(null);
-            layer3Keys[i].setBorderPainted(false);
-            layer3Keys[i].setContentAreaFilled(false);
-            layer3Keys[i].setOpaque(false);
-
+        for (int i = 0; i < layer3Keys.length; i++) {
             radian = Math.toRadians(initDegree);
             xValue = -1*(int) (Math.cos(radian)*radius) + midX;
             yValue = -1*(int) (Math.sin(radian)*radius) + midY;
@@ -622,8 +599,6 @@ public class Keyboard extends JFrame {
 
             layer3Keys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
             layer3Keys[i].setFont(new Font("Arial", Font.PLAIN, (int) (25*(double) (this.getWidth()/500.0))));
-            layer3Keys[i].setForeground(Color.WHITE);
-            addHighlightKeyAdapter(layer3Keys[i]);
         }
     }
     
@@ -659,12 +634,7 @@ public class Keyboard extends JFrame {
         int midY = (int)((this.getHeight())/2) - 32;
         int radius = (int)((this.getWidth())/3) - 15;
 
-        for (int i = 0; i < 12; i++) {
-            layer4Keys[i].setBorder(null);
-            layer4Keys[i].setBorderPainted(false);
-            layer4Keys[i].setContentAreaFilled(false);
-            layer4Keys[i].setOpaque(false);
-
+        for (int i = 0; i < layer4Keys.length; i++) {
             // Calculates coordinates of each layer4
             radian = Math.toRadians(initDegree);
             xValue = -1*(int)(Math.cos(radian)*radius) + midX;
@@ -673,8 +643,6 @@ public class Keyboard extends JFrame {
             
             layer4Keys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
             layer4Keys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
-            layer4Keys[i].setForeground(Color.WHITE);
-            addHighlightKeyAdapter(layer4Keys[i]);
         }
     }
     
@@ -684,9 +652,11 @@ public class Keyboard extends JFrame {
         
     }
     
-    //set up change size buttons, which changes size as person presses the button
-    // TODO: Decrease size of special icons not working, and fix positioning of keys
-    // TODO: Change background by 1) scaling OR 2) changing background with an int to keep track
+    /* set up change size buttons, which changes size as person presses the button
+     * TODO: Special icons not scaling, and fix positioning/bounds of keys
+     * TODO: Change background by 1) scaling OR 2) changing background with an int to keep track
+     *       with a min/max size (default is min)
+     */
     private void loadChangeSize(){
         changeSizeButtons[0] = new JButton("-");
         changeSizeButtons[1] = new JButton("+");
@@ -722,11 +692,6 @@ public class Keyboard extends JFrame {
         int radius = (int)((this.getWidth())/6);
 
         for (int i = 0; i < 10; i++) {
-            numberKeys[i].setBorder(null);
-            numberKeys[i].setBorderPainted(false);
-            numberKeys[i].setContentAreaFilled(false);
-            numberKeys[i].setOpaque(false);
-
             // Calculates coordinates of each number
             radian = Math.toRadians(initDegree);
             xValue = -1*(int)(Math.cos(radian)*radius) + midX;
@@ -735,21 +700,6 @@ public class Keyboard extends JFrame {
             
             numberKeys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
             numberKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
-            numberKeys[i].setForeground(Color.WHITE);
-
-            // Changes button appearance based on cursor
-            final Integer x = new Integer(i);
-            numberKeys[x].addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseEntered(MouseEvent e) {
-                    numberKeys[x].setBackground(Color.PINK);
-                    numberKeys[x].setContentAreaFilled(true);
-                }
-
-                public void mouseExited(MouseEvent e) {
-                    numberKeys[x].setBackground(null);
-                    numberKeys[x].setContentAreaFilled(false);
-                }
-            });
         }
     }
     
@@ -758,9 +708,10 @@ public class Keyboard extends JFrame {
         numberInit_2();
     }
 
+    // TODO: Change key width, key height
     private void changeSizeLoad(){
         loadSpecial();
-        arithmeticInit_2();
+        scaleArithmetic();
         numberInit_2();
         layer3Init_2();
         layer4Init_2();
@@ -783,10 +734,18 @@ public class Keyboard extends JFrame {
         
         for(int i = 0; i < keys.length; i++) {
             for(int j = 0; j < keys[i].length; j++) {
-                if(i > 0 && i < 5) {
-                    keys[i][j].removeActionListener(numericSymbolicListener);
-                    keys[i][j].addActionListener(numericSymbolicListener);
+                if(i > 0) {
+                    if(i < 5) {
+                        keys[i][j].removeActionListener(numericSymbolicListener);
+                        keys[i][j].addActionListener(numericSymbolicListener);
+                    }
+                    keys[i][j].setForeground(Color.WHITE);
                 }
+                keys[i][j].setBorder(null);
+                keys[i][j].setBorderPainted(false);
+                keys[i][j].setContentAreaFilled(false);
+                keys[i][j].setOpaque(false);
+                addKeyHighlightAdapter(keys[i][j]);
                 panel.add(keys[i][j]);
             }
         }
@@ -813,7 +772,7 @@ public class Keyboard extends JFrame {
         loadChangeSize();
         for (int i = 0; i < 2; i++){
             final Integer x = new Integer(i);
-            changeSizeButtons[x].addMouseListener(new java.awt.event.MouseAdapter() {
+            changeSizeButtons[x].addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked (MouseEvent e) {
                     if (x == 0) { //If smaller
