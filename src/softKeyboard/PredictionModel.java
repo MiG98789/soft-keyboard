@@ -5,7 +5,6 @@ import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,20 +12,21 @@ import java.io.InputStreamReader;
 import java.util.Vector;
 import javax.swing.*;
 
+@SuppressWarnings("serial")
 public class PredictionModel extends JFrame {
     private int FRAME_WIDTH = 400;
     private int FRAME_HEIGHT = 210;
     private int NUM_OF_PREDICTIONS = 5;
     private float FONT_SIZE = 22.0f;
-    private JPanel panel;
-    private DefaultListModel dlm = new DefaultListModel();
+    private JPanel panel;;
+    private DefaultListModel<String> dlm = new DefaultListModel<String>();
     private JScrollPane scrollPane;
     
     private Vector<String> mathSymbols = new Vector<String>();
     
     /**
-     * Loads special math symbols from a text file
-     * and stores them in the String Vector mathSymbols
+     * Loads special math symbols from a text file,
+     * and stores them in mathSymbols
      */
     private void loadSymbols() {
         try {
@@ -67,7 +67,7 @@ public class PredictionModel extends JFrame {
         }
         
         // Update frame
-        final JList predictionList = new JList(dlm);
+        final JList<String> predictionList = new JList<String>(dlm);
         predictionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         predictionList.setSelectedIndex(0);
         predictionList.setVisibleRowCount(NUM_OF_PREDICTIONS);
@@ -141,7 +141,7 @@ public class PredictionModel extends JFrame {
         panel = new JPanel();
         
         // List
-        final JList predictionList = new JList(dlm);
+        final JList<String> predictionList = new JList<String>(dlm);
         predictionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         predictionList.setSelectedIndex(0);
         predictionList.setVisibleRowCount(NUM_OF_PREDICTIONS);
