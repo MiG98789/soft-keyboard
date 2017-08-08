@@ -460,22 +460,17 @@ public class Keyboard {
 		label.repaint();
 		label.revalidate();
 	}
-
-	/* Set up left-side buttons */
-	// TODO: Adjust bounds to fit better (increase size, and if possible, shape)
-	private void specialInit() {
-		specialButtons[0] = new JButton(backspaceIcon);
+	
+	/* Initialises special icon images */
+	private void specialIconInit() {
 		Image temp = backspaceIcon.getImage();	
 		int tempWidth = temp.getWidth(null);
 		int tempHeight = temp.getHeight(null);
 		temp = temp.getScaledInstance((int)(tempWidth / 7 * (double)(frame.getWidth() / 450.0)), 
 										(int)(tempHeight / 7 * (double)(frame.getWidth() / 450.0)),
 										Image.SCALE_SMOOTH);
-		System.out.println("Height = " + (int)(tempHeight / 7 * (double)(frame.getWidth() / 450.0)));
-		System.out.println("Width = " + (int)(tempWidth / 7 * (double)(frame.getWidth() / 450.0)));
 		backspaceIcon.setImage(temp);
 		
-		specialButtons[1] = new JButton(spaceIcon);
 		temp = spaceIcon.getImage();	
 		tempWidth = temp.getWidth(null);
 		tempHeight = temp.getHeight(null);
@@ -484,12 +479,42 @@ public class Keyboard {
 										Image.SCALE_SMOOTH);
 		spaceIcon.setImage(temp);
 		
-		specialButtons[2] = new JButton(enterIcon);
 		temp = enterIcon.getImage();	
 		tempWidth = temp.getWidth(null);
 		tempHeight = temp.getHeight(null);
 		temp = temp.getScaledInstance((int)(tempWidth / 20 * (double)(frame.getWidth() / 450.0)), 
 										(int)(tempHeight / 20 * (double)(frame.getWidth() / 450.0)),
+										Image.SCALE_SMOOTH);
+		enterIcon.setImage(temp);
+	}
+
+	/* Set up left-side buttons */
+	// TODO: Adjust bounds to fit better (increase size, and if possible, shape)
+	private void specialInit() {
+		specialButtons[0] = new JButton(backspaceIcon);
+		Image temp = backspaceIcon.getImage();	
+		int tempWidth = temp.getWidth(null);
+		int tempHeight = temp.getHeight(null);
+		temp = temp.getScaledInstance((int)(tempWidth * (double)(frame.getWidth() / 450.0)), 
+										(int)(tempHeight * (double)(frame.getWidth() / 450.0)),
+										Image.SCALE_SMOOTH);
+		backspaceIcon.setImage(temp);
+		
+		specialButtons[1] = new JButton(spaceIcon);
+		temp = spaceIcon.getImage();	
+		tempWidth = temp.getWidth(null);
+		tempHeight = temp.getHeight(null);
+		temp = temp.getScaledInstance((int)(tempWidth * (double)(frame.getWidth() / 450.0)), 
+										(int)(tempHeight * (double)(frame.getWidth() / 450.0)),
+										Image.SCALE_SMOOTH);
+		spaceIcon.setImage(temp);
+		
+		specialButtons[2] = new JButton(enterIcon);
+		temp = enterIcon.getImage();	
+		tempWidth = temp.getWidth(null);
+		tempHeight = temp.getHeight(null);
+		temp = temp.getScaledInstance((int)(tempWidth * (double)(frame.getWidth() / 450.0)), 
+										(int)(tempHeight * (double)(frame.getWidth() / 450.0)),
 										Image.SCALE_SMOOTH);
 		enterIcon.setImage(temp);
 		
@@ -955,6 +980,7 @@ public class Keyboard {
 	}
 	
 	// change size as person presses the button
+	// TODO: Decrease size of special icons not working, and fix positioning of keys
 	private void changeSize(){
 		for(int i=0; i<2; i++){
 			final Integer x = new Integer(i);
@@ -962,8 +988,9 @@ public class Keyboard {
 				public void mouseClicked (MouseEvent e) {
 					//if smaller
 					if(x==0){
-						frame.setSize((int)(frame.getWidth()*0.8),(int)(frame.getHeight()*0.8));
+						frame.setSize((int)(frame.getWidth()/1.2),(int)(frame.getHeight()/1.2));
 						changeSizeLoad();
+						background = new ImageIcon(getClass().getResource("/bg.png"));				
 					
 
 					}
@@ -1070,6 +1097,7 @@ public class Keyboard {
 //		}); 
 			
 		// Special symbols
+		specialIconInit();
 		specialInit();
 		for(int i = 0; i < 6; i++) {
 			panel.add(specialButtons[i]);
