@@ -12,7 +12,6 @@ package softKeyboard;
  */
 public class SoftKeyboard {
     private Keyboard keyboard;
-    private PredictionModel predictionModel;
     
     public SoftKeyboard() {
         keyboard = new Keyboard("Soft Keyboard");
