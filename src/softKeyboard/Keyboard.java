@@ -75,22 +75,13 @@ public class Keyboard extends JFrame {
     private double SCALE_FACTOR = 1.2;
     private JButton[] changeSizeKeys = new JButton[2];
     
-    /* 1) Special (left-side): backspace, space, enter, \, =, (
-     * 2) Arithmetic
-     * 3) Numbers
-     * 4) Symbols
-     * 5) Symbols
-     * 6) Letters
-     */
-    private int NUM_OF_KEY_LAYERS = 6;
-    private JButton[][] keys = new JButton[NUM_OF_KEY_LAYERS][];
-    
     private JButton[] specialKeys = new JButton[6]; // Backspace, space, enter, \, =, (
     private JButton[] arithmeticKeys = new JButton[5];
     private JButton[] numberKeys = new JButton[10];
     private JButton[] layer3Keys = new JButton[12];
     private JButton[] layer4Keys = new JButton[12]; // TODO: Put shift and caps
     private JButton[] letterKeys = new JButton[26];
+    private JButton[][] keys = {specialKeys, arithmeticKeys, numberKeys, layer3Keys, layer4Keys, letterKeys};
 
     private boolean shiftClick = false;
     private boolean capsClick = false;
@@ -757,22 +748,17 @@ public class Keyboard extends JFrame {
     
     // change size as person presses the button
     // TODO: Decrease size of special icons not working, and fix positioning of keys
+    // TODO: Change background by 1) scaling OR 2) changing background with an int to keep track
     private void changeSize(){
         for (int i=0; i<2; i++){
             final Integer x = new Integer(i);
             changeSizeKeys[x].addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked (MouseEvent e) {
-                    //if smaller
-                    if (x==0){
+                    if (x==0) { //If smaller
                         setSize((int)(getWidth()/1.2),(int)(getHeight()/1.2));
                         changeSizeLoad();
                         background = new ImageIcon(getClass().getResource("/bg.png"));                
-                    
-
-                    }
-                    //if larger
-                    else{
-                        
+                    } else { //If larger
                         setSize((int)(getWidth()*1.2),(int)(getHeight()*1.2));
                         changeSizeLoad();
                         background = new ImageIcon(getClass().getResource("/bg3.png"));                        
@@ -786,16 +772,9 @@ public class Keyboard extends JFrame {
     /* Sets up number buttons */
     // TODO: Scroll through numbers 
     private void numberInit_1() {
-        numberKeys[0] = new JButton("0");
-        numberKeys[1] = new JButton("1");
-        numberKeys[2] = new JButton("2");
-        numberKeys[3] = new JButton("3");
-        numberKeys[4] = new JButton("4");
-        numberKeys[5] = new JButton("5");
-        numberKeys[6] = new JButton("6");
-        numberKeys[7] = new JButton("7");
-        numberKeys[8] = new JButton("8");
-        numberKeys[9] = new JButton("9");
+        for(int i = 0; i < numberKeys.length; i++) {
+            numberKeys[i] = new JButton(String.valueOf(i));
+        }
     }
     
     private void numberInit_2() {
@@ -855,8 +834,6 @@ public class Keyboard extends JFrame {
     }
 
     private void loadGUI() {        
-        // Prediction list
-//        predictionListInit();
         // Background
 //        loadBackground();
 
