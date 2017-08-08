@@ -18,11 +18,48 @@ public class PredictionModel extends JFrame {
     private int FRAME_HEIGHT = 210;
     private int NUM_OF_PREDICTIONS = 5;
     private float FONT_SIZE = 22.0f;
-    private JPanel panel;;
+    private JPanel panel;
     private DefaultListModel<String> dlm = new DefaultListModel<String>();
     private JScrollPane scrollPane;
     
     private Vector<String> mathSymbols = new Vector<String>();
+    
+    private void loadFrame() {
+        // Frame
+        this.pack();
+        this.setVisible(true);
+        this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
+        this.setAlwaysOnTop(true);
+        this.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                setFocusableWindowState(false);
+            }
+        });
+        
+        // Panel
+        panel = new JPanel();
+        
+        // List
+        final JList<String> predictionList = new JList<String>(dlm);
+        predictionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        predictionList.setSelectedIndex(0);
+        predictionList.setVisibleRowCount(NUM_OF_PREDICTIONS);
+        predictionList.setFont(predictionList.getFont().deriveFont(FONT_SIZE));
+        
+        // Scroll pane
+        scrollPane = new JScrollPane(predictionList);
+
+        // Display the GUI
+        panel.add(scrollPane);
+        panel.revalidate();
+        panel.repaint();
+        this.add(panel);
+        this.revalidate();
+        this.repaint();
+    }
     
     /**
      * Loads special math symbols from a text file,
@@ -118,43 +155,8 @@ public class PredictionModel extends JFrame {
     }
     
     public PredictionModel(String title) {
-        // Frame
         super(title);
-        this.pack();
-        this.setVisible(true);
-        this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLocationRelativeTo(null);
-        this.setAlwaysOnTop(true);
-        this.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                setFocusableWindowState(false);
-            }
-        });
-        
-        // Panel
-        panel = new JPanel();
-        
-        // List
-        final JList<String> predictionList = new JList<String>(dlm);
-        predictionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        predictionList.setSelectedIndex(0);
-        predictionList.setVisibleRowCount(NUM_OF_PREDICTIONS);
-        predictionList.setFont(predictionList.getFont().deriveFont(FONT_SIZE));
-        
-        // Scroll pane
-        scrollPane = new JScrollPane(predictionList);
-
-        // Display the GUI
-        panel.add(scrollPane);
-        this.add(panel);
-        panel.revalidate();
-        panel.repaint();
-        this.revalidate();
-        this.repaint();
-        
-        // Symbols
+        loadFrame();
         loadSymbols();
     }
 }

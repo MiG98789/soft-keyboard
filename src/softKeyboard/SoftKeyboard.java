@@ -10,11 +10,9 @@ package softKeyboard;
  * @version 1.1
  * @since 19/07/2017
  */
-public class SoftKeyboard {
-    private Keyboard keyboard;
-    
+public class SoftKeyboard {    
     public SoftKeyboard() {
-        keyboard = new Keyboard("Soft Keyboard");
+        new Keyboard("Soft Keyboard");
     }
     
     public static void main(String[] args) {
