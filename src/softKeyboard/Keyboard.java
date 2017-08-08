@@ -670,7 +670,7 @@ public class Keyboard {
     /* Sets up letter buttons */
     private void letterInit_1() {
         for (int i = 0; i < 26; i++) {
-            letterKeys[i] = new JButton("" + (char)i);
+            letterKeys[i] = new JButton("" + (char)(i + 'a'));
         }
     }
     

@@ -45,8 +45,6 @@ public class PredictionModel extends JFrame implements MouseListener {
     public void mouseExited(MouseEvent e) {
     }
     
-    
-    
     /**
      * Loads special math symbols from a text file
      * and stores them in the String Vector mathSymbols
