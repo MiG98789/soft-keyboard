@@ -56,13 +56,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class Keyboard extends JFrame {
-//    private JFrame predictionFrame;
-//    private JPanel predictionPanel;
-//    private final DefaultListModel predictionDLM = new DefaultListModel();
-//    private JScrollPane predictionScrollPane;
-//    private final int NUM_OF_PREDICTIONS = 5;
-//    private final float PREDICTION_LIST_FONT_SIZE = 22.0f;
-    
     private PredictionModel predictionModel;
     
     // TODO: Fix UI layout
@@ -287,120 +280,6 @@ public class Keyboard extends JFrame {
             return str.substring(0, str.length() - 1);
         }
     }
-    
-//    /* Predicts the symbols to be typed */
-//    private void predictSymbol(String str) {
-//        System.out.println("Prediction input: " + str);
-//        
-//        // Reset Prediction List Frame
-//        predictionDLM.clear();
-//        if (str.isEmpty()) {
-//            return;
-//        }
-//
-//        // Loop through each symbol, and add predictions to Prediction List Frame
-//        for (int i = 0; i < mathSymbols.size(); i++) {
-//            if (str.length() <= mathSymbols.elementAt(i).length()) {
-//                if (str.equals(mathSymbols.elementAt(i).substring(0, str.length()))) {
-//                    System.out.println("Predicted: ");
-//                    predictionDLM.addElement(mathSymbols.elementAt(i));
-//                    System.out.println(mathSymbols.elementAt(i));
-//                }
-//            }    
-//        }
-        
-//        // Update Prediction List Frame
-//        final JList predictionList = new JList(predictionDLM);
-//        predictionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//        predictionList.setSelectedIndex(0);
-//        predictionList.setVisibleRowCount(NUM_OF_PREDICTIONS);
-//        predictionList.setFont(predictionList.getFont().deriveFont(PREDICTION_LIST_FONT_SIZE));
-//        
-//        predictionList.addMouseListener(new MouseAdapter() {
-//            @Override
-//            public void mouseClicked(MouseEvent evt) {
-//                if (SwingUtilities.isLeftMouseButton(evt) && evt.getClickCount() == 1) {
-//                    if (predictionList.getSelectedIndex() != -1) {
-//                        int index = predictionList.locationToIndex(evt.getPoint());
-//                        String selection = (String)predictionList.getModel().getElementAt(index);
-//                        System.out.println("You selected: " + selection);
-//                                        
-//                        try {
-//                            Robot robot = new Robot();
-//    
-//                            // Type out selection                        
-//                            for (int i = str.length(); i < selection.length(); i++) {
-//                                char temp = selection.charAt(i);
-//                                if (Character.isUpperCase(temp)) {
-//                                    robot.keyPress(KeyEvent.VK_SHIFT);
-//                                }
-//                                int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)temp);
-//                                robot.keyPress(keyCode); robot.keyRelease(keyCode);
-//                                if (Character.isUpperCase(temp)) {
-//                                    robot.keyRelease(KeyEvent.VK_SHIFT);
-//                                }
-//                            }
-//                            robot.keyPress(KeyEvent.VK_SPACE);
-//                            isPredict = false;
-//                            predictionInput = "";
-//                            predictionDLM.clear();
-//                        } catch (AWTException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//            }
-//        });
-//        
-//        predictionScrollPane = new JScrollPane(predictionList);
-//        predictionPanel.removeAll();
-//        predictionPanel.add(predictionScrollPane);
-//        
-//        predictionPanel.revalidate();
-//        predictionPanel.repaint();
-//        predictionFrame.revalidate();
-//        predictionFrame.repaint();
-//    }
-//    
-//    /* Sets up prediction list */
-//    private void predictionListInit() {
-//        // Frame
-//        predictionFrame = new JFrame("Prediction List");
-//        predictionFrame.pack();
-//        predictionFrame.setVisible(true);
-//        predictionFrame.setSize(FRAME_WIDTH - 50, FRAME_HEIGHT / 2);
-//        predictionFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        predictionFrame.setLocationRelativeTo(null);
-//        predictionFrame.setAlwaysOnTop(true);
-//
-//        predictionFrame.addMouseListener(new java.awt.event.MouseAdapter() {
-//            public void mouseEntered(MouseEvent e) {
-//                predictionFrame.setFocusableWindowState(false);
-//            }
-//        });
-//        
-//        // Panel
-//        predictionPanel = new JPanel();
-//        
-//        // List
-//        final JList predictionList = new JList(predictionDLM);
-//        predictionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//        predictionList.setSelectedIndex(0);
-//        predictionList.setVisibleRowCount(NUM_OF_PREDICTIONS);
-//        predictionList.setFont(predictionList.getFont().deriveFont(PREDICTION_LIST_FONT_SIZE));
-////        predictionList.addListSelectionListener(predictionListener);
-//        
-//        // Scroll pane
-//        predictionScrollPane = new JScrollPane(predictionList);
-//
-//        predictionPanel.add(predictionScrollPane);
-//        predictionFrame.add(predictionPanel);
-//
-//        predictionPanel.revalidate();
-//        predictionPanel.repaint();
-//        predictionFrame.revalidate();
-//        predictionFrame.repaint();
-//    }
     
     /* Sets up background */
     private void loadBackground() {
