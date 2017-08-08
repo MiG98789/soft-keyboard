@@ -55,6 +55,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+@SuppressWarnings("serial")
 public class Keyboard extends JFrame {
     private PredictionModel predictionModel;
     
@@ -73,7 +74,7 @@ public class Keyboard extends JFrame {
     private JToggleButton mathMode = new JToggleButton("Normal Mode", false);
     
     private double SCALE_FACTOR = 1.2;
-    private JButton[] changeSizeKeys = new JButton[2];
+    private JButton[] changeSizeButtons = new JButton[2];
     
     private JButton[] specialKeys = new JButton[6]; // Backspace, space, enter, \, =, (
     private JButton[] arithmeticKeys = new JButton[5];
@@ -85,10 +86,9 @@ public class Keyboard extends JFrame {
 
     private boolean shiftClick = false;
     private boolean capsClick = false;
-    
-//    private Vector<String> mathSymbols = new Vector<String>();
+
     private String predictionInput;
-    private boolean isPredict = false;
+    private boolean isPredict = false; // TODO: Make it work for \ and alphabets in Math Mode
 
     /* Converts Soft Keyboard non-alphabetical key input into actual keyboard input */
     /* TODO: In math mode, automatically clear predictionInput when typing anything,
@@ -103,7 +103,6 @@ public class Keyboard extends JFrame {
                 Robot robot = new Robot();
                 
                 isPredict = false; // Will turn true ONLY IF starting with \ or alphabet
-                // TODO: Make it work for \ and alphabets in Math Mode
                 
                 // Numbers
                 if (actionCommand == "0") {robot.keyPress(KeyEvent.VK_0);robot.keyRelease(KeyEvent.VK_0);}
@@ -158,6 +157,7 @@ public class Keyboard extends JFrame {
                 }
                 
                 // SPECIAL CASE: Autocompletes ), then puts cursor between ( and )
+                // TODO: Decide whether to permanently enable this
                 else if (actionCommand == "(") {
                     // (                    
                     robot.keyPress(KeyEvent.VK_SHIFT);                
@@ -264,6 +264,7 @@ public class Keyboard extends JFrame {
         }
     };
 
+    /* Helper function for backspace */
     private static String removeLastChar(String str) {
         if (str.isEmpty()) {
             return "";
@@ -731,18 +732,18 @@ public class Keyboard extends JFrame {
     
     //set up change size buttons
     private void loadChangeSize(){
-        changeSizeKeys[0] = new JButton("-");
-        changeSizeKeys[1] = new JButton("+");
+        changeSizeButtons[0] = new JButton("-");
+        changeSizeButtons[1] = new JButton("+");
         
         int xValue = (int)(this.getWidth()*0.8);
         int yValue = (int)(this.getHeight()*0.8);
         
         for (int i=0; i<2; i++){
-            changeSizeKeys[i].setBorder(BorderFactory.createBevelBorder(10, Color.red, Color.gray));
-            changeSizeKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(this.getWidth() / 500.0))));
+            changeSizeButtons[i].setBorder(BorderFactory.createBevelBorder(10, Color.red, Color.gray));
+            changeSizeButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25 * (double)(this.getWidth() / 500.0))));
         }
-        changeSizeKeys[0].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
-        changeSizeKeys[1].setBounds(xValue+KEY_WIDTH, yValue, KEY_WIDTH, KEY_HEIGHT);
+        changeSizeButtons[0].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
+        changeSizeButtons[1].setBounds(xValue+KEY_WIDTH, yValue, KEY_WIDTH, KEY_HEIGHT);
     
     }
     
@@ -750,23 +751,6 @@ public class Keyboard extends JFrame {
     // TODO: Decrease size of special icons not working, and fix positioning of keys
     // TODO: Change background by 1) scaling OR 2) changing background with an int to keep track
     private void changeSize(){
-        for (int i=0; i<2; i++){
-            final Integer x = new Integer(i);
-            changeSizeKeys[x].addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseClicked (MouseEvent e) {
-                    if (x==0) { //If smaller
-                        setSize((int)(getWidth()/1.2),(int)(getHeight()/1.2));
-                        changeSizeLoad();
-                        background = new ImageIcon(getClass().getResource("/bg.png"));                
-                    } else { //If larger
-                        setSize((int)(getWidth()*1.2),(int)(getHeight()*1.2));
-                        changeSizeLoad();
-                        background = new ImageIcon(getClass().getResource("/bg3.png"));                        
-                    }
-                }
-            });
-        }
-
     }
 
     /* Sets up number buttons */
@@ -914,9 +898,23 @@ public class Keyboard extends JFrame {
         //change size buttons
         loadChangeSize();
         for (int i=0; i<2; i++){
-            panel.add(changeSizeKeys[i]);
+            final Integer x = new Integer(i);
+            changeSizeButtons[x].addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked (MouseEvent e) {
+                    if (x==0) { //If smaller
+                        setSize((int)(getWidth()/1.2),(int)(getHeight()/1.2));
+                        changeSizeLoad();
+                        background = new ImageIcon(getClass().getResource("/bg.png"));                
+                    } else { //If larger
+                        setSize((int)(getWidth()*1.2),(int)(getHeight()*1.2));
+                        changeSizeLoad();
+                        background = new ImageIcon(getClass().getResource("/bg3.png"));                        
+                    }
+                }
+            });
+            
+            panel.add(changeSizeButtons[i]);
         }
-        changeSize();
         
         panel.add(label);
         this.add(panel);

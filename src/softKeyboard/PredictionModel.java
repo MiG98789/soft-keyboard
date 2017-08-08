@@ -66,15 +66,13 @@ public class PredictionModel extends JFrame {
             }    
         }
         
-        // Update frame
+        // Update list
         final JList<String> predictionList = new JList<String>(dlm);
         predictionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         predictionList.setSelectedIndex(0);
         predictionList.setVisibleRowCount(NUM_OF_PREDICTIONS);
         predictionList.setFont(predictionList.getFont().deriveFont(FONT_SIZE));
-        
-        // Automatically type out selected item
-        predictionList.addMouseListener(new MouseAdapter() {
+        predictionList.addMouseListener(new MouseAdapter() { // Automatically type out selected item
             @Override
             public void mouseClicked(MouseEvent evt) {
                 if (SwingUtilities.isLeftMouseButton(evt) && evt.getClickCount() == 1) {
@@ -108,12 +106,11 @@ public class PredictionModel extends JFrame {
                 }
             }
         });
+        scrollPane = new JScrollPane(predictionList);
         
         // After an item is selected, clear the frame
-        scrollPane = new JScrollPane(predictionList);
         panel.removeAll();
         panel.add(scrollPane);
-        
         panel.revalidate();
         panel.repaint();
         this.revalidate();
@@ -129,7 +126,6 @@ public class PredictionModel extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setAlwaysOnTop(true);
-
         this.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -153,7 +149,6 @@ public class PredictionModel extends JFrame {
         // Display the GUI
         panel.add(scrollPane);
         this.add(panel);
-
         panel.revalidate();
         panel.repaint();
         this.revalidate();
