@@ -431,22 +431,22 @@ public class Keyboard {
     
     /* Initialises special icon images by scaling them to the appropriate size */
     private void initSpecialIcons() {
-        for(int i = 0; i < NUM_OF_ICONS; i++) {
-            specialIcons[i] = new ImageIcon(getClass().getResource(specialURLs[i]));
-            Image temp = specialIcons[i].getImage();    
-            int tempWidth = temp.getWidth(null);
-            int tempHeight = temp.getHeight(null);
-            if(specialURLs[i] == "/enter.png") {
-                temp = temp.getScaledInstance((int)(tempWidth / 7 * (double)(frame.getWidth() / 450.0)), 
-                                            (int)(tempHeight / 7 * (double)(frame.getWidth() / 450.0)),
-                                            Image.SCALE_SMOOTH);
-            } else {
-                temp = temp.getScaledInstance((int)(tempWidth / 7 * (double)(frame.getWidth() / 450.0)), 
-                        (int)(tempHeight / 7 * (double)(frame.getWidth() / 450.0)),
-                        Image.SCALE_SMOOTH);
-            }
-            specialIcons[i].setImage(temp);
-        }
+//        for(int i = 0; i < NUM_OF_ICONS; i++) {
+//            specialIcons[i] = new ImageIcon(getClass().getResource(specialURLs[i]));
+//            Image temp = specialIcons[i].getImage();    
+//            int tempWidth = temp.getWidth(null);
+//            int tempHeight = temp.getHeight(null);
+//            if(specialURLs[i] == "/enter.png") {
+//                temp = temp.getScaledInstance((int)(tempWidth / 7 * (double)(frame.getWidth() / 450.0)), 
+//                                            (int)(tempHeight / 7 * (double)(frame.getWidth() / 450.0)),
+//                                            Image.SCALE_SMOOTH);
+//            } else {
+//                temp = temp.getScaledInstance((int)(tempWidth / 7 * (double)(frame.getWidth() / 450.0)), 
+//                        (int)(tempHeight / 7 * (double)(frame.getWidth() / 450.0)),
+//                        Image.SCALE_SMOOTH);
+//            }
+//            specialIcons[i].setImage(temp);
+//        }
     }
 
     /* Set up left-side buttons */
@@ -458,8 +458,8 @@ public class Keyboard {
             int tempWidth = temp.getWidth(null);
             int tempHeight = temp.getHeight(null);
             if(specialURLs[i] == "/enter.png") {
-                temp = temp.getScaledInstance((int)(tempWidth / 7 * (double)(frame.getWidth() / 450.0)), 
-                                            (int)(tempHeight / 7 * (double)(frame.getWidth() / 450.0)),
+                temp = temp.getScaledInstance((int)(tempWidth / 20 * (double)(frame.getWidth() / 450.0)), 
+                                            (int)(tempHeight / 20 * (double)(frame.getWidth() / 450.0)),
                                             Image.SCALE_SMOOTH);
             } else {
                 temp = temp.getScaledInstance((int)(tempWidth / 7 * (double)(frame.getWidth() / 450.0)), 
