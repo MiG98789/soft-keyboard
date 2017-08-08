@@ -11,14 +11,14 @@ package softKeyboard;
  * @since 19/07/2017
  */
 public class SoftKeyboard {
-	private Keyboard keyboard;
-	private PredictionModel predictionModel;
-	
-	public SoftKeyboard() {
-		keyboard = new Keyboard("Soft Keyboard");
-	}
-	
-	public static void main(String[] args) {
-		new SoftKeyboard();
-	}
+    private Keyboard keyboard;
+    private PredictionModel predictionModel;
+    
+    public SoftKeyboard() {
+        keyboard = new Keyboard();
+    }
+    
+    public static void main(String[] args) {
+        new SoftKeyboard();
+    }
 }
