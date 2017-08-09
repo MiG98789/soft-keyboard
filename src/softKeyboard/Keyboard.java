@@ -71,6 +71,8 @@ public class Keyboard extends JFrame {
     private boolean isPredict = false; // TODO: Make it work for \ and alphabets in Math Mode
 
     private double SCALE_FACTOR = 1.2;
+    private int CURR_SCALE_COUNT = 0;
+    private int MAX_SCALE_COUNT = 2;
     private JButton[] changeSizeButtons = new JButton[2];
 
     private int KEY_WIDTH = 25;
@@ -244,16 +246,12 @@ public class Keyboard extends JFrame {
         for(int i = 0; i < specialIcons.length; i++) {
             specialIcons[i] = new ImageIcon(getClass().getResource(specialURLs[i]));
             Image temp = specialIcons[i].getImage();    
-            int tempWidth = temp.getWidth(null);
-            int tempHeight = temp.getHeight(null);
+            int tempWidth = (int)(temp.getWidth(null)*(double)(this.getWidth()/450.00));
+            int tempHeight = (int)(temp.getHeight(null)*(double)(this.getHeight()/450.0));
             if(specialURLs[i] == "/enter.png") {
-                temp = temp.getScaledInstance((int)(tempWidth/20*(double)(this.getWidth()/450.0)), 
-                        (int)(tempHeight/20*(double)(this.getWidth()/450.0)),
-                        Image.SCALE_SMOOTH);
+                temp = temp.getScaledInstance((int)(tempWidth/20), (int)(tempHeight/20), Image.SCALE_SMOOTH);
             } else {
-                temp = temp.getScaledInstance((int)(tempWidth/7*(double)(this.getWidth()/450.0)), 
-                        (int)(tempHeight/7*(double)(this.getWidth()/450.0)),
-                        Image.SCALE_SMOOTH);
+                temp = temp.getScaledInstance((int)(tempWidth/7), (int)(tempHeight/7), Image.SCALE_SMOOTH);
             }
             specialIcons[i].setImage(temp);
         }
@@ -262,7 +260,6 @@ public class Keyboard extends JFrame {
     /* Sets up left-side buttons */
     // TODO: Adjust bounds to fit better (increase size, and if possible, shape)
     private void loadSpecial() {
-        scaleIcons();
         for(int i = 0; i < specialIcons.length; i++) {
             specialKeys[i] = new JButton(specialIcons[i]);
         }
@@ -632,6 +629,9 @@ public class Keyboard extends JFrame {
     private void loadGUI() {        
         // Background
         loadBackground();
+        
+        // Icons
+        scaleIcons();
 
         // Special symbols
         loadSpecial();
@@ -674,6 +674,10 @@ public class Keyboard extends JFrame {
                 } else {
                     System.out.println("Normal Mode");
                     mathMode.setText("Normal Mode");
+                    
+//                    isPredict = false;
+//                    predictionInput = "";
+//                    predictionModel.predictSymbol("");
                 }
             }
         });
