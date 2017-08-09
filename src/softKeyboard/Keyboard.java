@@ -58,7 +58,7 @@ import java.io.InputStreamReader;
 @SuppressWarnings("serial")
 public class Keyboard extends JFrame {
     private PredictionModel predictionModel;
-    
+
     // TODO: Fix UI layout
     private int FRAME_WIDTH = 450;
     private int FRAME_HEIGHT = 420;
@@ -69,10 +69,10 @@ public class Keyboard extends JFrame {
     private JToggleButton mathMode = new JToggleButton("Normal Mode", false);
     private String predictionInput;
     private boolean isPredict = false; // TODO: Make it work for \ and alphabets in Math Mode
-    
+
     private double SCALE_FACTOR = 1.2;
     private JButton[] changeSizeButtons = new JButton[2];
-    
+
     private int KEY_WIDTH = 25;
     private int KEY_HEIGHT = 25;
     private JButton[] specialKeys = new JButton[6]; // Backspace, space, enter, \, =, (
@@ -87,176 +87,97 @@ public class Keyboard extends JFrame {
     private boolean shiftClick = false;
     private boolean capsClick = false;
 
+    private void pressKey(int key) {
+        try {
+            Robot robot = new Robot();
+            robot.keyPress(key);
+            robot.keyRelease(key);
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void shiftKey(int key) {
+        try {
+            Robot robot = new Robot();
+            robot.keyPress(KeyEvent.VK_SHIFT);
+            pressKey(key);
+            robot.keyRelease(key);
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+    }
+
     /* Converts Soft Keyboard non-alphabetical key input into actual keyboard input */
     /* TODO: In math mode, automatically clear predictionInput when typing anything,
              and press space before pressing the desired key
-    */
+     */
     private ActionListener numericSymbolicListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent event) {
             String actionCommand = event.getActionCommand();
+            isPredict = false; // Will turn true ONLY IF starting with \ or alphabet
 
-            try {
-                Robot robot = new Robot();
-                
-                isPredict = false; // Will turn true ONLY IF starting with \ or alphabet
-                
-                // Numbers
-                if (actionCommand == "0") {robot.keyPress(KeyEvent.VK_0);robot.keyRelease(KeyEvent.VK_0);}
-                else if (actionCommand == "1") {robot.keyPress(KeyEvent.VK_1);robot.keyRelease(KeyEvent.VK_1);}
-                else if (actionCommand == "2") {robot.keyPress(KeyEvent.VK_2);robot.keyRelease(KeyEvent.VK_2);}
-                else if (actionCommand == "3") {robot.keyPress(KeyEvent.VK_3);robot.keyRelease(KeyEvent.VK_3);}
-                else if (actionCommand == "4") {robot.keyPress(KeyEvent.VK_4);robot.keyRelease(KeyEvent.VK_4);}
-                else if (actionCommand == "5") {robot.keyPress(KeyEvent.VK_5);robot.keyRelease(KeyEvent.VK_5);}
-                else if (actionCommand == "6") {robot.keyPress(KeyEvent.VK_6);robot.keyRelease(KeyEvent.VK_6);}
-                else if (actionCommand == "7") {robot.keyPress(KeyEvent.VK_7);robot.keyRelease(KeyEvent.VK_7);}
-                else if (actionCommand == "8") {robot.keyPress(KeyEvent.VK_8);robot.keyRelease(KeyEvent.VK_8);}
-                else if (actionCommand == "9") {robot.keyPress(KeyEvent.VK_9);robot.keyRelease(KeyEvent.VK_9);}
+            // Numbers
+            if (actionCommand == "0") {pressKey(KeyEvent.VK_0);}
+            else if (actionCommand == "1") {pressKey(KeyEvent.VK_1);}
+            else if (actionCommand == "2") {pressKey(KeyEvent.VK_2);}
+            else if (actionCommand == "3") {pressKey(KeyEvent.VK_3);}
+            else if (actionCommand == "4") {pressKey(KeyEvent.VK_4);}
+            else if (actionCommand == "5") {pressKey(KeyEvent.VK_5);}
+            else if (actionCommand == "6") {pressKey(KeyEvent.VK_6);}
+            else if (actionCommand == "7") {pressKey(KeyEvent.VK_7);}
+            else if (actionCommand == "8") {pressKey(KeyEvent.VK_8);}
+            else if (actionCommand == "9") {pressKey(KeyEvent.VK_9);}
 
-                // Symbols
-                else if (actionCommand == "`") {robot.keyPress(KeyEvent.VK_BACK_QUOTE);robot.keyRelease(KeyEvent.VK_BACK_QUOTE);}
-                else if (actionCommand == "~") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_BACK_QUOTE);robot.keyRelease(KeyEvent.VK_BACK_QUOTE);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                } else if (actionCommand == "!") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_1);robot.keyRelease(KeyEvent.VK_1);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                } else if (actionCommand == "@") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_2);robot.keyRelease(KeyEvent.VK_2);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                } else if (actionCommand == "#") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_3);robot.keyRelease(KeyEvent.VK_3);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                } else if (actionCommand == "$") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_4);robot.keyRelease(KeyEvent.VK_4);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                } else if (actionCommand == "%") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_5);robot.keyRelease(KeyEvent.VK_5);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                } else if (actionCommand == "^") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_6);robot.keyRelease(KeyEvent.VK_6);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                } else if (actionCommand == "&") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_7);robot.keyRelease(KeyEvent.VK_7);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                }else if (actionCommand == "*") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_8);robot.keyRelease(KeyEvent.VK_8);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                }
-                
-                // SPECIAL CASE: Autocompletes ), then puts cursor between ( and )
+            // Symbols
+            else if (actionCommand == "`") {pressKey(KeyEvent.VK_BACK_QUOTE);}
+            else if (actionCommand == "~") {shiftKey(KeyEvent.VK_BACK_QUOTE);}
+            else if (actionCommand == "!") {shiftKey(KeyEvent.VK_1);}
+            else if (actionCommand == "@") {shiftKey(KeyEvent.VK_2);}
+            else if (actionCommand == "#") {shiftKey(KeyEvent.VK_3);}
+            else if (actionCommand == "$") {shiftKey(KeyEvent.VK_4);}
+            else if (actionCommand == "%") {shiftKey(KeyEvent.VK_5);}
+            else if (actionCommand == "^") {shiftKey(KeyEvent.VK_6);}
+            else if (actionCommand == "&") {shiftKey(KeyEvent.VK_7);}
+            else if (actionCommand == "*") {shiftKey(KeyEvent.VK_8);}                
+            else if (actionCommand == ")") {shiftKey(KeyEvent.VK_0);}
+            else if (actionCommand == "-") {pressKey(KeyEvent.VK_MINUS);}
+            else if (actionCommand == "_") {shiftKey(KeyEvent.VK_MINUS);}
+            else if (actionCommand == "=") {pressKey(KeyEvent.VK_EQUALS);}
+            else if (actionCommand == "+") {shiftKey(KeyEvent.VK_EQUALS);}
+            else if (actionCommand == "[") {pressKey(KeyEvent.VK_OPEN_BRACKET);}
+            else if (actionCommand == "{") {shiftKey(KeyEvent.VK_OPEN_BRACKET);}
+            else if (actionCommand == "]") {pressKey(KeyEvent.VK_CLOSE_BRACKET);}
+            else if (actionCommand == "}") {shiftKey(KeyEvent.VK_CLOSE_BRACKET);}
+            else if (actionCommand == "|") {shiftKey(KeyEvent.VK_BACK_SLASH);}
+            else if (actionCommand == ";") {pressKey(KeyEvent.VK_SEMICOLON);}
+            else if (actionCommand == ":") {shiftKey(KeyEvent.VK_SEMICOLON);}
+            else if (actionCommand == "'") {pressKey(KeyEvent.VK_QUOTE);}
+            else if (actionCommand == "\"") {shiftKey(KeyEvent.VK_QUOTE);}
+            else if (actionCommand == ",") {pressKey(KeyEvent.VK_COMMA);}
+            else if (actionCommand == "<") {shiftKey(KeyEvent.VK_COMMA);}
+            else if (actionCommand == ".") {pressKey(KeyEvent.VK_PERIOD);}
+            else if (actionCommand == ">") {shiftKey(KeyEvent.VK_PERIOD);}
+            else if (actionCommand == "/") {pressKey(KeyEvent.VK_SLASH);}
+            else if (actionCommand == "?") {shiftKey(KeyEvent.VK_SLASH);}
+
+            // Special cases
+            else if (actionCommand == "(") { // Autocompletes ), then puts cursor between ( and )
                 // TODO: Decide whether to permanently enable this
-                else if (actionCommand == "(") {
-                    // (                    
-                    robot.keyPress(KeyEvent.VK_SHIFT);                
-                    robot.keyPress(KeyEvent.VK_9);robot.keyRelease(KeyEvent.VK_9);                
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
+                shiftKey(KeyEvent.VK_9); // (
+                shiftKey(KeyEvent.VK_0); // )
+                pressKey(KeyEvent.VK_LEFT); // Go between ( and )
+            } else if (actionCommand == "\\") { // Restart prediction
+                pressKey(KeyEvent.VK_BACK_SLASH);
+                predictionInput = "\\";
+                isPredict = true;
+                predictionModel.predictSymbol(predictionInput);
+            }
 
-                    // )
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_0);robot.keyRelease(KeyEvent.VK_0);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-
-                    // Go between ( and )
-                    robot.keyPress(KeyEvent.VK_LEFT);robot.keyRelease(KeyEvent.VK_LEFT);
-                } 
-                
-                else if (actionCommand == ")") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_0);robot.keyRelease(KeyEvent.VK_0);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                }
-
-                else if (actionCommand == "-") {robot.keyPress(KeyEvent.VK_MINUS);robot.keyRelease(KeyEvent.VK_MINUS);}
-                else if (actionCommand == "_") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_MINUS);robot.keyRelease(KeyEvent.VK_MINUS);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                }
-
-                else if (actionCommand == "=") {robot.keyPress(KeyEvent.VK_EQUALS);robot.keyRelease(KeyEvent.VK_EQUALS);}
-                else if (actionCommand == "+") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_EQUALS);robot.keyRelease(KeyEvent.VK_EQUALS);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                }
-
-                else if (actionCommand == "[") {robot.keyPress(KeyEvent.VK_OPEN_BRACKET);robot.keyRelease(KeyEvent.VK_OPEN_BRACKET);}
-                else if (actionCommand == "{") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_OPEN_BRACKET);robot.keyRelease(KeyEvent.VK_OPEN_BRACKET);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                }
-
-                else if (actionCommand == "]") {robot.keyPress(KeyEvent.VK_CLOSE_BRACKET);robot.keyRelease(KeyEvent.VK_CLOSE_BRACKET);}
-                else if (actionCommand == "}") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_CLOSE_BRACKET);robot.keyRelease(KeyEvent.VK_CLOSE_BRACKET);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                }
-
-                else if (actionCommand == "\\") {
-                    robot.keyPress(KeyEvent.VK_BACK_SLASH);robot.keyRelease(KeyEvent.VK_BACK_SLASH);
-                    predictionInput = "\\";
-                    isPredict = true;
-                    predictionModel.predictSymbol(predictionInput);
-                }
-                else if (actionCommand == "|") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_BACK_SLASH);robot.keyRelease(KeyEvent.VK_BACK_SLASH);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                }
-
-                else if (actionCommand == ";") {robot.keyPress(KeyEvent.VK_SEMICOLON);robot.keyRelease(KeyEvent.VK_SEMICOLON);}
-                else if (actionCommand == ":") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_SEMICOLON);robot.keyRelease(KeyEvent.VK_SEMICOLON);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                }
-
-                else if (actionCommand == "'") {robot.keyPress(KeyEvent.VK_QUOTE);robot.keyRelease(KeyEvent.VK_QUOTE);}
-                else if (actionCommand == "\"") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_QUOTE);robot.keyRelease(KeyEvent.VK_QUOTE);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                }
-
-                else if (actionCommand == ",") {robot.keyPress(KeyEvent.VK_COMMA);robot.keyRelease(KeyEvent.VK_COMMA);}
-                else if (actionCommand == "<") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_COMMA);robot.keyRelease(KeyEvent.VK_COMMA);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                }
-
-                else if (actionCommand == ".") {robot.keyPress(KeyEvent.VK_PERIOD);robot.keyRelease(KeyEvent.VK_PERIOD);}
-                else if (actionCommand == ">") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_PERIOD);robot.keyRelease(KeyEvent.VK_PERIOD);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                }
-
-                else if (actionCommand == "/") {robot.keyPress(KeyEvent.VK_SLASH);robot.keyRelease(KeyEvent.VK_SLASH);}
-                else if (actionCommand == "?") {
-                    robot.keyPress(KeyEvent.VK_SHIFT);
-                    robot.keyPress(KeyEvent.VK_SLASH);robot.keyRelease(KeyEvent.VK_SLASH);
-                    robot.keyRelease(KeyEvent.VK_SHIFT);
-                }
-                
-                System.out.println("Input: " + predictionInput);
-                if (!isPredict) {
-                    predictionModel.predictSymbol("");
-                }
-            } catch (AWTException e) {
-                e.printStackTrace();
+            System.out.println("Input: " + predictionInput);
+            if (!isPredict) {
+                predictionModel.predictSymbol("");
             }
         }
     };
@@ -278,7 +199,7 @@ public class Keyboard extends JFrame {
         };
         b.addMouseListener(keyHighlightAdapter);
     }
-    
+
     /* Helper function for backspace */
     private static String removeLastChar(String str) {
         if (str.isEmpty()) {
@@ -287,7 +208,7 @@ public class Keyboard extends JFrame {
             return str.substring(0, str.length() - 1);
         }
     }
-    
+
     /* Sets up background */
     private void loadBackground() {
         // Frame
@@ -309,15 +230,15 @@ public class Keyboard extends JFrame {
         panel.setBackground(Color.WHITE);
         panel.setPreferredSize(null);
         panel.setLayout(new BorderLayout());
-        
+
         // Label
         label = new JLabel(background, JLabel.CENTER);
-//      label.setBounds(50,  50, this.getWidth() - 100,  (int)((this.getWidth() - 100)*1.18));
+        //      label.setBounds(50,  50, this.getWidth() - 100,  (int)((this.getWidth() - 100)*1.18));
         label.setBackground(Color.DARK_GRAY);
         label.repaint();
         label.revalidate();
     }
-    
+
     /* Scale icon sizes */
     private void scaleIcons() {
         for(int i = 0; i < specialIcons.length; i++) {
@@ -327,8 +248,8 @@ public class Keyboard extends JFrame {
             int tempHeight = temp.getHeight(null);
             if(specialURLs[i] == "/enter.png") {
                 temp = temp.getScaledInstance((int)(tempWidth/20*(double)(this.getWidth()/450.0)), 
-                                            (int)(tempHeight/20*(double)(this.getWidth()/450.0)),
-                                            Image.SCALE_SMOOTH);
+                        (int)(tempHeight/20*(double)(this.getWidth()/450.0)),
+                        Image.SCALE_SMOOTH);
             } else {
                 temp = temp.getScaledInstance((int)(tempWidth/7*(double)(this.getWidth()/450.0)), 
                         (int)(tempHeight/7*(double)(this.getWidth()/450.0)),
@@ -337,7 +258,7 @@ public class Keyboard extends JFrame {
             specialIcons[i].setImage(temp);
         }
     }
-    
+
     /* Sets up left-side buttons */
     // TODO: Adjust bounds to fit better (increase size, and if possible, shape)
     private void loadSpecial() {
@@ -348,7 +269,7 @@ public class Keyboard extends JFrame {
         specialKeys[3] = new JButton("\\");
         specialKeys[4] = new JButton("=");
         specialKeys[5] = new JButton("(");
-        
+
         for (int i = 0; i < 6; i++) {
             final Integer x = new Integer(i);
             if (i < 3) { // Backspace, space, enter
@@ -357,33 +278,32 @@ public class Keyboard extends JFrame {
                     public void actionPerformed(ActionEvent ae) {
                         try {
                             Robot robot = new Robot();
-                            
+
                             switch(x) {
                             case 0: // Backspace
-                                robot.keyPress(KeyEvent.VK_BACK_SPACE);robot.keyRelease(KeyEvent.VK_BACK_SPACE);
+                                pressKey(KeyEvent.VK_BACK_SPACE);
                                 predictionInput = removeLastChar(predictionInput);
                                 predictionModel.predictSymbol(predictionInput);
                                 break;
-                            
+
                             case 1: // Space
-                                robot.keyPress(KeyEvent.VK_SPACE);robot.keyRelease(KeyEvent.VK_SPACE);
+                                pressKey(KeyEvent.VK_SPACE);
                                 isPredict = false;
                                 predictionModel.predictSymbol("");
                                 break;
-                            
+
                             case 2: // Enter
                                 if (mathMode.isSelected()) { // Math mode
-                                    robot.keyPress(KeyEvent.VK_ENTER);robot.keyRelease(KeyEvent.VK_ENTER);
+                                    pressKey(KeyEvent.VK_ENTER);
                                     robot.keyPress(KeyEvent.VK_ALT);
-                                    robot.keyPress(KeyEvent.VK_EQUALS);robot.keyRelease(KeyEvent.VK_EQUALS);
+                                    pressKey(KeyEvent.VK_EQUALS);
                                     robot.keyRelease(KeyEvent.VK_ALT);
                                 }
                                 else { // Normal mode
-                                    robot.keyPress(KeyEvent.VK_ENTER);robot.keyRelease(KeyEvent.VK_ENTER);
+                                    pressKey(KeyEvent.VK_ENTER);
                                 }
                                 break;
                             }
-                            
                         } catch (AWTException e) {
                             e.printStackTrace();
                         }
@@ -401,52 +321,52 @@ public class Keyboard extends JFrame {
     /* Sets up positioning for left-side buttons */
     private void positionSpecial() {
         int xValue, yValue;
-        
+
         // Backspace
         xValue = (int)(this.getWidth()/2) - 10;
         yValue = (int)(this.getHeight()/2) - 35;
         specialKeys[0].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
-        
+
         // \
         xValue = (int)(this.getWidth()/2) - 55;
         yValue = (int)(this.getHeight()/2) - 35;
         specialKeys[3].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
-        
+
         // (1) Space, (2) enter
         double radian;
         double initDegree = 23;
         double incrementDegree = -40;
-        
+
         int midX = (int)((this.getWidth())/2) - 20;
         int midY = (int)((this.getHeight())/2) - 32;
         int radius = (int)((this.getWidth())/4) - 15;
-        
+
         for (int i = 1; i <= 2; i++) {
             // Calculates coordinates of each number
             radian = Math.toRadians(initDegree);
             xValue = -1*(int)(Math.cos(radian)*radius) + midX;
             yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
-            
+
             specialKeys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
         }
-        
+
         // (4) =, (5) (
         initDegree = 23;
         incrementDegree = -40;
         radius = (int)((this.getWidth())/3) - 5;
-        
+
         for (int i = 4; i <= 5; i++) {
             // Calculates coordinates of each number
             radian = Math.toRadians(initDegree);
             xValue = -1*(int)(Math.cos(radian)*radius) + midX;
             yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
-            
+
             specialKeys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
         }
     }
-    
+
     /* Set up arithmetic buttons */
     private void arithmeticInit_1() {
         arithmeticKeys[0] = new JButton("+");
@@ -455,13 +375,13 @@ public class Keyboard extends JFrame {
         arithmeticKeys[3] = new JButton("*");
         arithmeticKeys[4] = new JButton("/");
     }
-    
+
     private void scaleArithmetic() {
         double radian;
         int xValue, yValue;
         double initDegree = 65;
         double incrementDegree = 56;
-        
+
         int midX = (int)((this.getWidth())/2) - 20;
         int midY = (int)((this.getHeight())/2) - 32;
         int radius = (int)((this.getWidth())/9) - 5;
@@ -472,25 +392,25 @@ public class Keyboard extends JFrame {
             xValue = -1*(int)(Math.cos(radian)*radius) + midX;
             yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
-            
+
             arithmeticKeys[i].setBounds(xValue, yValue, (int)(KEY_WIDTH*0.8), (int)(KEY_HEIGHT*0.8));
             arithmeticKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
     }
-    
+
     private void arithmeticInit() {
         arithmeticInit_1();
         scaleArithmetic(); 
-        
+
     }
-    
+
     /* Sets up letter buttons */
     private void letterInit_1() {
         for (int i = 0; i < 26; i++) {
             letterKeys[i] = new JButton("" + (char)(i + 'a'));
         }
     }
-    
+
     private void letterInit_2() {
         double radian;
         double initDegree = 50;
@@ -526,28 +446,19 @@ public class Keyboard extends JFrame {
 
                         if (!shiftClick && !capsClick) { // Lower case
                             int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (lowercase));
-                            robot.keyPress(keyCode);
-                            robot.keyRelease(keyCode);
+                            pressKey(keyCode);
                         } else if (!shiftClick && capsClick) { // Upper case
                             int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (uppercase));
-                            robot.keyPress(KeyEvent.VK_SHIFT);
-                            robot.keyPress(keyCode);
-                            robot.keyRelease(keyCode);
-                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                            shiftKey(keyCode);
                         } else if (shiftClick && !capsClick) { // Upper case
                             int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (uppercase));
-                            robot.keyPress(KeyEvent.VK_SHIFT);
-                            robot.keyPress(keyCode);
-                            robot.keyRelease(keyCode);
-                            robot.keyRelease(KeyEvent.VK_SHIFT);
+                            shiftKey(keyCode);
                             shiftClick = false;
                         } else { // Lower case
                             int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (lowercase));
-                            robot.keyPress(keyCode);
-                            robot.keyRelease(keyCode);
+                            pressKey(keyCode);
                             shiftClick = false;
                         }
-
                         if (isPredict) {
                             predictionInput += temp;
                             predictionModel.predictSymbol(predictionInput);
@@ -559,7 +470,7 @@ public class Keyboard extends JFrame {
             });
         }
     }
-    
+
     private void letterInit() {
         letterInit_1();
         letterInit_2();
@@ -580,7 +491,7 @@ public class Keyboard extends JFrame {
         layer3Keys[10] = new JButton("}");
         layer3Keys[11] = new JButton("{");
     }
-    
+
     private void layer3Init_2() {
         double radian;
         double initDegree = 55;
@@ -601,7 +512,7 @@ public class Keyboard extends JFrame {
             layer3Keys[i].setFont(new Font("Arial", Font.PLAIN, (int) (25*(double) (this.getWidth()/500.0))));
         }
     }
-    
+
     private void layer3Init(){
         layer3Init_1();
         layer3Init_2();
@@ -623,12 +534,12 @@ public class Keyboard extends JFrame {
         layer4Keys[10] = new JButton("$");
         layer4Keys[11] = new JButton(")");
     }
-    
+
     private void layer4Init_2() {
         double radian;
         double initDegree = 55;
         double incrementDegree = 23;
-        
+
         int xValue, yValue;
         int midX = (int)((this.getWidth())/2) - 20;
         int midY = (int)((this.getHeight())/2) - 32;
@@ -640,18 +551,18 @@ public class Keyboard extends JFrame {
             xValue = -1*(int)(Math.cos(radian)*radius) + midX;
             yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
-            
+
             layer4Keys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
             layer4Keys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
     }
-    
+
     private void layer4Init(){
         layer4Init_1();
         layer4Init_2();
-        
+
     }
-    
+
     /* set up change size buttons, which changes size as person presses the button
      * TODO: Special icons not scaling, and fix positioning/bounds of keys
      * TODO: Change background by 1) scaling OR 2) changing background with an int to keep track
@@ -660,17 +571,17 @@ public class Keyboard extends JFrame {
     private void loadChangeSize(){
         changeSizeButtons[0] = new JButton("-");
         changeSizeButtons[1] = new JButton("+");
-        
+
         int xValue = (int)(this.getWidth()*0.8);
         int yValue = (int)(this.getHeight()*0.8);
-        
+
         for (int i=0; i<2; i++){
             changeSizeButtons[i].setBorder(BorderFactory.createBevelBorder(10, Color.red, Color.gray));
             changeSizeButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
         changeSizeButtons[0].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
         changeSizeButtons[1].setBounds(xValue+KEY_WIDTH, yValue, KEY_WIDTH, KEY_HEIGHT);
-    
+
     }
 
     /* Sets up number buttons */
@@ -680,12 +591,12 @@ public class Keyboard extends JFrame {
             numberKeys[i] = new JButton(String.valueOf(i));
         }
     }
-    
+
     private void numberInit_2() {
         double radian;
         double initDegree = 55;
         double incrementDegree = 28;
-        
+
         int xValue, yValue;
         int midX = (int)((this.getWidth())/2) - 20;
         int midY = (int)((this.getHeight())/2) - 32;
@@ -697,12 +608,12 @@ public class Keyboard extends JFrame {
             xValue = -1*(int)(Math.cos(radian)*radius) + midX;
             yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
-            
+
             numberKeys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
             numberKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
     }
-    
+
     private void numberInit(){
         numberInit_1();
         numberInit_2();
@@ -721,17 +632,17 @@ public class Keyboard extends JFrame {
     private void loadGUI() {        
         // Background
         loadBackground();
-        
+
         // Special symbols
         loadSpecial();
         positionSpecial();
-        
+
         arithmeticInit();
         numberInit();
         layer3Init();
         layer4Init();
         letterInit();
-        
+
         for(int i = 0; i < keys.length; i++) {
             for(int j = 0; j < keys[i].length; j++) {
                 if(i > 0) {
@@ -749,7 +660,7 @@ public class Keyboard extends JFrame {
                 panel.add(keys[i][j]);
             }
         }
-        
+
         // Add mode toggle button
         mathMode.setBounds(0,0, 110,30);
         mathMode.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -758,16 +669,16 @@ public class Keyboard extends JFrame {
             public void itemStateChanged(ItemEvent itemEvent) {
                 int state = itemEvent.getStateChange();
                 if (state == ItemEvent.SELECTED) {
-                  System.out.println("Math Mode");
-                  mathMode.setText("Math Mode");
+                    System.out.println("Math Mode");
+                    mathMode.setText("Math Mode");
                 } else {
-                  System.out.println("Normal Mode");
-                  mathMode.setText("Normal Mode");
+                    System.out.println("Normal Mode");
+                    mathMode.setText("Normal Mode");
                 }
-              }
+            }
         });
         panel.add(mathMode);
-        
+
         //change size buttons
         loadChangeSize();
         for (int i = 0; i < 2; i++){
@@ -786,10 +697,10 @@ public class Keyboard extends JFrame {
                     }
                 }
             });
-            
+
             panel.add(changeSizeButtons[i]);
         }
-        
+
         panel.add(label);
         panel.revalidate();
         panel.repaint();
