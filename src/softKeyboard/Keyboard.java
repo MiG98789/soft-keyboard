@@ -594,6 +594,14 @@ public class Keyboard extends JFrame {
         changeSizeButtons[1].setBounds(xValue+KEY_WIDTH, yValue, KEY_WIDTH, KEY_HEIGHT);
 
     }
+    
+    private void scaleMathToggle() {
+        int width = 110 + currScaleCount * 55;
+        int height = 30 + currScaleCount * 15;
+        
+        mathMode.setBounds(0, 0, width, height);
+        mathMode.setFont(new Font("Arial", Font.PLAIN, (int)(14*(double)(this.getWidth()/500.0))));
+    }
 
     // TODO: Change key width, key height
     private void scaleKeys(){
@@ -604,6 +612,7 @@ public class Keyboard extends JFrame {
         scaleLayer4();
         loadAndScaleLetters();
         scaleChangeSize();
+        scaleMathToggle();
     }
 
     private void loadGUI() {
@@ -641,8 +650,7 @@ public class Keyboard extends JFrame {
         }
 
         // Add mode toggle button
-        mathMode.setBounds(0,0, 110,30);
-        mathMode.setFont(new Font("Arial", Font.PLAIN, 12));
+        scaleMathToggle();
         mathMode.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent itemEvent) {
@@ -654,6 +662,7 @@ public class Keyboard extends JFrame {
                     System.out.println("Normal Mode");
                     mathMode.setText("Normal Mode");
                     
+                    // TODO: Set up Math Mode and Normal Mode
 //                    isPredict = false;
 //                    predictionInput = "";
 //                    predictionModel.predictSymbol("");
@@ -670,26 +679,26 @@ public class Keyboard extends JFrame {
                 @Override
                 public void mouseClicked (MouseEvent e) {
                     if (x == 0) { //If smaller
-                        if(currScaleCount != 0) {                       
+                        if(currScaleCount != 0) {  
+                            currScaleCount--;
                             setSize((int)(getWidth()/SCALE_FACTOR),(int)(getHeight()/SCALE_FACTOR));
-                            scaleKeys();
                             if(currScaleCount == 1) {
                                 background = new ImageIcon(getClass().getResource("/bg.png"));
                             } else {
                                 background = new ImageIcon(getClass().getResource("/bg3.png"));
                             }
-                            currScaleCount--;
+                            scaleKeys();
                         }
                     } else { //If larger
                         if(currScaleCount != MAX_SCALE_COUNT) {
+                            currScaleCount++;
                             setSize((int)(getWidth()*SCALE_FACTOR),(int)(getHeight()*SCALE_FACTOR));
-                            scaleKeys();
                             if(currScaleCount == 1) {
                                 background = new ImageIcon(getClass().getResource("/bg4.png"));
                             } else {
                                 background = new ImageIcon(getClass().getResource("/bg3.png"));   
                             }
-                            currScaleCount++;
+                            scaleKeys();
                         }
                     }
                 }
