@@ -259,7 +259,7 @@ public class Keyboard extends JFrame {
     }
 
     /* Sets key text/image */
-    private void loadKeyGraphic() {
+    private void loadKeysButtons() {
         // Left-side buttons
         for(int i = 0; i < specialIcons.length; i++) {
             specialKeys[i] = new JButton(specialIcons[i]);
@@ -312,6 +312,10 @@ public class Keyboard extends JFrame {
         for (int i = 0; i < 26; i++) {
             letterKeys[i] = new JButton("" + (char)(i + 'a'));
         }
+        
+        // Change size buttons
+        changeSizeButtons[0] = new JButton("-");
+        changeSizeButtons[1] = new JButton("+");
     }
     
     /* Sets up left-side buttons' listeners */
@@ -578,10 +582,7 @@ public class Keyboard extends JFrame {
      * TODO: Change background by 1) scaling OR 2) changing background with an int to keep track
      *       with a min/max size (default is min)
      */
-    private void loadChangeSize(){
-        changeSizeButtons[0] = new JButton("-");
-        changeSizeButtons[1] = new JButton("+");
-
+    private void scaleChangeSize(){
         int xValue = (int)(this.getWidth()*0.8);
         int yValue = (int)(this.getHeight()*0.8);
 
@@ -602,13 +603,14 @@ public class Keyboard extends JFrame {
         scaleLayer3();
         scaleLayer4();
         loadAndScaleLetters();
+        scaleChangeSize();
     }
 
     private void loadGUI() {
         // Graphics
         loadBackground();
         scaleIcons();
-        loadKeyGraphic();
+        loadKeysButtons();
 
         // Size and position
         setSpecialListener();
@@ -661,7 +663,7 @@ public class Keyboard extends JFrame {
         panel.add(mathMode);
 
         //change size buttons
-        loadChangeSize();
+        scaleChangeSize();
         for (int i = 0; i < 2; i++){
             final Integer x = new Integer(i);
             changeSizeButtons[x].addMouseListener(new MouseAdapter() {
