@@ -71,7 +71,7 @@ public class Keyboard extends JFrame {
     private boolean isPredict = false; // TODO: Make it work for \ and alphabets in Math Mode
 
     private double SCALE_FACTOR = 1.2;
-    private int CURR_SCALE_COUNT = 0;
+    private int currScaleCount = 0;
     private int MAX_SCALE_COUNT = 2;
     private JButton[] changeSizeButtons = new JButton[2];
 
@@ -668,17 +668,30 @@ public class Keyboard extends JFrame {
                 @Override
                 public void mouseClicked (MouseEvent e) {
                     if (x == 0) { //If smaller
-                        setSize((int)(getWidth()/SCALE_FACTOR),(int)(getHeight()/SCALE_FACTOR));
-                        scaleKeys();
-                        background = new ImageIcon(getClass().getResource("/bg.png"));                
+                        if(currScaleCount != 0) {                       
+                            setSize((int)(getWidth()/SCALE_FACTOR),(int)(getHeight()/SCALE_FACTOR));
+                            scaleKeys();
+                            if(currScaleCount == 1) {
+                                background = new ImageIcon(getClass().getResource("/bg.png"));
+                            } else {
+                                background = new ImageIcon(getClass().getResource("/bg3.png"));
+                            }
+                            currScaleCount--;
+                        }
                     } else { //If larger
-                        setSize((int)(getWidth()*SCALE_FACTOR),(int)(getHeight()*SCALE_FACTOR));
-                        scaleKeys();
-                        background = new ImageIcon(getClass().getResource("/bg3.png"));                        
+                        if(currScaleCount != MAX_SCALE_COUNT) {
+                            setSize((int)(getWidth()*SCALE_FACTOR),(int)(getHeight()*SCALE_FACTOR));
+                            scaleKeys();
+                            if(currScaleCount == 1) {
+                                background = new ImageIcon(getClass().getResource("/bg4.png"));
+                            } else {
+                                background = new ImageIcon(getClass().getResource("/bg3.png"));   
+                            }
+                            currScaleCount++;
+                        }
                     }
                 }
             });
-
             panel.add(changeSizeButtons[i]);
         }
 
