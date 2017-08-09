@@ -1,59 +1,14 @@
 package softKeyboard;
 
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowFocusListener;
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.net.URI;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.nio.channels.OverlappingFileLockException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.Vector;
-
-import javax.imageio.ImageIO;
-import javax.print.DocFlavor.URL;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.LineBorder;
-import javax.swing.event.*;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 @SuppressWarnings("serial")
 public class Keyboard extends JFrame {
@@ -267,19 +222,19 @@ public class Keyboard extends JFrame {
         specialKeys[3] = new JButton("\\");
         specialKeys[4] = new JButton("=");
         specialKeys[5] = new JButton("(");
-        
+
         // Arithmetic
         arithmeticKeys[0] = new JButton("+");
         arithmeticKeys[1] = new JButton("-");
         arithmeticKeys[2] = new JButton(".");
         arithmeticKeys[3] = new JButton("*");
         arithmeticKeys[4] = new JButton("/");
-        
+
         // Numbers
         for(int i = 0; i < numberKeys.length; i++) {
             numberKeys[i] = new JButton(String.valueOf(i));
         }
-        
+
         // Layer 3
         layer3Keys[0] = new JButton("[");
         layer3Keys[1] = new JButton("]");
@@ -293,7 +248,7 @@ public class Keyboard extends JFrame {
         layer3Keys[9] = new JButton("_");
         layer3Keys[10] = new JButton("}");
         layer3Keys[11] = new JButton("{");
-        
+
         // Layer 4
         layer4Keys[0] = new JButton(",");
         layer4Keys[1] = new JButton(";");
@@ -307,17 +262,17 @@ public class Keyboard extends JFrame {
         layer4Keys[9] = new JButton("&");
         layer4Keys[10] = new JButton("$");
         layer4Keys[11] = new JButton(")");
-        
+
         // Letters
         for (int i = 0; i < 26; i++) {
             letterKeys[i] = new JButton("" + (char)(i + 'a'));
         }
-        
+
         // Change size buttons
         changeSizeButtons[0] = new JButton("-");
         changeSizeButtons[1] = new JButton("+");
     }
-    
+
     /* Sets up left-side buttons' listeners */
     // TODO: Adjust bounds to fit better (increase size, and if possible, shape)
     private void setSpecialListener() {
@@ -374,7 +329,7 @@ public class Keyboard extends JFrame {
         for(int i = 3; i < 6; i++) {
             specialKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
-        
+
         // Positioning
         int xValue, yValue;
 
@@ -445,7 +400,7 @@ public class Keyboard extends JFrame {
             arithmeticKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
     }
-    
+
     /* Sets size and position of number buttons */
     // TODO: Scroll through numbers
     private void scaleNumber() {
@@ -469,7 +424,7 @@ public class Keyboard extends JFrame {
             numberKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
     }
-    
+
     /* Sets up letter buttons */
     // TODO: Seperate into two functions (load and scale)
     private void loadAndScaleLetters() {
@@ -501,30 +456,24 @@ public class Keyboard extends JFrame {
             letterKeys[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
-                    try {
-                        Robot robot = new Robot();
-
-                        if (!shiftClick && !capsClick) { // Lower case
-                            int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (lowercase));
-                            typeKey(keyCode);
-                        } else if (!shiftClick && capsClick) { // Upper case
-                            int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (uppercase));
-                            shiftKey(keyCode);
-                        } else if (shiftClick && !capsClick) { // Upper case
-                            int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (uppercase));
-                            shiftKey(keyCode);
-                            shiftClick = false;
-                        } else { // Lower case
-                            int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (lowercase));
-                            typeKey(keyCode);
-                            shiftClick = false;
-                        }
-                        if (isPredict) {
-                            predictionInput += temp;
-                            predictionModel.predictSymbol(predictionInput);
-                        }
-                    } catch (AWTException e) {
-                        e.printStackTrace();
+                    if (!shiftClick && !capsClick) { // Lower case
+                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (lowercase));
+                        typeKey(keyCode);
+                    } else if (!shiftClick && capsClick) { // Upper case
+                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (uppercase));
+                        shiftKey(keyCode);
+                    } else if (shiftClick && !capsClick) { // Upper case
+                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (uppercase));
+                        shiftKey(keyCode);
+                        shiftClick = false;
+                    } else { // Lower case
+                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (lowercase));
+                        typeKey(keyCode);
+                        shiftClick = false;
+                    }
+                    if (isPredict) {
+                        predictionInput += temp;
+                        predictionModel.predictSymbol(predictionInput);
                     }
                 }
             });
@@ -594,11 +543,11 @@ public class Keyboard extends JFrame {
         changeSizeButtons[1].setBounds(xValue+KEY_WIDTH, yValue, KEY_WIDTH, KEY_HEIGHT);
 
     }
-    
+
     private void scaleMathToggle() {
         int width = 110 + currScaleCount * 55;
         int height = 30 + currScaleCount * 15;
-        
+
         mathMode.setBounds(0, 0, width, height);
         mathMode.setFont(new Font("Arial", Font.PLAIN, (int)(14*(double)(this.getWidth()/500.0))));
     }
@@ -661,11 +610,11 @@ public class Keyboard extends JFrame {
                 } else {
                     System.out.println("Normal Mode");
                     mathMode.setText("Normal Mode");
-                    
+
                     // TODO: Set up Math Mode and Normal Mode
-//                    isPredict = false;
-//                    predictionInput = "";
-//                    predictionModel.predictSymbol("");
+                    //                    isPredict = false;
+                    //                    predictionInput = "";
+                    //                    predictionModel.predictSymbol("");
                 }
             }
         });
