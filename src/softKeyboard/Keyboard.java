@@ -87,7 +87,7 @@ public class Keyboard extends JFrame {
     private boolean shiftClick = false;
     private boolean capsClick = false;
 
-    private void pressKey(int key) {
+    private void typeKey(int key) {
         try {
             Robot robot = new Robot();
             robot.keyPress(key);
@@ -101,7 +101,7 @@ public class Keyboard extends JFrame {
         try {
             Robot robot = new Robot();
             robot.keyPress(KeyEvent.VK_SHIFT);
-            pressKey(key);
+            typeKey(key);
             robot.keyRelease(key);
         } catch (AWTException e) {
             e.printStackTrace();
@@ -119,19 +119,19 @@ public class Keyboard extends JFrame {
             isPredict = false; // Will turn true ONLY IF starting with \ or alphabet
 
             // Numbers
-            if (actionCommand == "0") {pressKey(KeyEvent.VK_0);}
-            else if (actionCommand == "1") {pressKey(KeyEvent.VK_1);}
-            else if (actionCommand == "2") {pressKey(KeyEvent.VK_2);}
-            else if (actionCommand == "3") {pressKey(KeyEvent.VK_3);}
-            else if (actionCommand == "4") {pressKey(KeyEvent.VK_4);}
-            else if (actionCommand == "5") {pressKey(KeyEvent.VK_5);}
-            else if (actionCommand == "6") {pressKey(KeyEvent.VK_6);}
-            else if (actionCommand == "7") {pressKey(KeyEvent.VK_7);}
-            else if (actionCommand == "8") {pressKey(KeyEvent.VK_8);}
-            else if (actionCommand == "9") {pressKey(KeyEvent.VK_9);}
+            if (actionCommand == "0") {typeKey(KeyEvent.VK_0);}
+            else if (actionCommand == "1") {typeKey(KeyEvent.VK_1);}
+            else if (actionCommand == "2") {typeKey(KeyEvent.VK_2);}
+            else if (actionCommand == "3") {typeKey(KeyEvent.VK_3);}
+            else if (actionCommand == "4") {typeKey(KeyEvent.VK_4);}
+            else if (actionCommand == "5") {typeKey(KeyEvent.VK_5);}
+            else if (actionCommand == "6") {typeKey(KeyEvent.VK_6);}
+            else if (actionCommand == "7") {typeKey(KeyEvent.VK_7);}
+            else if (actionCommand == "8") {typeKey(KeyEvent.VK_8);}
+            else if (actionCommand == "9") {typeKey(KeyEvent.VK_9);}
 
             // Symbols
-            else if (actionCommand == "`") {pressKey(KeyEvent.VK_BACK_QUOTE);}
+            else if (actionCommand == "`") {typeKey(KeyEvent.VK_BACK_QUOTE);}
             else if (actionCommand == "~") {shiftKey(KeyEvent.VK_BACK_QUOTE);}
             else if (actionCommand == "!") {shiftKey(KeyEvent.VK_1);}
             else if (actionCommand == "@") {shiftKey(KeyEvent.VK_2);}
@@ -142,24 +142,24 @@ public class Keyboard extends JFrame {
             else if (actionCommand == "&") {shiftKey(KeyEvent.VK_7);}
             else if (actionCommand == "*") {shiftKey(KeyEvent.VK_8);}                
             else if (actionCommand == ")") {shiftKey(KeyEvent.VK_0);}
-            else if (actionCommand == "-") {pressKey(KeyEvent.VK_MINUS);}
+            else if (actionCommand == "-") {typeKey(KeyEvent.VK_MINUS);}
             else if (actionCommand == "_") {shiftKey(KeyEvent.VK_MINUS);}
-            else if (actionCommand == "=") {pressKey(KeyEvent.VK_EQUALS);}
+            else if (actionCommand == "=") {typeKey(KeyEvent.VK_EQUALS);}
             else if (actionCommand == "+") {shiftKey(KeyEvent.VK_EQUALS);}
-            else if (actionCommand == "[") {pressKey(KeyEvent.VK_OPEN_BRACKET);}
+            else if (actionCommand == "[") {typeKey(KeyEvent.VK_OPEN_BRACKET);}
             else if (actionCommand == "{") {shiftKey(KeyEvent.VK_OPEN_BRACKET);}
-            else if (actionCommand == "]") {pressKey(KeyEvent.VK_CLOSE_BRACKET);}
+            else if (actionCommand == "]") {typeKey(KeyEvent.VK_CLOSE_BRACKET);}
             else if (actionCommand == "}") {shiftKey(KeyEvent.VK_CLOSE_BRACKET);}
             else if (actionCommand == "|") {shiftKey(KeyEvent.VK_BACK_SLASH);}
-            else if (actionCommand == ";") {pressKey(KeyEvent.VK_SEMICOLON);}
+            else if (actionCommand == ";") {typeKey(KeyEvent.VK_SEMICOLON);}
             else if (actionCommand == ":") {shiftKey(KeyEvent.VK_SEMICOLON);}
-            else if (actionCommand == "'") {pressKey(KeyEvent.VK_QUOTE);}
+            else if (actionCommand == "'") {typeKey(KeyEvent.VK_QUOTE);}
             else if (actionCommand == "\"") {shiftKey(KeyEvent.VK_QUOTE);}
-            else if (actionCommand == ",") {pressKey(KeyEvent.VK_COMMA);}
+            else if (actionCommand == ",") {typeKey(KeyEvent.VK_COMMA);}
             else if (actionCommand == "<") {shiftKey(KeyEvent.VK_COMMA);}
-            else if (actionCommand == ".") {pressKey(KeyEvent.VK_PERIOD);}
+            else if (actionCommand == ".") {typeKey(KeyEvent.VK_PERIOD);}
             else if (actionCommand == ">") {shiftKey(KeyEvent.VK_PERIOD);}
-            else if (actionCommand == "/") {pressKey(KeyEvent.VK_SLASH);}
+            else if (actionCommand == "/") {typeKey(KeyEvent.VK_SLASH);}
             else if (actionCommand == "?") {shiftKey(KeyEvent.VK_SLASH);}
 
             // Special cases
@@ -167,9 +167,9 @@ public class Keyboard extends JFrame {
                 // TODO: Decide whether to permanently enable this
                 shiftKey(KeyEvent.VK_9); // (
                 shiftKey(KeyEvent.VK_0); // )
-                pressKey(KeyEvent.VK_LEFT); // Go between ( and )
+                typeKey(KeyEvent.VK_LEFT); // Go between ( and )
             } else if (actionCommand == "\\") { // Restart prediction
-                pressKey(KeyEvent.VK_BACK_SLASH);
+                typeKey(KeyEvent.VK_BACK_SLASH);
                 predictionInput = "\\";
                 isPredict = true;
                 predictionModel.predictSymbol(predictionInput);
@@ -281,26 +281,26 @@ public class Keyboard extends JFrame {
 
                             switch(x) {
                             case 0: // Backspace
-                                pressKey(KeyEvent.VK_BACK_SPACE);
+                                typeKey(KeyEvent.VK_BACK_SPACE);
                                 predictionInput = removeLastChar(predictionInput);
                                 predictionModel.predictSymbol(predictionInput);
                                 break;
 
                             case 1: // Space
-                                pressKey(KeyEvent.VK_SPACE);
+                                typeKey(KeyEvent.VK_SPACE);
                                 isPredict = false;
                                 predictionModel.predictSymbol("");
                                 break;
 
                             case 2: // Enter
                                 if (mathMode.isSelected()) { // Math mode
-                                    pressKey(KeyEvent.VK_ENTER);
+                                    typeKey(KeyEvent.VK_ENTER);
                                     robot.keyPress(KeyEvent.VK_ALT);
-                                    pressKey(KeyEvent.VK_EQUALS);
+                                    typeKey(KeyEvent.VK_EQUALS);
                                     robot.keyRelease(KeyEvent.VK_ALT);
                                 }
                                 else { // Normal mode
-                                    pressKey(KeyEvent.VK_ENTER);
+                                    typeKey(KeyEvent.VK_ENTER);
                                 }
                                 break;
                             }
@@ -446,7 +446,7 @@ public class Keyboard extends JFrame {
 
                         if (!shiftClick && !capsClick) { // Lower case
                             int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (lowercase));
-                            pressKey(keyCode);
+                            typeKey(keyCode);
                         } else if (!shiftClick && capsClick) { // Upper case
                             int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (uppercase));
                             shiftKey(keyCode);
@@ -456,7 +456,7 @@ public class Keyboard extends JFrame {
                             shiftClick = false;
                         } else { // Lower case
                             int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (lowercase));
-                            pressKey(keyCode);
+                            typeKey(keyCode);
                             shiftClick = false;
                         }
                         if (isPredict) {
