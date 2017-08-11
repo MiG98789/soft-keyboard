@@ -27,7 +27,7 @@ public class KeyboardFrame extends JFrame {
     private String predictionInput;
     private boolean isPredict = false; // TODO: Make it work for \ and alphabets in Math Mode
 
-    private double SCALE_FACTOR = 1.2;
+    private double SCALE_FACTOR = 1.15;
     private int currScaleCount = 0;
     private int MAX_SCALE_COUNT = 2;
     private JButton[] changeSizeButtons = new JButton[2];
@@ -644,14 +644,14 @@ public class KeyboardFrame extends JFrame {
                     if (x == 0) { //If smaller
                         if(currScaleCount != 0) {  
                             currScaleCount--;
-                            setSize((int)(getWidth()/SCALE_FACTOR),(int)(getHeight()/SCALE_FACTOR));
+                            setSize((int)(getWidth()/SCALE_FACTOR), (int)(getHeight()/SCALE_FACTOR));
                             if(currScaleCount == 1) {
-                            	Image a =new ImageIcon(getClass().getResource("/bg2.png")).getImage();
-                                background.setImage(getScaledImage(a,(int)(panel.getWidth()*1.15), (int)(panel.getWidth()*1.15))); 
+                            	Image temp = new ImageIcon(getClass().getResource("/bg.png")).getImage();
+                                background.setImage(getScaledImage(temp, (int)(panel.getWidth()/SCALE_FACTOR), (int)(panel.getWidth()/SCALE_FACTOR))); 
 
                             } else {
-                            	 Image a =new ImageIcon(getClass().getResource("/bg3.png")).getImage();
-                                 background.setImage(getScaledImage(a,(int)(panel.getWidth()*1.15), (int)(panel.getWidth()*1.15))); 
+                            	 Image temp = new ImageIcon(getClass().getResource("/bg.png")).getImage();
+                                 background.setImage(getScaledImage(temp, (int)(panel.getWidth()/SCALE_FACTOR), (int)(panel.getWidth()/SCALE_FACTOR))); 
                             }
                             scaleKeys();
                         }
@@ -660,11 +660,11 @@ public class KeyboardFrame extends JFrame {
                             currScaleCount++;
                             setSize((int)(getWidth()*SCALE_FACTOR),(int)(getHeight()*SCALE_FACTOR));
                             if(currScaleCount == 1) {
-                                Image a =new ImageIcon(getClass().getResource("/bg3.png")).getImage();
-                                background.setImage(getScaledImage(a,(int)(panel.getWidth()*1.15), (int)(panel.getWidth()*1.15))); 
+                                Image temp = new ImageIcon(getClass().getResource("/bg.png")).getImage();
+                                background.setImage(getScaledImage(temp, (int)(panel.getWidth()*SCALE_FACTOR), (int)(panel.getWidth()*SCALE_FACTOR))); 
                             } else {
-                            	 Image a =new ImageIcon(getClass().getResource("/bg3.png")).getImage();
-                                 background.setImage(getScaledImage(a,(int)(panel.getWidth()*1.15), (int)(panel.getWidth()*1.15)));    
+                            	 Image temp = new ImageIcon(getClass().getResource("/bg.png")).getImage();
+                                 background.setImage(getScaledImage(temp, (int)(panel.getWidth()*SCALE_FACTOR), (int)(panel.getWidth()*SCALE_FACTOR)));    
                             }
                             scaleKeys();
                         }
