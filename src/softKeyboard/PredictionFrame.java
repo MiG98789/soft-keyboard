@@ -13,7 +13,7 @@ import java.util.Vector;
 import javax.swing.*;
 
 /**
- * <h1>Prediction Frame<h1>
+ * <h1>Prediction Frame</h1>
  * <p> The Prediction Frame class handles the corresponding
  * predictions for mathematical symbols and functions.</p>
  */
