@@ -12,12 +12,17 @@ import java.io.InputStreamReader;
 import java.util.Vector;
 import javax.swing.*;
 
+/**
+ * <h1>Prediction Frame<h1>
+ * <p> The Prediction Frame class handles the corresponding
+ * predictions for mathematical symbols and functions.</p>
+ */
 @SuppressWarnings("serial")
 public class PredictionFrame extends JFrame {
-    private int FRAME_WIDTH = 400;
-    private int FRAME_HEIGHT = 210;
-    private int NUM_OF_PREDICTIONS = 5;
-    private float FONT_SIZE = 22.0f;
+    private final int FRAME_WIDTH = 400;
+    private final int FRAME_HEIGHT = 210;
+    private final int NUM_OF_PREDICTIONS = 5;
+    private final float FONT_SIZE = 22.0f;
     private JPanel panel;
     private DefaultListModel<String> dlm = new DefaultListModel<String>();
     private JScrollPane scrollPane;
@@ -84,19 +89,22 @@ public class PredictionFrame extends JFrame {
         }
     }
     
-    public void predictSymbol(String str) {
-        System.out.println("Prediction input: " + str);
+    /**
+     * @param str Input substring to be used for prediction
+     */
+    public void predictSymbol(String input) {
+        System.out.println("Prediction input: " + input);
         
         // Clear all items
         dlm.clear();
-        if (str.isEmpty()) {
+        if (input.isEmpty()) {
             return;
         }
 
         // Loop through each symbol, and add matching predictions to list
         for (int i = 0; i < mathSymbols.size(); i++) {
-            if (str.length() <= mathSymbols.elementAt(i).length()) {
-                if (str.equals(mathSymbols.elementAt(i).substring(0, str.length()))) {
+            if (input.length() <= mathSymbols.elementAt(i).length()) {
+                if (input.equals(mathSymbols.elementAt(i).substring(0, input.length()))) {
                     dlm.addElement(mathSymbols.elementAt(i));
                     System.out.println("Predicted: " + mathSymbols.elementAt(i));
                 }
@@ -122,7 +130,7 @@ public class PredictionFrame extends JFrame {
                             Robot robot = new Robot();
     
                             // Type out selection                        
-                            for (int i = str.length(); i < selection.length(); i++) {
+                            for (int i = input.length(); i < selection.length(); i++) {
                                 char temp = selection.charAt(i);
                                 if (Character.isUpperCase(temp)) {
                                     robot.keyPress(KeyEvent.VK_SHIFT);
@@ -154,6 +162,9 @@ public class PredictionFrame extends JFrame {
         this.repaint();
     }
     
+    /**
+     * @param title Sets window title
+     */
     public PredictionFrame(String title) {
         super(title);
         loadFrame();
