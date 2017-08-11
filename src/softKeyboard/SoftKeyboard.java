@@ -2,9 +2,10 @@ package softKeyboard;
 
 /**
  * <h1>Soft Keyboard</h1>
- * <p>Soft Keyboard is a virtual keyboard designed specifically to
- * aid people afflicted with mucopolysaccharidoses (MPS) or
- * related diseases that impairs hand and arm motor movements.</p>
+ * <p>Soft Keyboard is a virtual keyboard with special
+ * mathematics-related predictions designed to aid people 
+ * afflicted with mucopolysaccharidoses (MPS) or related 
+ * diseases that impairs hand and arm motor movements.</p>
  * 
  * @author Gian Miguel Sero Del Mundo, Jin Young Park
  * @version 1.1
