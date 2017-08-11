@@ -13,7 +13,7 @@ import java.util.Vector;
 import javax.swing.*;
 
 @SuppressWarnings("serial")
-public class PredictionModel extends JFrame {
+public class PredictionFrame extends JFrame {
     private int FRAME_WIDTH = 400;
     private int FRAME_HEIGHT = 210;
     private int NUM_OF_PREDICTIONS = 5;
@@ -154,7 +154,7 @@ public class PredictionModel extends JFrame {
         this.repaint();
     }
     
-    public PredictionModel(String title) {
+    public PredictionFrame(String title) {
         super(title);
         loadFrame();
         loadSymbols();

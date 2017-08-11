@@ -12,7 +12,7 @@ package softKeyboard;
  */
 public class SoftKeyboard {    
     public SoftKeyboard() {
-        new Keyboard("Soft Keyboard");
+        new KeyboardFrame("Soft Keyboard");
     }
     
     public static void main(String[] args) {

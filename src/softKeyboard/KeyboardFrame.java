@@ -11,8 +11,8 @@ import java.awt.event.MouseEvent;
 import javax.swing.*;
 
 @SuppressWarnings("serial")
-public class Keyboard extends JFrame {
-    private PredictionModel predictionModel;
+public class KeyboardFrame extends JFrame {
+    private PredictionFrame predictionModel;
 
     // TODO: Fix UI layout
     private int FRAME_WIDTH = 450;
@@ -663,9 +663,9 @@ public class Keyboard extends JFrame {
         this.repaint();
     }
 
-    public Keyboard(String title) {
+    public KeyboardFrame(String title) {
         super(title);
         loadGUI();
-        predictionModel = new PredictionModel("Prediction List");    
+        predictionModel = new PredictionFrame("Prediction List");    
     }
 }
