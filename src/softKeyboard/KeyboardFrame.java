@@ -8,6 +8,8 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+
 import javax.swing.*;
 
 @SuppressWarnings("serial")
@@ -515,7 +517,7 @@ public class KeyboardFrame extends JFrame {
         int radius = (int)((this.getWidth())/3) - 15;
 
         for (int i = 0; i < layer4Keys.length; i++) {
-            // Calculates coordinates of each layer4
+            // Calculates coordinates of each layer4 
             radian = Math.toRadians(initDegree);
             xValue = -1*(int)(Math.cos(radian)*radius) + midX;
             yValue = -1*(int)(Math.sin(radian)*radius) + midY;
@@ -532,6 +534,7 @@ public class KeyboardFrame extends JFrame {
      *       with a min/max size (default is min)
      */
     private void scaleChangeSize(){
+    	//this.setSize(this.getWidth(),this.getHeight());
         int xValue = (int)(this.getWidth()*0.8);
         int yValue = (int)(this.getHeight()*0.8);
 
@@ -562,6 +565,17 @@ public class KeyboardFrame extends JFrame {
         loadAndScaleLetters();
         scaleChangeSize();
         scaleMathToggle();
+    }
+    
+    private Image getScaledImage(Image srcImg, int w, int h){
+        BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = resizedImg.createGraphics();
+
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2.drawImage(srcImg, 0, 0, w, h, null);
+        g2.dispose();
+
+        return resizedImg;
     }
 
     private void loadGUI() {
@@ -632,9 +646,12 @@ public class KeyboardFrame extends JFrame {
                             currScaleCount--;
                             setSize((int)(getWidth()/SCALE_FACTOR),(int)(getHeight()/SCALE_FACTOR));
                             if(currScaleCount == 1) {
-                                background = new ImageIcon(getClass().getResource("/bg.png"));
+                            	Image a =new ImageIcon(getClass().getResource("/bg2.png")).getImage();
+                                background.setImage(getScaledImage(a,(int)(panel.getWidth()*1.15), (int)(panel.getWidth()*1.15))); 
+
                             } else {
-                                background = new ImageIcon(getClass().getResource("/bg3.png"));
+                            	 Image a =new ImageIcon(getClass().getResource("/bg3.png")).getImage();
+                                 background.setImage(getScaledImage(a,(int)(panel.getWidth()*1.15), (int)(panel.getWidth()*1.15))); 
                             }
                             scaleKeys();
                         }
@@ -643,9 +660,11 @@ public class KeyboardFrame extends JFrame {
                             currScaleCount++;
                             setSize((int)(getWidth()*SCALE_FACTOR),(int)(getHeight()*SCALE_FACTOR));
                             if(currScaleCount == 1) {
-                                background = new ImageIcon(getClass().getResource("/bg4.png"));
+                                Image a =new ImageIcon(getClass().getResource("/bg3.png")).getImage();
+                                background.setImage(getScaledImage(a,(int)(panel.getWidth()*1.15), (int)(panel.getWidth()*1.15))); 
                             } else {
-                                background = new ImageIcon(getClass().getResource("/bg3.png"));   
+                            	 Image a =new ImageIcon(getClass().getResource("/bg3.png")).getImage();
+                                 background.setImage(getScaledImage(a,(int)(panel.getWidth()*1.15), (int)(panel.getWidth()*1.15)));    
                             }
                             scaleKeys();
                         }
