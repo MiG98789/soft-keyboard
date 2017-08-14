@@ -12,6 +12,10 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.*;
 
+/**
+ * <h1>Keyboard Frame</h1>
+ * <p> The Keyboard Frame class handles the keyboard UI</p>
+ */
 @SuppressWarnings("serial")
 public class KeyboardFrame extends JFrame {
     private PredictionFrame predictionModel;
