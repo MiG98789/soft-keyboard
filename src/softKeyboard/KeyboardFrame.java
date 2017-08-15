@@ -576,8 +576,8 @@ public class KeyboardFrame extends JFrame {
     }
 
     private void scaleMathToggle() {
-        int width = 110 + currScaleCount * 55;
-        int height = 30 + currScaleCount * 15;
+        int width = 110 + currScaleCount * 20;
+        int height = 30 + currScaleCount * 5;
 
         mathMode.setBounds(0, 0, width, height);
         mathMode.setFont(new Font("Arial", Font.PLAIN, (int)(14*(double)(this.getWidth()/500.0))));
