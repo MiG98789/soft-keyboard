@@ -28,7 +28,7 @@ public class KeyboardFrame extends JFrame {
     private ImageIcon background = new ImageIcon(getClass().getResource("/bg.png"));
     private JToggleButton mathMode = new JToggleButton("Normal Mode", false);
     private String predictionInput;
-    private boolean isPredict = false; // TODO: Make it work for \ and alphabets in Math Mode
+    private boolean isPredict = false;
 
     private double SCALE_FACTOR = 1.15;
     private int currScaleCount = 0;
@@ -73,9 +73,6 @@ public class KeyboardFrame extends JFrame {
     }
 
     /* Converts Soft Keyboard non-alphabetical key input into actual keyboard input */
-    /* TODO: In math mode, automatically clear predictionInput when typing anything,
-             and press space before pressing the desired key
-     */
     private ActionListener numericSymbolicListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -134,13 +131,17 @@ public class KeyboardFrame extends JFrame {
                 typeKey(KeyEvent.VK_LEFT); // Go between ( and )
             } else if (actionCommand == "\\") { // Restart prediction
                 typeKey(KeyEvent.VK_BACK_SLASH);
-                predictionInput = "\\";
-                isPredict = true;
-                predictionFrame.predictSymbol(predictionInput);
+                if(mathMode.isSelected()) {
+                    predictionInput = "\\";
+                    isPredict = true;
+                    predictionFrame.predictSymbol(predictionInput);
+                }
             }
 
-            System.out.println("Input: " + predictionInput);
-            if (!isPredict) {
+            if(mathMode.isSelected()) {
+                System.out.println("Input: " + predictionInput);
+            }
+            if (!isPredict && mathMode.isSelected()) {
                 predictionFrame.predictSymbol("");
             }
         }
@@ -184,6 +185,7 @@ public class KeyboardFrame extends JFrame {
         this.setLayout(new BorderLayout());
         this.setAlwaysOnTop(true);
         this.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseEntered(MouseEvent e) {
                 setFocusableWindowState(false);
             }
@@ -301,14 +303,18 @@ public class KeyboardFrame extends JFrame {
                             switch(x) {
                             case 0: // Backspace
                                 typeKey(KeyEvent.VK_BACK_SPACE);
-                                predictionInput = removeLastChar(predictionInput);
-                                predictionFrame.predictSymbol(predictionInput);
+                                if(mathMode.isSelected()) {
+                                    predictionInput = removeLastChar(predictionInput);
+                                    predictionFrame.predictSymbol(predictionInput);
+                                }
                                 break;
 
                             case 1: // Space
                                 typeKey(KeyEvent.VK_SPACE);
-                                isPredict = false;
-                                predictionFrame.predictSymbol("");
+                                if(mathMode.isSelected()) {
+                                    isPredict = false;
+                                    predictionFrame.predictSymbol("");
+                                }
                                 break;
 
                             case 2: // Enter
@@ -477,13 +483,15 @@ public class KeyboardFrame extends JFrame {
             letterKeys[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
-                    if (isPredict) {
-                        predictionInput += (shiftClick || capsClick) ? ("" + uppercase) : ("" + lowercase);
-                        predictionFrame.predictSymbol(predictionInput);
-                    } else {
-                        isPredict = true;
-                        predictionInput = (shiftClick || capsClick) ? ("" + uppercase) : ("" + lowercase);
-                        predictionFrame.predictSymbol(predictionInput);
+                    if(mathMode.isSelected()) {
+                        if (isPredict && !predictionFrame.getPredictionState()) {
+                            predictionInput += (shiftClick || capsClick) ? ("" + uppercase) : ("" + lowercase);
+                            predictionFrame.predictSymbol(predictionInput);
+                        } else {
+                            isPredict = true;
+                            predictionInput = (shiftClick || capsClick) ? ("" + uppercase) : ("" + lowercase);
+                            predictionFrame.predictSymbol(predictionInput);
+                        }
                     }
 
                     if (!shiftClick && !capsClick) { // Lower case
@@ -552,11 +560,7 @@ public class KeyboardFrame extends JFrame {
         }
     }
 
-    /* set up change size buttons, which changes size as person presses the button
-     * TODO: Special icons not scaling, and fix positioning/bounds of keys
-     * TODO: Change background by 1) scaling OR 2) changing background with an int to keep track
-     *       with a min/max size (default is min)
-     */
+    /* Set up change size buttons, which changes size as person presses the button */
     private void scaleChangeSize(){
         //this.setSize(this.getWidth(),this.getHeight());
         int xValue = (int)(this.getWidth()*0.8);
@@ -649,10 +653,9 @@ public class KeyboardFrame extends JFrame {
                     System.out.println("Normal Mode");
                     mathMode.setText("Normal Mode");
 
-                    // TODO: Set up Math Mode and Normal Mode
-                    //                    isPredict = false;
-                    //                    predictionInput = "";
-                    //                    predictionFrame.predictSymbol("");
+                    isPredict = false;
+                    predictionInput = "";
+                    predictionFrame.predictSymbol("");
                 }
             }
         });
@@ -705,7 +708,7 @@ public class KeyboardFrame extends JFrame {
         this.revalidate();
         this.repaint();
     }
-    
+
     public KeyboardFrame(String title) {
         super(title);
         loadGUI();
