@@ -1,0 +1,10 @@
+\abs
+acos
+asin
+atan
+cos
+sin
+tan
+log
+log10
+sqrt

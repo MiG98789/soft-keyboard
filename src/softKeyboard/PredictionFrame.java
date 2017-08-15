@@ -22,6 +22,7 @@ public class PredictionFrame extends JFrame {
     private final int FRAME_WIDTH = 400;
     private final int FRAME_HEIGHT = 210;
     private final int NUM_OF_PREDICTIONS = 5;
+    private int NUM_OF_SYMBOLS;
     private final float FONT_SIZE = 22.0f;
     private JPanel panel;
     private DefaultListModel<String> dlm = new DefaultListModel<String>();
@@ -79,15 +80,28 @@ public class PredictionFrame extends JFrame {
             while ((line = bufferedReader.readLine()) != null) {
                 mathSymbols.add(line); 
             }
+            NUM_OF_SYMBOLS= mathSymbols.size();
+            
+            is = getClass().getResourceAsStream("/mathFunctions.txt");
+            bufferedReader = new BufferedReader(new InputStreamReader(is));
+            
+            while ((line = bufferedReader.readLine()) != null) {
+                mathSymbols.add(line); 
+            }
+            
             
             System.out.println("Contents of file:");
             for (int i = 0; i < mathSymbols.size(); i++) {
                 System.out.println(mathSymbols.elementAt(i).toString());
             }
+             
+            
         } catch(IOException e) {
             e.printStackTrace();
         }
     }
+    
+    
     
     /**
      * @param str Input substring to be used for prediction

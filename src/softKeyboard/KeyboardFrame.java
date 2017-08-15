@@ -26,10 +26,10 @@ public class KeyboardFrame extends JFrame {
     private JPanel panel;
     private JLabel label;
     private ImageIcon background = new ImageIcon(getClass().getResource("/bg.png"));
-
     private JToggleButton mathMode = new JToggleButton("Normal Mode", false);
     private String predictionInput;
     private boolean isPredict = false; // TODO: Make it work for \ and alphabets in Math Mode
+    private int enterClick=0;
 
     private double SCALE_FACTOR = 1.15;
     private int currScaleCount = 0;
