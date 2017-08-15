@@ -712,6 +712,7 @@ public class KeyboardFrame extends JFrame {
     public KeyboardFrame(String title) {
         super(title);
         loadGUI();
-        predictionFrame = new PredictionFrame("Prediction List");    
+        predictionFrame = new PredictionFrame("Prediction List");
+        predictionFrame.setLocation(this.getX() + this.getWidth(), this.getY());
     }
 }
