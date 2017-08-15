@@ -7,4 +7,3 @@ sin
 tan
 log
 log10
-sqrt
