@@ -669,11 +669,11 @@ public class KeyboardFrame extends JFrame {
                             setSize((int)(getWidth()/SCALE_FACTOR), (int)(getHeight()/SCALE_FACTOR));
                             if(currScaleCount == 1) {
                             	Image temp = new ImageIcon(getClass().getResource("/bg3.png")).getImage();
-                                background.setImage(getScaledImage(temp, (int)(panel.getWidth()/(SCALE_FACTOR*0.95)), (int)(panel.getWidth()/(SCALE_FACTOR*0.95)))); 
+                                background.setImage(getScaledImage(temp, (int)(panel.getWidth()/(SCALE_FACTOR)*0.95), (int)(panel.getWidth()/(SCALE_FACTOR)*0.95))); 
 
                             } else {
                             	 Image temp = new ImageIcon(getClass().getResource("/bg3.png")).getImage();
-                                 background.setImage(getScaledImage(temp, (int)(panel.getWidth()/(SCALE_FACTOR*0.95)), (int)(panel.getWidth()/(SCALE_FACTOR*0.95)))); 
+                                 background.setImage(getScaledImage(temp, (int)(panel.getWidth()/(SCALE_FACTOR)*0.95), (int)(panel.getWidth()/(SCALE_FACTOR)*0.95))); 
                             }
                             scaleKeys();
                         }
