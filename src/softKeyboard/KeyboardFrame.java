@@ -347,14 +347,22 @@ public class KeyboardFrame extends JFrame {
         int xValue, yValue;
 
         // Backspace
-        xValue = (int)(this.getWidth()/2) - 10;
-        yValue = (int)(this.getHeight()/2) - 35;
-        specialKeys[0].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
+        xValue = (int)(this.getWidth()/2) - 15;
+        yValue = (int)(this.getHeight()/2) - 40;
+    
+        int newKEY_WIDTH, newKEY_HEIGHT;
+        newKEY_WIDTH=(int)(KEY_WIDTH*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
+        newKEY_HEIGHT=(int)(KEY_HEIGHT*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
+        
+        specialKeys[0].setBounds(xValue, yValue, newKEY_WIDTH, newKEY_HEIGHT);
 
         // \
-        xValue = (int)(this.getWidth()/2) - 55;
+        xValue = (int)(this.getWidth()/2) - 62;
         yValue = (int)(this.getHeight()/2) - 35;
-        specialKeys[3].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
+        newKEY_WIDTH=(int)(KEY_WIDTH*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
+        newKEY_HEIGHT=(int)(KEY_HEIGHT*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
+        
+        specialKeys[3].setBounds(xValue, yValue, newKEY_WIDTH,newKEY_HEIGHT);
 
         // (1) Space, (2) enter
         double radian;
@@ -372,7 +380,7 @@ public class KeyboardFrame extends JFrame {
             yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
 
-            specialKeys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
+            specialKeys[i].setBounds(xValue, yValue, newKEY_WIDTH, newKEY_HEIGHT);
         }
 
         // (4) =, (5) (
@@ -387,7 +395,7 @@ public class KeyboardFrame extends JFrame {
             yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
 
-            specialKeys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
+            specialKeys[i].setBounds(xValue, yValue, newKEY_WIDTH, newKEY_HEIGHT+10);
         }
     }
 
