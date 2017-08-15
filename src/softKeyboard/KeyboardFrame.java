@@ -67,6 +67,9 @@ public class KeyboardFrame extends JFrame {
             robot.keyPress(KeyEvent.VK_SHIFT);
             typeKey(key);
             robot.keyRelease(key);
+            robot.keyRelease(KeyEvent.VK_SHIFT);
+
+            
         } catch (AWTException e) {
             e.printStackTrace();
         }
