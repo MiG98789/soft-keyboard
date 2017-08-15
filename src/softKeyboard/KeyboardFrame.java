@@ -237,9 +237,16 @@ public class KeyboardFrame extends JFrame {
         arithmeticKeys[4] = new JButton("/");
 
         // Numbers
-        for(int i = 0; i < numberKeys.length; i++) {
-            numberKeys[i] = new JButton(String.valueOf(i));
-        }
+        numberKeys[0] = new JButton("0");
+        numberKeys[1] = new JButton("1");
+        numberKeys[2] = new JButton("2");
+        numberKeys[3] = new JButton("3");
+        numberKeys[4] = new JButton("4");
+        numberKeys[5] = new JButton("5");
+        numberKeys[6] = new JButton("6");
+        numberKeys[7] = new JButton("7");
+        numberKeys[8] = new JButton("8");
+        numberKeys[9] = new JButton("9");
 
         // Layer 3
         layer3Keys[0] = new JButton("[");
@@ -271,7 +278,7 @@ public class KeyboardFrame extends JFrame {
 
         // Letters
         for (int i = 0; i < 26; i++) {
-            letterKeys[i] = new JButton("" + (char)(i + 'a'));
+            letterKeys[i] = new JButton(""+(char)(i+'a'));
         }
 
         // Change size buttons
