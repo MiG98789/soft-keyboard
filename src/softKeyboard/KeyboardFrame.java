@@ -357,8 +357,8 @@ public class KeyboardFrame extends JFrame {
         specialKeys[0].setBounds(xValue, yValue, newKEY_WIDTH, newKEY_HEIGHT);
 
         // \
-        xValue = (int)(this.getWidth()/2) - 62;
-        yValue = (int)(this.getHeight()/2) - 35;
+        xValue = (int)(this.getWidth()/2) - 68;
+        yValue = (int)(this.getHeight()/2) - 45;
         newKEY_WIDTH=(int)(KEY_WIDTH*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
         newKEY_HEIGHT=(int)(KEY_HEIGHT*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
         
@@ -391,7 +391,7 @@ public class KeyboardFrame extends JFrame {
         for (int i = 4; i <= 5; i++) {
             // Calculates coordinates of each number
             radian = Math.toRadians(initDegree);
-            xValue = -1*(int)(Math.cos(radian)*radius) + midX;
+            xValue = -1*(int)(Math.cos(radian)*radius) + midX-20;
             yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
 
