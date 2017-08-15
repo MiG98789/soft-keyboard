@@ -51,7 +51,7 @@ public class PredictionFrame extends JFrame {
             e.printStackTrace();
         }
     }
-    
+
     private void loadFrame() {
         // Frame
         this.pack();
@@ -155,22 +155,28 @@ public class PredictionFrame extends JFrame {
                     if (predictionList.getSelectedIndex() != -1) {
                         int index = predictionList.locationToIndex(evt.getPoint());
                         String selection = (String)predictionList.getModel().getElementAt(index);
-                        System.out.println("You selected: " + selection);
                         boolean isFunction = Character.isAlphabetic(selection.charAt(0));
-
-                        if (selection == "acos") {
-                            selection = "cos^-1";
-                        } else if (selection == "asin") {
-                            selection = "sin^-1";
-                        } else if (selection == "atan") {
-                            selection = "atan";
+                        String tempInput = input;
+                        
+                        if(selection.equals("acos") || selection.equals("asin") || selection.equals("atan")) {
+                            for(int i = 0; i < input.length(); i++) {
+                                typeKey(KeyEvent.VK_BACK_SPACE);
+                                tempInput = "";
+                            }
+                            if (selection.equals("acos")) {
+                                selection = "cos^-1";
+                            } else if (selection.equals("asin")) {
+                                selection = "sin^-1";
+                            } else if (selection.equals("atan")) {
+                                selection = "tan^-1";
+                            }
                         }
+                        System.out.println("You selected: " + selection);
 
                         try {
                             Robot robot = new Robot();
-
                             // Type out selection                        
-                            for (int i = input.length(); i < selection.length(); i++) {
+                            for (int i = tempInput.length(); i < selection.length(); i++) {
                                 char temp = selection.charAt(i);
 
                                 if(temp == '^') {
@@ -185,14 +191,14 @@ public class PredictionFrame extends JFrame {
                                         robot.keyRelease(KeyEvent.VK_SHIFT);
                                     }
                                 }
-                                
-                                if(isFunction && i == selection.length() - 1) {
-                                    shiftKey(KeyEvent.VK_9); // (
-                                    shiftKey(KeyEvent.VK_0); // )
-                                    typeKey(KeyEvent.VK_LEFT); // Go between ( and )
-                                }
                             }
-                            robot.keyPress(KeyEvent.VK_SPACE);
+                            if(isFunction) {
+                                shiftKey(KeyEvent.VK_9); // (
+                                shiftKey(KeyEvent.VK_0); // )
+                                typeKey(KeyEvent.VK_LEFT); // Go between ( and )
+                            } else {
+                                robot.keyPress(KeyEvent.VK_SPACE);
+                            }
 
                             dlm.clear();
                             predictionState = true;
@@ -217,7 +223,7 @@ public class PredictionFrame extends JFrame {
     public boolean getPredictionState() {
         return predictionState;
     }
-    
+
     /**
      * @param title Sets window title
      */
