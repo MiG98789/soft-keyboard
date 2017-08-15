@@ -18,7 +18,7 @@ import javax.swing.*;
  */
 @SuppressWarnings("serial")
 public class KeyboardFrame extends JFrame {
-    private PredictionFrame predictionModel;
+    private PredictionFrame predictionFrame;
 
     // TODO: Fix UI layout
     private int FRAME_WIDTH = 450;
@@ -29,7 +29,6 @@ public class KeyboardFrame extends JFrame {
     private JToggleButton mathMode = new JToggleButton("Normal Mode", false);
     private String predictionInput;
     private boolean isPredict = false; // TODO: Make it work for \ and alphabets in Math Mode
-    private int enterClick=0;
 
     private double SCALE_FACTOR = 1.15;
     private int currScaleCount = 0;
@@ -68,8 +67,6 @@ public class KeyboardFrame extends JFrame {
             typeKey(key);
             robot.keyRelease(key);
             robot.keyRelease(KeyEvent.VK_SHIFT);
-
-            
         } catch (AWTException e) {
             e.printStackTrace();
         }
@@ -139,12 +136,12 @@ public class KeyboardFrame extends JFrame {
                 typeKey(KeyEvent.VK_BACK_SLASH);
                 predictionInput = "\\";
                 isPredict = true;
-                predictionModel.predictSymbol(predictionInput);
+                predictionFrame.predictSymbol(predictionInput);
             }
 
             System.out.println("Input: " + predictionInput);
             if (!isPredict) {
-                predictionModel.predictSymbol("");
+                predictionFrame.predictSymbol("");
             }
         }
     };
@@ -305,13 +302,13 @@ public class KeyboardFrame extends JFrame {
                             case 0: // Backspace
                                 typeKey(KeyEvent.VK_BACK_SPACE);
                                 predictionInput = removeLastChar(predictionInput);
-                                predictionModel.predictSymbol(predictionInput);
+                                predictionFrame.predictSymbol(predictionInput);
                                 break;
 
                             case 1: // Space
                                 typeKey(KeyEvent.VK_SPACE);
                                 isPredict = false;
-                                predictionModel.predictSymbol("");
+                                predictionFrame.predictSymbol("");
                                 break;
 
                             case 2: // Enter
@@ -352,11 +349,11 @@ public class KeyboardFrame extends JFrame {
         // Backspace
         xValue = (int)(this.getWidth()/2) - 15;
         yValue = (int)(this.getHeight()/2) - 40;
-    
+
         int newKEY_WIDTH, newKEY_HEIGHT;
         newKEY_WIDTH=(int)(KEY_WIDTH*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
         newKEY_HEIGHT=(int)(KEY_HEIGHT*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
-        
+
         specialKeys[0].setBounds(xValue, yValue, newKEY_WIDTH, newKEY_HEIGHT);
 
         // \
@@ -364,7 +361,7 @@ public class KeyboardFrame extends JFrame {
         yValue = (int)(this.getHeight()/2) - 45;
         newKEY_WIDTH=(int)(KEY_WIDTH*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
         newKEY_HEIGHT=(int)(KEY_HEIGHT*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
-        
+
         specialKeys[3].setBounds(xValue, yValue, newKEY_WIDTH,newKEY_HEIGHT);
 
         // (1) Space, (2) enter
@@ -480,6 +477,15 @@ public class KeyboardFrame extends JFrame {
             letterKeys[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
+                    if (isPredict) {
+                        predictionInput += (shiftClick || capsClick) ? ("" + uppercase) : ("" + lowercase);
+                        predictionFrame.predictSymbol(predictionInput);
+                    } else {
+                        isPredict = true;
+                        predictionInput = (shiftClick || capsClick) ? ("" + uppercase) : ("" + lowercase);
+                        predictionFrame.predictSymbol(predictionInput);
+                    }
+
                     if (!shiftClick && !capsClick) { // Lower case
                         int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (lowercase));
                         typeKey(keyCode);
@@ -494,10 +500,6 @@ public class KeyboardFrame extends JFrame {
                         int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (lowercase));
                         typeKey(keyCode);
                         shiftClick = false;
-                    }
-                    if (isPredict) {
-                        predictionInput += temp;
-                        predictionModel.predictSymbol(predictionInput);
                     }
                 }
             });
@@ -556,7 +558,7 @@ public class KeyboardFrame extends JFrame {
      *       with a min/max size (default is min)
      */
     private void scaleChangeSize(){
-    	//this.setSize(this.getWidth(),this.getHeight());
+        //this.setSize(this.getWidth(),this.getHeight());
         int xValue = (int)(this.getWidth()*0.8);
         int yValue = (int)(this.getHeight()*0.8);
 
@@ -588,7 +590,7 @@ public class KeyboardFrame extends JFrame {
         scaleChangeSize();
         scaleMathToggle();
     }
-    
+
     private Image getScaledImage(Image srcImg, int w, int h){
         BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = resizedImg.createGraphics();
@@ -650,7 +652,7 @@ public class KeyboardFrame extends JFrame {
                     // TODO: Set up Math Mode and Normal Mode
                     //                    isPredict = false;
                     //                    predictionInput = "";
-                    //                    predictionModel.predictSymbol("");
+                    //                    predictionFrame.predictSymbol("");
                 }
             }
         });
@@ -668,12 +670,12 @@ public class KeyboardFrame extends JFrame {
                             currScaleCount--;
                             setSize((int)(getWidth()/SCALE_FACTOR), (int)(getHeight()/SCALE_FACTOR));
                             if(currScaleCount == 1) {
-                            	Image temp = new ImageIcon(getClass().getResource("/bg3.png")).getImage();
+                                Image temp = new ImageIcon(getClass().getResource("/bg3.png")).getImage();
                                 background.setImage(getScaledImage(temp, (int)(panel.getWidth()/(SCALE_FACTOR)*0.95), (int)(panel.getWidth()/(SCALE_FACTOR)*0.95))); 
 
                             } else {
-                            	 Image temp = new ImageIcon(getClass().getResource("/bg3.png")).getImage();
-                                 background.setImage(getScaledImage(temp, (int)(panel.getWidth()/(SCALE_FACTOR)*0.95), (int)(panel.getWidth()/(SCALE_FACTOR)*0.95))); 
+                                Image temp = new ImageIcon(getClass().getResource("/bg3.png")).getImage();
+                                background.setImage(getScaledImage(temp, (int)(panel.getWidth()/(SCALE_FACTOR)*0.95), (int)(panel.getWidth()/(SCALE_FACTOR)*0.95))); 
                             }
                             scaleKeys();
                         }
@@ -685,8 +687,8 @@ public class KeyboardFrame extends JFrame {
                                 Image temp = new ImageIcon(getClass().getResource("/bg3.png")).getImage();
                                 background.setImage(getScaledImage(temp, (int)(panel.getWidth()*(SCALE_FACTOR*0.95)), (int)(panel.getWidth()*(SCALE_FACTOR*0.95)))); 
                             } else {
-                            	 Image temp = new ImageIcon(getClass().getResource("/bg3.png")).getImage();
-                                 background.setImage(getScaledImage(temp, (int)(panel.getWidth()*(SCALE_FACTOR*0.95)), (int)(panel.getWidth()*(SCALE_FACTOR*0.95))));    
+                                Image temp = new ImageIcon(getClass().getResource("/bg3.png")).getImage();
+                                background.setImage(getScaledImage(temp, (int)(panel.getWidth()*(SCALE_FACTOR*0.95)), (int)(panel.getWidth()*(SCALE_FACTOR*0.95))));    
                             }
                             scaleKeys();
                         }
@@ -703,10 +705,10 @@ public class KeyboardFrame extends JFrame {
         this.revalidate();
         this.repaint();
     }
-
+    
     public KeyboardFrame(String title) {
         super(title);
         loadGUI();
-        predictionModel = new PredictionFrame("Prediction List");    
+        predictionFrame = new PredictionFrame("Prediction List");    
     }
 }

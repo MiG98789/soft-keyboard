@@ -22,13 +22,35 @@ public class PredictionFrame extends JFrame {
     private final int FRAME_WIDTH = 400;
     private final int FRAME_HEIGHT = 210;
     private final int NUM_OF_PREDICTIONS = 5;
-    private int NUM_OF_SYMBOLS;
     private final float FONT_SIZE = 22.0f;
     private JPanel panel;
     private DefaultListModel<String> dlm = new DefaultListModel<String>();
     private JScrollPane scrollPane;
-    
-    private Vector<String> mathSymbols = new Vector<String>();
+
+    private Vector<String> mathSymbolsFunctions = new Vector<String>();
+    private boolean predictionState = false;
+
+    private void typeKey(int key) {
+        try {
+            Robot robot = new Robot();
+            robot.keyPress(key);
+            robot.keyRelease(key);
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void shiftKey(int key) {
+        try {
+            Robot robot = new Robot();
+            robot.keyPress(KeyEvent.VK_SHIFT);
+            typeKey(key);
+            robot.keyRelease(key);
+            robot.keyRelease(KeyEvent.VK_SHIFT);
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+    }
     
     private void loadFrame() {
         // Frame
@@ -44,17 +66,17 @@ public class PredictionFrame extends JFrame {
                 setFocusableWindowState(false);
             }
         });
-        
+
         // Panel
         panel = new JPanel();
-        
+
         // List
         final JList<String> predictionList = new JList<String>(dlm);
         predictionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         predictionList.setSelectedIndex(0);
         predictionList.setVisibleRowCount(NUM_OF_PREDICTIONS);
         predictionList.setFont(predictionList.getFont().deriveFont(FONT_SIZE));
-        
+
         // Scroll pane
         scrollPane = new JScrollPane(predictionList);
 
@@ -66,65 +88,60 @@ public class PredictionFrame extends JFrame {
         this.revalidate();
         this.repaint();
     }
-    
+
     /**
-     * Loads special math symbols from a text file,
-     * and stores them in mathSymbols
+     * Loads special math symbols and functions from a text file,
+     * and stores them in mathSymbolsFunctions
      */
-    private void loadSymbols() {
+    private void loadSymbolsFunctions() {
         try {
             InputStream is = getClass().getResourceAsStream("/symbols.txt");
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
             String line;
-            
+
             while ((line = bufferedReader.readLine()) != null) {
-                mathSymbols.add(line); 
+                mathSymbolsFunctions.add(line); 
             }
-            NUM_OF_SYMBOLS= mathSymbols.size();
-            
+
             is = getClass().getResourceAsStream("/mathFunctions.txt");
             bufferedReader = new BufferedReader(new InputStreamReader(is));
-            
+
             while ((line = bufferedReader.readLine()) != null) {
-                mathSymbols.add(line); 
+                mathSymbolsFunctions.add(line); 
             }
-            
-            
+
             System.out.println("Contents of file:");
-            for (int i = 0; i < mathSymbols.size(); i++) {
-                System.out.println(mathSymbols.elementAt(i).toString());
+            for (int i = 0; i < mathSymbolsFunctions.size(); i++) {
+                System.out.println(mathSymbolsFunctions.elementAt(i).toString());
             }
-             
-            
         } catch(IOException e) {
             e.printStackTrace();
         }
     }
-    
-    
-    
+
     /**
      * @param str Input substring to be used for prediction
      */
     public void predictSymbol(String input) {
         System.out.println("Prediction input: " + input);
-        
+
         // Clear all items
         dlm.clear();
+        predictionState = false;
         if (input.isEmpty()) {
             return;
         }
 
         // Loop through each symbol, and add matching predictions to list
-        for (int i = 0; i < mathSymbols.size(); i++) {
-            if (input.length() <= mathSymbols.elementAt(i).length()) {
-                if (input.equals(mathSymbols.elementAt(i).substring(0, input.length()))) {
-                    dlm.addElement(mathSymbols.elementAt(i));
-                    System.out.println("Predicted: " + mathSymbols.elementAt(i));
+        for (int i = 0; i < mathSymbolsFunctions.size(); i++) {
+            if (input.length() <= mathSymbolsFunctions.elementAt(i).length()) {
+                if (input.equals(mathSymbolsFunctions.elementAt(i).substring(0, input.length()))) {
+                    dlm.addElement(mathSymbolsFunctions.elementAt(i));
+                    System.out.println("Predicted: " + mathSymbolsFunctions.elementAt(i));
                 }
             }    
         }
-        
+
         // Update list
         final JList<String> predictionList = new JList<String>(dlm);
         predictionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -139,25 +156,46 @@ public class PredictionFrame extends JFrame {
                         int index = predictionList.locationToIndex(evt.getPoint());
                         String selection = (String)predictionList.getModel().getElementAt(index);
                         System.out.println("You selected: " + selection);
-                                        
+                        boolean isFunction = Character.isAlphabetic(selection.charAt(0));
+
+                        if (selection == "acos") {
+                            selection = "cos^-1";
+                        } else if (selection == "asin") {
+                            selection = "sin^-1";
+                        } else if (selection == "atan") {
+                            selection = "atan";
+                        }
+
                         try {
                             Robot robot = new Robot();
-    
+
                             // Type out selection                        
                             for (int i = input.length(); i < selection.length(); i++) {
                                 char temp = selection.charAt(i);
-                                if (Character.isUpperCase(temp)) {
-                                    robot.keyPress(KeyEvent.VK_SHIFT);
+
+                                if(temp == '^') {
+                                    shiftKey(KeyEvent.VK_6);
+                                } else {
+                                    if (Character.isUpperCase(temp)) {
+                                        robot.keyPress(KeyEvent.VK_SHIFT);
+                                    }
+                                    int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)temp);
+                                    typeKey(keyCode);
+                                    if (Character.isUpperCase(temp)) {
+                                        robot.keyRelease(KeyEvent.VK_SHIFT);
+                                    }
                                 }
-                                int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)temp);
-                                robot.keyPress(keyCode); robot.keyRelease(keyCode);
-                                if (Character.isUpperCase(temp)) {
-                                    robot.keyRelease(KeyEvent.VK_SHIFT);
+                                
+                                if(isFunction && i == selection.length() - 1) {
+                                    shiftKey(KeyEvent.VK_9); // (
+                                    shiftKey(KeyEvent.VK_0); // )
+                                    typeKey(KeyEvent.VK_LEFT); // Go between ( and )
                                 }
                             }
                             robot.keyPress(KeyEvent.VK_SPACE);
 
                             dlm.clear();
+                            predictionState = true;
                         } catch (AWTException e) {
                             e.printStackTrace();
                         }
@@ -166,7 +204,7 @@ public class PredictionFrame extends JFrame {
             }
         });
         scrollPane = new JScrollPane(predictionList);
-        
+
         // After an item is selected, clear the frame
         panel.removeAll();
         panel.add(scrollPane);
@@ -175,6 +213,10 @@ public class PredictionFrame extends JFrame {
         this.revalidate();
         this.repaint();
     }
+
+    public boolean getPredictionState() {
+        return predictionState;
+    }
     
     /**
      * @param title Sets window title
@@ -182,6 +224,6 @@ public class PredictionFrame extends JFrame {
     public PredictionFrame(String title) {
         super(title);
         loadFrame();
-        loadSymbols();
+        loadSymbolsFunctions();
     }
 }
