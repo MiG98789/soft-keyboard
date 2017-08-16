@@ -32,7 +32,7 @@ public class KeyboardFrame extends JFrame {
 
     private double SCALE_FACTOR = 1.15;
     private int currScaleCount = 0;
-    private int MAX_SCALE_COUNT = 2;
+    private final int MAX_SCALE_COUNT = 2;
     private JButton[] changeSizeButtons = new JButton[2];
 
     private int KEY_WIDTH = 25;
@@ -199,7 +199,6 @@ public class KeyboardFrame extends JFrame {
 
         // Label
         label = new JLabel(background, JLabel.CENTER);
-        //      label.setBounds(50,  50, this.getWidth() - 100,  (int)((this.getWidth() - 100)*1.18));
         label.setBackground(Color.DARK_GRAY);
         label.repaint();
         label.revalidate();
@@ -389,7 +388,7 @@ public class KeyboardFrame extends JFrame {
             specialKeys[i].setBounds(xValue, yValue, newKEY_WIDTH, newKEY_HEIGHT);
         }
 
-        // (4) =, (5) (
+        // (4) =, (5)(
         initDegree = 23;
         incrementDegree = -40;
         radius = (int)((this.getWidth())/3) - 5;
@@ -460,32 +459,31 @@ public class KeyboardFrame extends JFrame {
         double incrementDegree = 10.3;
 
         int xValue, yValue;
-        int midX = (int) ((this.getWidth())/2) - 20;
-        int midY = (int) ((this.getHeight())/2) - 35;
-        int radius = (int) ((this.getWidth())/2.5) - 13;
+        int midX = (int)((this.getWidth())/2) - 20;
+        int midY = (int)((this.getHeight())/2) - 35;
+        int radius = (int)((this.getWidth())/2.5) - 13;
 
         for (int i = 0; i < letterKeys.length; i++) {
 
 
             // Calculates coordinates of each letter
             radian = Math.toRadians(initDegree);
-            xValue = -1*(int) (Math.cos(radian)*radius) + midX;
-            yValue = -1*(int) (Math.sin(radian)*radius) + midY;
+            xValue = -1*(int)(Math.cos(radian)*radius) + midX;
+            yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
 
             letterKeys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
-            letterKeys[i].setFont(new Font("Arial", Font.PLAIN, (int) (25*(double) (this.getWidth()/500.0))));
+            letterKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
     }
     
     private void letterActionListener(){
-
         for (int i = 0; i < letterKeys.length; i++) {
-            char temp = (char) ('a' + i);
+            char temp = (char)('a' + i);
             // letterKeys[i] = new JButton(Character.toString(temp));
-            char lowercase = (char) ('a' + i);
+            char lowercase = (char)('a' + i);
             // String lowerTemp = Character.toString(lowercase);
-            char uppercase = (char) ('A' + i);
+            char uppercase = (char)('A' + i);
             // String upperTemp = Character.toString(uppercase);
            
             letterKeys[i].addActionListener(new ActionListener() {
@@ -503,25 +501,23 @@ public class KeyboardFrame extends JFrame {
                     }
 
                     if (!shiftClick && !capsClick) { // Lower case
-                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (lowercase));
+                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(lowercase));
                         typeKey(keyCode);
                     } else if (!shiftClick && capsClick) { // Upper case
-                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (uppercase));
+                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(uppercase));
                         shiftKey(keyCode);
                     } else if (shiftClick && !capsClick) { // Upper case
-                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (uppercase));
+                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(uppercase));
                         shiftKey(keyCode);
                         shiftClick = false;
                     } else { // Lower case
-                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int) (lowercase));
+                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(lowercase));
                         typeKey(keyCode);
                         shiftClick = false;
                     }
                 }
             });
         }
-    
-    	
     }
 
     /* Sets size and position layer 3 buttons */    
@@ -531,18 +527,18 @@ public class KeyboardFrame extends JFrame {
         double incrementDegree = 23;
 
         int xValue, yValue;
-        int midX = (int) ((this.getWidth())/2) - 20;
-        int midY = (int) ((this.getHeight())/2) - 35;
-        int radius = (int) ((this.getWidth())/4) - 6;
+        int midX = (int)((this.getWidth())/2) - 20;
+        int midY = (int)((this.getHeight())/2) - 35;
+        int radius = (int)((this.getWidth())/4) - 6;
 
         for (int i = 0; i < layer3Keys.length; i++) {
             radian = Math.toRadians(initDegree);
-            xValue = -1*(int) (Math.cos(radian)*radius) + midX;
-            yValue = -1*(int) (Math.sin(radian)*radius) + midY;
+            xValue = -1*(int)(Math.cos(radian)*radius) + midX;
+            yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
 
             layer3Keys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
-            layer3Keys[i].setFont(new Font("Arial", Font.PLAIN, (int) (25*(double) (this.getWidth()/500.0))));
+            layer3Keys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
     }
 
@@ -576,18 +572,18 @@ public class KeyboardFrame extends JFrame {
         int xValue = (int)(this.getWidth()*0.8);
         int yValue = (int)(this.getHeight()*0.8);
 
-        for (int i=0; i<2; i++){
+        for (int i = 0; i < 2; i++){
             changeSizeButtons[i].setBorder(BorderFactory.createBevelBorder(10, Color.red, Color.gray));
             changeSizeButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
         changeSizeButtons[0].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
-        changeSizeButtons[1].setBounds(xValue+KEY_WIDTH, yValue, KEY_WIDTH, KEY_HEIGHT);
+        changeSizeButtons[1].setBounds(xValue + KEY_WIDTH, yValue, KEY_WIDTH, KEY_HEIGHT);
 
     }
 
     private void scaleMathToggle() {
-        int width = 110 + currScaleCount * 20;
-        int height = 30 + currScaleCount * 5;
+        int width = 110 + currScaleCount*20;
+        int height = 30 + currScaleCount*5;
 
         mathMode.setBounds(0, 0, width, height);
         mathMode.setFont(new Font("Arial", Font.PLAIN, (int)(14*(double)(this.getWidth()/500.0))));
@@ -651,10 +647,6 @@ public class KeyboardFrame extends JFrame {
             }
         }
         
-        
-        
-        
-
         // Add mode toggle button
         scaleMathToggle();
         mathMode.addItemListener(new ItemListener() {
@@ -696,6 +688,8 @@ public class KeyboardFrame extends JFrame {
                                 background.setImage(getScaledImage(temp, (int)(panel.getWidth()/(SCALE_FACTOR)*0.95), (int)(panel.getWidth()/(SCALE_FACTOR)*0.95))); 
                             }
                             scaleKeys();
+                            KEY_WIDTH -= 5;
+                            KEY_HEIGHT -= 5;
                         }
                     } else { //If larger
                         if(currScaleCount != MAX_SCALE_COUNT) {
@@ -709,6 +703,8 @@ public class KeyboardFrame extends JFrame {
                                 background.setImage(getScaledImage(temp, (int)(panel.getWidth()*(SCALE_FACTOR*0.95)), (int)(panel.getWidth()*(SCALE_FACTOR*0.95))));    
                             }
                             scaleKeys();
+                            KEY_WIDTH += 5;
+                            KEY_HEIGHT += 5;
                         }
                     }
                 }
