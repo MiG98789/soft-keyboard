@@ -479,7 +479,6 @@ public class KeyboardFrame extends JFrame {
     
     private void letterActionListener(){
         for (int i = 0; i < letterKeys.length; i++) {
-            char temp = (char)('a' + i);
             // letterKeys[i] = new JButton(Character.toString(temp));
             char lowercase = (char)('a' + i);
             // String lowerTemp = Character.toString(lowercase);
