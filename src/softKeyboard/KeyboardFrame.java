@@ -465,12 +465,7 @@ public class KeyboardFrame extends JFrame {
         int radius = (int) ((this.getWidth())/2.5) - 13;
 
         for (int i = 0; i < letterKeys.length; i++) {
-            char temp = (char) ('a' + i);
-            // letterKeys[i] = new JButton(Character.toString(temp));
-            char lowercase = (char) ('a' + i);
-            // String lowerTemp = Character.toString(lowercase);
-            char uppercase = (char) ('A' + i);
-            // String upperTemp = Character.toString(uppercase);
+
 
             // Calculates coordinates of each letter
             radian = Math.toRadians(initDegree);
@@ -480,6 +475,19 @@ public class KeyboardFrame extends JFrame {
 
             letterKeys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
             letterKeys[i].setFont(new Font("Arial", Font.PLAIN, (int) (25*(double) (this.getWidth()/500.0))));
+        }
+    }
+    
+    private void letterActionListener(){
+
+        for (int i = 0; i < letterKeys.length; i++) {
+            char temp = (char) ('a' + i);
+            // letterKeys[i] = new JButton(Character.toString(temp));
+            char lowercase = (char) ('a' + i);
+            // String lowerTemp = Character.toString(lowercase);
+            char uppercase = (char) ('A' + i);
+            // String upperTemp = Character.toString(uppercase);
+           
             letterKeys[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
@@ -512,6 +520,8 @@ public class KeyboardFrame extends JFrame {
                 }
             });
         }
+    
+    	
     }
 
     /* Sets size and position layer 3 buttons */    
@@ -611,6 +621,7 @@ public class KeyboardFrame extends JFrame {
         loadBackground();
         scaleIcons();
         loadKeysButtons();
+        letterActionListener();
 
         // Size and position
         setSpecialListener();
@@ -639,6 +650,10 @@ public class KeyboardFrame extends JFrame {
                 panel.add(keys[i][j]);
             }
         }
+        
+        
+        
+        
 
         // Add mode toggle button
         scaleMathToggle();
