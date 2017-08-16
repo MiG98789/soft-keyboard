@@ -6,4 +6,8 @@ cos
 sin
 tan
 log
+<<<<<<< HEAD
 log10
+=======
+log10
+>>>>>>> a465d91c6828c63ec7f74f58b317469f15e82b86
