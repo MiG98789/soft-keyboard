@@ -9,7 +9,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Vector;
+import java.util.ArrayList;
 import javax.swing.*;
 
 /**
@@ -36,8 +36,7 @@ public class PredictionFrame extends JFrame {
     private JScrollPane scrollPane;
 
     // Prediction variables
-    private Vector<String> mathSymbolsFunctions = new Vector<String>();
-    private boolean predictionState = false;
+    private ArrayList<String> mathSymbolsFunctions = new ArrayList<String>();
 
     /**
      * Private constructor to restrict to one instantiation.
@@ -68,11 +67,11 @@ public class PredictionFrame extends JFrame {
     }
     
     /**
-     * Returns predictionState.
-     * @return true if Prediction Frame is trying to predict; false otherwise.
+     * Checks if there are any items in the prediction list.
+     * @return true if no items are predicted; false otherwise.
      */
-    public boolean getPredictionState() {
-        return predictionState;
+    public boolean isEmpty() {
+        return dlm.isEmpty();
     }
     
     /**
@@ -116,7 +115,6 @@ public class PredictionFrame extends JFrame {
 
         // Clear all items
         dlm.clear();
-        predictionState = false;
         if (input.isEmpty()) {
             return;
         }
@@ -190,7 +188,6 @@ public class PredictionFrame extends JFrame {
                             }
 
                             dlm.clear();
-                            predictionState = true;
                         } catch (AWTException e) {
                             e.printStackTrace();
                         }
@@ -272,7 +269,7 @@ public class PredictionFrame extends JFrame {
 
             System.out.println("Contents of file:");
             for (int i = 0; i < mathSymbolsFunctions.size(); i++) {
-                System.out.println(mathSymbolsFunctions.elementAt(i).toString());
+                System.out.println(mathSymbolsFunctions.get(i).toString());
             }
         } catch (IOException e) {
             e.printStackTrace();

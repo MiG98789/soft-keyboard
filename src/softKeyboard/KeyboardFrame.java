@@ -37,7 +37,7 @@ public class KeyboardFrame extends JFrame {
     // Math Mode variables
     private JToggleButton mathMode = new JToggleButton("Normal Mode", false);
     private String predictionInput;
-    private boolean isPredict = false;
+    private boolean isValidPredictionInput = false;
 
     // Change Size variables
     private final double SCALE_FACTOR = 1.15;
@@ -127,7 +127,7 @@ public class KeyboardFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent event) {
             String actionCommand = event.getActionCommand();
-            isPredict = false; // Will turn true ONLY IF starting with \ or alphabet
+            isValidPredictionInput = false; // Will turn true ONLY IF starting with \ or alphabet
 
             // Numbers
             if (actionCommand == "0") {typeKey(KeyEvent.VK_0);}
@@ -186,7 +186,7 @@ public class KeyboardFrame extends JFrame {
                 typeKey(KeyEvent.VK_BACK_SLASH);
                 if(mathMode.isSelected()) {
                     predictionInput = "\\";
-                    isPredict = true;
+                    isValidPredictionInput = true;
                     predictionFrame.mathPredict(predictionInput);
                 }
             }
@@ -194,12 +194,12 @@ public class KeyboardFrame extends JFrame {
             if(mathMode.isSelected()) {
                 System.out.println("Input: " + predictionInput);
             }
-            if (!isPredict && mathMode.isSelected()) {
+            if (!isValidPredictionInput && mathMode.isSelected()) {
                 predictionFrame.mathPredict("");
             }
         }
     };
-    
+
     /**
      * Action listener for letter keys that handles uppercase/lowercase letters,
      * as well as how it affects <code>predictionInput</code>.
@@ -216,11 +216,11 @@ public class KeyboardFrame extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
                     if(mathMode.isSelected()) {
-                        if (isPredict && !predictionFrame.getPredictionState()) {
+                        if (isValidPredictionInput && !predictionFrame.isEmpty()) {
                             predictionInput += (shiftClick || capsClick) ? ("" + uppercase) : ("" + lowercase);
                             predictionFrame.mathPredict(predictionInput);
                         } else {
-                            isPredict = true;
+                            isValidPredictionInput = true;
                             predictionInput = (shiftClick || capsClick) ? ("" + uppercase) : ("" + lowercase);
                             predictionFrame.mathPredict(predictionInput);
                         }
@@ -247,7 +247,7 @@ public class KeyboardFrame extends JFrame {
     }
     
     /**
-     * Sets up left-side buttons' listeners.
+     * Sets left-side buttons' listeners.
      */
     private void setSpecialListener() {
         for (int i = 0; i < 6; i++) {
@@ -271,7 +271,7 @@ public class KeyboardFrame extends JFrame {
                             case 1: // Space
                                 typeKey(KeyEvent.VK_SPACE);
                                 if(mathMode.isSelected()) {
-                                    isPredict = false;
+                                    isValidPredictionInput = false;
                                     predictionFrame.mathPredict("");
                                 }
                                 break;
@@ -761,7 +761,7 @@ public class KeyboardFrame extends JFrame {
                     System.out.println("Normal Mode");
                     mathMode.setText("Normal Mode");
 
-                    isPredict = false;
+                    isValidPredictionInput = false;
                     predictionInput = "";
                     predictionFrame.mathPredict("");
                 }
