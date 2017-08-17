@@ -14,7 +14,7 @@ import javax.swing.*;
 
 /**
  * <h1>Prediction Frame</h1>
- * <p> The <b>Prediction Frame</b> class handles the corresponding
+ * <p>The <b>Prediction Frame</b> class handles the corresponding
  * predictions for mathematical symbols and functions.</p>
  * 
  * @author  Gian Miguel Sero Del Mundo

@@ -14,7 +14,7 @@ import javax.swing.*;
 
 /**
  * <h1>Keyboard Frame</h1>
- * <p> The <b>Keyboard Frame</b> class handles the keyboard UI</p>
+ * <p>The <b>Keyboard Frame</b> class handles the keyboard UI.</p>
  * 
  * @author  Gian Miguel Sero Del Mundo
  * @author  Jin Young Park
@@ -204,7 +204,7 @@ public class KeyboardFrame extends JFrame {
      * Action listener for letter keys that handles uppercase/lowercase letters,
      * as well as how it affects <code>predictionInput</code>.
      */
-    private void letterActionListener(){
+    private void letterActionListener() {
         for (int i = 0; i < letterKeys.length; i++) {
             // letterKeys[i] = new JButton(Character.toString(temp));
             char lowercase = (char)('a' + i);
@@ -652,12 +652,12 @@ public class KeyboardFrame extends JFrame {
     /**
      * Scales change size buttons, which changes size as person presses the button.
      */
-    private void scaleChangeSize(){
+    private void scaleChangeSize() {
         //this.setSize(this.getWidth(),this.getHeight());
         int xValue = (int)(this.getWidth()*0.8);
         int yValue = (int)(this.getHeight()*0.8);
 
-        for (int i = 0; i < 2; i++){
+        for (int i = 0; i < 2; i++) {
             changeSizeButtons[i].setBorder(BorderFactory.createBevelBorder(10, Color.red, Color.gray));
             changeSizeButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
@@ -681,7 +681,7 @@ public class KeyboardFrame extends JFrame {
      * Scales all the keys based on frame dimensions.
      */
     // TODO: Change key width, key height
-    private void scaleKeys(){
+    private void scaleKeys() {
         scaleSpecial();
         scaleArithmetic();
         scaleNumber();
@@ -699,7 +699,7 @@ public class KeyboardFrame extends JFrame {
      * @param h         the new height.
      * @return          the scaled image.
      */
-    private Image getScaledImage(Image srcImg, int w, int h){
+    private Image getScaledImage(Image srcImg, int w, int h) {
         BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = resizedImg.createGraphics();
 
@@ -771,7 +771,7 @@ public class KeyboardFrame extends JFrame {
 
         //change size buttons
         scaleChangeSize();
-        for (int i = 0; i < 2; i++){
+        for (int i = 0; i < 2; i++) {
             final Integer x = new Integer(i);
             changeSizeButtons[x].addMouseListener(new MouseAdapter() {
                 @Override
@@ -812,7 +812,7 @@ public class KeyboardFrame extends JFrame {
             });
             panel.add(changeSizeButtons[i]);
         }
-
+        
         panel.add(label);
         panel.revalidate();
         panel.repaint();
