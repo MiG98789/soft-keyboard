@@ -151,11 +151,11 @@ public class PredictionFrame extends JFrame {
                                 tempInput = "";
                             }
                             if (selection.equals("acos")) {
-                                selection = "cos^-1";
+                                selection = "cos^-1 ";
                             } else if (selection.equals("asin")) {
-                                selection = "sin^-1";
+                                selection = "sin^-1 ";
                             } else if (selection.equals("atan")) {
-                                selection = "tan^-1";
+                                selection = "tan^-1 ";
                             }
                         }
                         System.out.println("You selected: " + selection);

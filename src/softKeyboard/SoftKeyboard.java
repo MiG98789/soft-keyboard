@@ -9,7 +9,7 @@ package softKeyboard;
  * 
  * @author  Gian Miguel Sero Del Mundo
  * @author  Jin Young Park
- * @version 1.4
+ * @version 1.4.1
  * @since   1.1
  */
 public class SoftKeyboard {
