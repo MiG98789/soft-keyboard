@@ -14,11 +14,19 @@ import javax.swing.*;
 
 /**
  * <h1>Prediction Frame</h1>
- * <p> The Prediction Frame class handles the corresponding
+ * <p> The <b>Prediction Frame</b> class handles the corresponding
  * predictions for mathematical symbols and functions.</p>
+ * 
+ * @author  Gian Miguel Sero Del Mundo
+ * @author  Jin Young Park
+ * @since   1.1
  */
 @SuppressWarnings("serial")
 public class PredictionFrame extends JFrame {
+    private static PredictionFrame predictionFrame = null;
+    private KeyboardFrame keyboardFrame;
+    
+    // Frame variables
     private final int FRAME_WIDTH = 400;
     private final int FRAME_HEIGHT = 210;
     private final int NUM_OF_PREDICTIONS = 5;
@@ -27,102 +35,83 @@ public class PredictionFrame extends JFrame {
     private DefaultListModel<String> dlm = new DefaultListModel<String>();
     private JScrollPane scrollPane;
 
+    // Prediction variables
     private Vector<String> mathSymbolsFunctions = new Vector<String>();
     private boolean predictionState = false;
 
-    private void typeKey(int key) {
+    /**
+     * Private constructor to restrict to one instantiation.
+     */
+    private PredictionFrame() {
+        super("Prediction List");
+        loadFrame();
+        loadSymbolsFunctions();
+    }
+    
+    /**
+     * Instantiates Prediction Frame singleton when called for the first time.
+     * @return  Prediction Frame singleton.
+     */
+    public static PredictionFrame getInstance() {
+        if (predictionFrame == null) {
+            predictionFrame = new PredictionFrame();
+        }
+        return predictionFrame;
+    }
+    
+    /**
+     * Sets a Keyboard Frame reference.
+     * @param keyboardFrame the Keyboard Frame to reference to.
+     */
+    public void setKeyboardFrame(KeyboardFrame keyboardFrame) {
+        this.keyboardFrame = keyboardFrame;
+    }
+    
+    /**
+     * Returns predictionState.
+     * @return true if Prediction Frame is trying to predict; false otherwise.
+     */
+    public boolean getPredictionState() {
+        return predictionState;
+    }
+    
+    /**
+     * Type a key once.
+     * @param keyCode   the key code of the corresponding KeyEvent.VK_[CHARACTER] to be typed.
+     * @see             java.awt.event.KeyEvent
+     */
+    private void typeKey(int keyCode) {
         try {
             Robot robot = new Robot();
-            robot.keyPress(key);
-            robot.keyRelease(key);
+            robot.keyPress(keyCode);
+            robot.keyRelease(keyCode);
         } catch (AWTException e) {
             e.printStackTrace();
         }
     }
 
-    private void shiftKey(int key) {
+    /**
+     * Type a key once that requires the shift key to be pressed.
+     * @param keyCode   the key code of the corresponding KeyEvent.VK_[CHARACTER] to be typed.
+     * @see             java.awt.event.KeyEvent
+     */
+    private void shiftKey(int keyCode) {
         try {
             Robot robot = new Robot();
             robot.keyPress(KeyEvent.VK_SHIFT);
-            typeKey(key);
-            robot.keyRelease(key);
+            typeKey(keyCode);
+            robot.keyRelease(keyCode);
             robot.keyRelease(KeyEvent.VK_SHIFT);
         } catch (AWTException e) {
             e.printStackTrace();
         }
     }
-
-    private void loadFrame() {
-        // Frame
-        this.pack();
-        this.setVisible(true);
-        this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLocationRelativeTo(null);
-        this.setAlwaysOnTop(true);
-        this.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                setFocusableWindowState(false);
-            }
-        });
-
-        // Panel
-        panel = new JPanel();
-
-        // List
-        final JList<String> predictionList = new JList<String>(dlm);
-        predictionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        predictionList.setSelectedIndex(0);
-        predictionList.setVisibleRowCount(NUM_OF_PREDICTIONS);
-        predictionList.setFont(predictionList.getFont().deriveFont(FONT_SIZE));
-
-        // Scroll pane
-        scrollPane = new JScrollPane(predictionList);
-
-        // Display the GUI
-        panel.add(scrollPane);
-        panel.revalidate();
-        panel.repaint();
-        this.add(panel);
-        this.revalidate();
-        this.repaint();
-    }
-
+    
     /**
-     * Loads special math symbols and functions from a text file,
-     * and stores them in mathSymbolsFunctions
+     * Predicts all possible math symbols or functions.
+     * @param input the substring to be used for prediction.
      */
-    private void loadSymbolsFunctions() {
-        try {
-            InputStream is = getClass().getResourceAsStream("/symbols.txt");
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
-            String line;
-
-            while ((line = bufferedReader.readLine()) != null) {
-                mathSymbolsFunctions.add(line); 
-            }
-
-            is = getClass().getResourceAsStream("/mathFunctions.txt");
-            bufferedReader = new BufferedReader(new InputStreamReader(is));
-
-            while ((line = bufferedReader.readLine()) != null) {
-                mathSymbolsFunctions.add(line); 
-            }
-
-            System.out.println("Contents of file:");
-            for (int i = 0; i < mathSymbolsFunctions.size(); i++) {
-                System.out.println(mathSymbolsFunctions.elementAt(i).toString());
-            }
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * @param str Input substring to be used for prediction
-     */
-    public void predictSymbol(String input) {
+    public void mathPredict(String input) {
         System.out.println("Prediction input: " + input);
 
         // Clear all items
@@ -133,14 +122,14 @@ public class PredictionFrame extends JFrame {
         }
 
         // Loop through each symbol, and add matching predictions to list
-        for (int i = 0; i < mathSymbolsFunctions.size(); i++) {
-            if (input.length() <= mathSymbolsFunctions.elementAt(i).length()) {
-                if (input.equals(mathSymbolsFunctions.elementAt(i).substring(0, input.length()))) {
-                    dlm.addElement(mathSymbolsFunctions.elementAt(i));
-                    System.out.println("Predicted: " + mathSymbolsFunctions.elementAt(i));
+        for(String item : mathSymbolsFunctions) {
+            if(input.length() <= item.length()) {
+                if(input.equals(item.substring(0,  input.length()))) {
+                    dlm.addElement(item);
+                    System.out.println("Predicted: " + item);
                 }
-            }    
-        }
+            }
+        }    
 
         // Update list
         final JList<String> predictionList = new JList<String>(dlm);
@@ -220,16 +209,73 @@ public class PredictionFrame extends JFrame {
         this.repaint();
     }
 
-    public boolean getPredictionState() {
-        return predictionState;
+    /**
+     * Loads all the UI elements of Prediction Frame.
+     */
+    private void loadFrame() {
+        // Frame
+        this.pack();
+        this.setVisible(true);
+        this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
+        this.setAlwaysOnTop(true);
+        this.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                setFocusableWindowState(false);
+            }
+        });
+
+        // Panel
+        panel = new JPanel();
+
+        // List
+        final JList<String> predictionList = new JList<String>(dlm);
+        predictionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        predictionList.setSelectedIndex(0);
+        predictionList.setVisibleRowCount(NUM_OF_PREDICTIONS);
+        predictionList.setFont(predictionList.getFont().deriveFont(FONT_SIZE));
+
+        // Scroll pane
+        scrollPane = new JScrollPane(predictionList);
+
+        // Display the GUI
+        panel.add(scrollPane);
+        panel.revalidate();
+        panel.repaint();
+        this.add(panel);
+        this.revalidate();
+        this.repaint();
     }
 
     /**
-     * @param title Sets window title
+     * Loads special math symbols and functions from text files,
+     * and stores them in <code>mathSymbolsFunctions</code>.
      */
-    public PredictionFrame(String title) {
-        super(title);
-        loadFrame();
-        loadSymbolsFunctions();
+    private void loadSymbolsFunctions() {
+        try {
+            InputStream is = getClass().getResourceAsStream("/symbols.txt");
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                mathSymbolsFunctions.add(line); 
+            }
+
+            is = getClass().getResourceAsStream("/mathFunctions.txt");
+            bufferedReader = new BufferedReader(new InputStreamReader(is));
+
+            while ((line = bufferedReader.readLine()) != null) {
+                mathSymbolsFunctions.add(line); 
+            }
+
+            System.out.println("Contents of file:");
+            for (int i = 0; i < mathSymbolsFunctions.size(); i++) {
+                System.out.println(mathSymbolsFunctions.elementAt(i).toString());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

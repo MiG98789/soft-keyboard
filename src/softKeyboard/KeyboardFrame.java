@@ -14,29 +14,40 @@ import javax.swing.*;
 
 /**
  * <h1>Keyboard Frame</h1>
- * <p> The Keyboard Frame class handles the keyboard UI</p>
+ * <p> The <b>Keyboard Frame</b> class handles the keyboard UI</p>
+ * 
+ * @author  Gian Miguel Sero Del Mundo
+ * @author  Jin Young Park
+ * @since   0.0
  */
 @SuppressWarnings("serial")
 public class KeyboardFrame extends JFrame {
-    private PredictionFrame predictionFrame;
+    private static KeyboardFrame keyboardFrame = null;
+    private PredictionFrame predictionFrame = PredictionFrame.getInstance();
 
     // TODO: Fix UI layout
-    private int FRAME_WIDTH = 450;
-    private int FRAME_HEIGHT = 420;
+    
+    // Frame variables
+    private int frameWidth = 450;
+    private int frameHeight = 420;
     private JPanel panel;
     private JLabel label;
     private ImageIcon background = new ImageIcon(getClass().getResource("/bg.png"));
+    
+    // Math Mode variables
     private JToggleButton mathMode = new JToggleButton("Normal Mode", false);
     private String predictionInput;
     private boolean isPredict = false;
 
-    private double SCALE_FACTOR = 1.15;
+    // Change Size variables
+    private final double SCALE_FACTOR = 1.15;
     private int currScaleCount = 0;
     private final int MAX_SCALE_COUNT = 2;
     private JButton[] changeSizeButtons = new JButton[2];
 
-    private int KEY_WIDTH = 25;
-    private int KEY_HEIGHT = 25;
+    // Key variables
+    private int keyWidth = 25;
+    private int keyHeight = 25;
     private JButton[] specialKeys = new JButton[6]; // Backspace, space, enter, \, =, (
     private JButton[] arithmeticKeys = new JButton[5];
     private JButton[] numberKeys = new JButton[10];
@@ -50,29 +61,68 @@ public class KeyboardFrame extends JFrame {
     private boolean capsClick = false;
     private MouseAdapter keyHighlightAdapter;
 
-    private void typeKey(int key) {
+    /**
+     * Private constructor to restrict to one instantiation.
+     */
+    private KeyboardFrame() {
+        super("Soft Keyboard");
+        loadGUI();
+    }
+    
+    /**
+     * Instantiates Keyboard Frame singleton when called for the first time.
+     * @return  Keyboard Frame singleton.
+     */
+    public static KeyboardFrame getInstance() {
+        if (keyboardFrame == null) {
+            keyboardFrame = new KeyboardFrame();
+        }
+        return keyboardFrame;
+    }
+    
+    /**
+     * Sets a Prediction Frame reference.
+     * @param predictionFrame the Prediction Frame to reference to.
+     */
+    public void setPredictionFrame(PredictionFrame predictionFrame) {
+        this.predictionFrame = predictionFrame;
+    }
+
+    /**
+     * Type a key once.
+     * @param keyCode   the key code of the corresponding KeyEvent.VK_[CHARACTER] to be typed.
+     * @see             java.awt.event.KeyEvent
+     */
+    private void typeKey(int keyCode) {
         try {
             Robot robot = new Robot();
-            robot.keyPress(key);
-            robot.keyRelease(key);
+            robot.keyPress(keyCode);
+            robot.keyRelease(keyCode);
         } catch (AWTException e) {
             e.printStackTrace();
         }
     }
 
-    private void shiftKey(int key) {
+    /**
+     * Type a key once that requires the shift key to be pressed.
+     * @param keyCode   the key code of the corresponding KeyEvent.VK_[CHARACTER] to be typed.
+     * @see             java.awt.event.KeyEvent
+     */
+    private void shiftKey(int keyCode) {
         try {
             Robot robot = new Robot();
             robot.keyPress(KeyEvent.VK_SHIFT);
-            typeKey(key);
-            robot.keyRelease(key);
+            typeKey(keyCode);
+            robot.keyRelease(keyCode);
             robot.keyRelease(KeyEvent.VK_SHIFT);
         } catch (AWTException e) {
             e.printStackTrace();
         }
     }
 
-    /* Converts Soft Keyboard non-alphabetical key input into actual keyboard input */
+    /**
+     * Converts Soft Keyboard non-alphabetical key input into actual keyboard input.
+     */
     private ActionListener numericSymbolicListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -125,16 +175,19 @@ public class KeyboardFrame extends JFrame {
 
             // Special cases
             else if (actionCommand == "(") { // Autocompletes ), then puts cursor between ( and )
-                // TODO: Decide whether to permanently enable this
-                shiftKey(KeyEvent.VK_9); // (
-                shiftKey(KeyEvent.VK_0); // )
-                typeKey(KeyEvent.VK_LEFT); // Go between ( and )
+                if(mathMode.isSelected()) {
+                    shiftKey(KeyEvent.VK_9); // (
+                    shiftKey(KeyEvent.VK_0); // )
+                    typeKey(KeyEvent.VK_LEFT); // Go between ( and )
+                } else {
+                    shiftKey(KeyEvent.VK_9);
+                }
             } else if (actionCommand == "\\") { // Restart prediction
                 typeKey(KeyEvent.VK_BACK_SLASH);
                 if(mathMode.isSelected()) {
                     predictionInput = "\\";
                     isPredict = true;
-                    predictionFrame.predictSymbol(predictionInput);
+                    predictionFrame.mathPredict(predictionInput);
                 }
             }
 
@@ -142,12 +195,116 @@ public class KeyboardFrame extends JFrame {
                 System.out.println("Input: " + predictionInput);
             }
             if (!isPredict && mathMode.isSelected()) {
-                predictionFrame.predictSymbol("");
+                predictionFrame.mathPredict("");
             }
         }
     };
+    
+    /**
+     * Action listener for letter keys that handles uppercase/lowercase letters,
+     * as well as how it affects <code>predictionInput</code>.
+     */
+    private void letterActionListener(){
+        for (int i = 0; i < letterKeys.length; i++) {
+            // letterKeys[i] = new JButton(Character.toString(temp));
+            char lowercase = (char)('a' + i);
+            // String lowerTemp = Character.toString(lowercase);
+            char uppercase = (char)('A' + i);
+            // String upperTemp = Character.toString(uppercase);
+           
+            letterKeys[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    if(mathMode.isSelected()) {
+                        if (isPredict && !predictionFrame.getPredictionState()) {
+                            predictionInput += (shiftClick || capsClick) ? ("" + uppercase) : ("" + lowercase);
+                            predictionFrame.mathPredict(predictionInput);
+                        } else {
+                            isPredict = true;
+                            predictionInput = (shiftClick || capsClick) ? ("" + uppercase) : ("" + lowercase);
+                            predictionFrame.mathPredict(predictionInput);
+                        }
+                    }
 
-    /* Highlights key background when cursor is hovering over it */
+                    if (!shiftClick && !capsClick) { // Lower case
+                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(lowercase));
+                        typeKey(keyCode);
+                    } else if (!shiftClick && capsClick) { // Upper case
+                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(uppercase));
+                        shiftKey(keyCode);
+                    } else if (shiftClick && !capsClick) { // Upper case
+                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(uppercase));
+                        shiftKey(keyCode);
+                        shiftClick = false;
+                    } else { // Lower case
+                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(lowercase));
+                        typeKey(keyCode);
+                        shiftClick = false;
+                    }
+                }
+            });
+        }
+    }
+    
+    /**
+     * Sets up left-side buttons' listeners.
+     */
+    private void setSpecialListener() {
+        for (int i = 0; i < 6; i++) {
+            final Integer x = new Integer(i);
+            if (i < 3) { // Backspace, space, enter
+                specialKeys[i].addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent ae) {
+                        try {
+                            Robot robot = new Robot();
+
+                            switch(x) {
+                            case 0: // Backspace
+                                typeKey(KeyEvent.VK_BACK_SPACE);
+                                if(mathMode.isSelected()) {
+                                    predictionInput = removeLastChar(predictionInput);
+                                    predictionFrame.mathPredict(predictionInput);
+                                }
+                                break;
+
+                            case 1: // Space
+                                typeKey(KeyEvent.VK_SPACE);
+                                if(mathMode.isSelected()) {
+                                    isPredict = false;
+                                    predictionFrame.mathPredict("");
+                                }
+                                break;
+
+                            case 2: // Enter
+                                if (mathMode.isSelected()) { // Math mode
+                                    typeKey(KeyEvent.VK_ENTER);
+                                    robot.keyPress(KeyEvent.VK_ALT);
+                                    typeKey(KeyEvent.VK_EQUALS);
+                                    robot.keyRelease(KeyEvent.VK_ALT);
+                                }
+                                else { // Normal mode
+                                    typeKey(KeyEvent.VK_ENTER);
+                                }
+                                break;
+                            }
+                        } catch (AWTException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+            else { // \, =, (
+                specialKeys[i].removeActionListener(numericSymbolicListener);
+                specialKeys[i].addActionListener(numericSymbolicListener);
+            }
+        }
+    }
+
+    /**
+     * Highlights key background when cursor is hovering over it.
+     * @param b the button to add the MouseAdapter to.
+     */
     private void addKeyHighlightAdapter(JButton b) {
         keyHighlightAdapter = new MouseAdapter() {
             @Override
@@ -165,8 +322,12 @@ public class KeyboardFrame extends JFrame {
         b.addMouseListener(keyHighlightAdapter);
     }
 
-    /* Helper function for backspace */
-    private static String removeLastChar(String str) {
+    /**
+     * Removes last character of a string.
+     * @param str   the string which will have its last character removed.
+     * @return      the string with its last character removed.
+     */
+    private String removeLastChar(String str) {
         if (str.isEmpty()) {
             return "";
         } else {
@@ -174,12 +335,14 @@ public class KeyboardFrame extends JFrame {
         }
     }
 
-    /* Sets up background */
+    /**
+     * Sets up background.
+     */
     private void loadBackground() {
         // Frame
         this.pack();
         this.setVisible(true);
-        this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
+        this.setSize(frameWidth, frameHeight);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
         this.setLayout(new BorderLayout());
@@ -204,7 +367,9 @@ public class KeyboardFrame extends JFrame {
         label.revalidate();
     }
 
-    /* Scale icon sizes */
+    /**
+     * Scales icon sizes.
+     */
     private void scaleIcons() {
         for(int i = 0; i < specialIcons.length; i++) {
             specialIcons[i] = new ImageIcon(getClass().getResource(specialURLs[i]));
@@ -220,7 +385,9 @@ public class KeyboardFrame extends JFrame {
         }
     }
 
-    /* Sets key text/image */
+    /**
+     * Sets key text/image.
+     */
     private void loadKeysButtons() {
         // Left-side buttons
         for(int i = 0; i < specialIcons.length; i++) {
@@ -287,61 +454,10 @@ public class KeyboardFrame extends JFrame {
         changeSizeButtons[1] = new JButton("+");
     }
 
-    /* Sets up left-side buttons' listeners */
+    /**
+     * Scales size and position for left-side buttons.
+     */
     // TODO: Adjust bounds to fit better (increase size, and if possible, shape)
-    private void setSpecialListener() {
-        for (int i = 0; i < 6; i++) {
-            final Integer x = new Integer(i);
-            if (i < 3) { // Backspace, space, enter
-                specialKeys[i].addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent ae) {
-                        try {
-                            Robot robot = new Robot();
-
-                            switch(x) {
-                            case 0: // Backspace
-                                typeKey(KeyEvent.VK_BACK_SPACE);
-                                if(mathMode.isSelected()) {
-                                    predictionInput = removeLastChar(predictionInput);
-                                    predictionFrame.predictSymbol(predictionInput);
-                                }
-                                break;
-
-                            case 1: // Space
-                                typeKey(KeyEvent.VK_SPACE);
-                                if(mathMode.isSelected()) {
-                                    isPredict = false;
-                                    predictionFrame.predictSymbol("");
-                                }
-                                break;
-
-                            case 2: // Enter
-                                if (mathMode.isSelected()) { // Math mode
-                                    typeKey(KeyEvent.VK_ENTER);
-                                    robot.keyPress(KeyEvent.VK_ALT);
-                                    typeKey(KeyEvent.VK_EQUALS);
-                                    robot.keyRelease(KeyEvent.VK_ALT);
-                                }
-                                else { // Normal mode
-                                    typeKey(KeyEvent.VK_ENTER);
-                                }
-                                break;
-                            }
-                        } catch (AWTException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
-            else { // \, =, (
-                specialKeys[i].removeActionListener(numericSymbolicListener);
-                specialKeys[i].addActionListener(numericSymbolicListener);
-            }
-        }
-    }
-
-    /* Sets size and position for left-side buttons */
     private void scaleSpecial() {
         // Size
         for(int i = 3; i < 6; i++) {
@@ -355,19 +471,19 @@ public class KeyboardFrame extends JFrame {
         xValue = (int)(this.getWidth()/2) - 15;
         yValue = (int)(this.getHeight()/2) - 40;
 
-        int newKEY_WIDTH, newKEY_HEIGHT;
-        newKEY_WIDTH=(int)(KEY_WIDTH*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
-        newKEY_HEIGHT=(int)(KEY_HEIGHT*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
+        int newkeyWidth, newkeyHeight;
+        newkeyWidth=(int)(keyWidth*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
+        newkeyHeight=(int)(keyHeight*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
 
-        specialKeys[0].setBounds(xValue, yValue, newKEY_WIDTH, newKEY_HEIGHT);
+        specialKeys[0].setBounds(xValue, yValue, newkeyWidth, newkeyHeight);
 
         // \
         xValue = (int)(this.getWidth()/2) - 68;
         yValue = (int)(this.getHeight()/2) - 45;
-        newKEY_WIDTH=(int)(KEY_WIDTH*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
-        newKEY_HEIGHT=(int)(KEY_HEIGHT*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
+        newkeyWidth=(int)(keyWidth*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
+        newkeyHeight=(int)(keyHeight*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
 
-        specialKeys[3].setBounds(xValue, yValue, newKEY_WIDTH,newKEY_HEIGHT);
+        specialKeys[3].setBounds(xValue, yValue, newkeyWidth,newkeyHeight);
 
         // (1) Space, (2) enter
         double radian;
@@ -385,7 +501,7 @@ public class KeyboardFrame extends JFrame {
             yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
 
-            specialKeys[i].setBounds(xValue, yValue, newKEY_WIDTH, newKEY_HEIGHT);
+            specialKeys[i].setBounds(xValue, yValue, newkeyWidth, newkeyHeight);
         }
 
         // (4) =, (5)(
@@ -400,11 +516,13 @@ public class KeyboardFrame extends JFrame {
             yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
 
-            specialKeys[i].setBounds(xValue, yValue, newKEY_WIDTH, newKEY_HEIGHT+10);
+            specialKeys[i].setBounds(xValue, yValue, newkeyWidth, newkeyHeight+10);
         }
     }
 
-    /* Sets size and position of arithmetic buttons */
+    /**
+     * Scales size and position of arithmetic buttons.
+     */
     private void scaleArithmetic() {
         double radian;
         int xValue, yValue;
@@ -422,12 +540,14 @@ public class KeyboardFrame extends JFrame {
             yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
 
-            arithmeticKeys[i].setBounds(xValue, yValue, (int)(KEY_WIDTH*0.8), (int)(KEY_HEIGHT*0.8));
+            arithmeticKeys[i].setBounds(xValue, yValue, (int)(keyWidth*0.8), (int)(keyHeight*0.8));
             arithmeticKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
     }
 
-    /* Sets size and position of number buttons */
+    /**
+     * Scales size and position of number buttons.
+     */
     // TODO: Scroll through numbers
     private void scaleNumber() {
         double radian;
@@ -446,12 +566,14 @@ public class KeyboardFrame extends JFrame {
             yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
 
-            numberKeys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
+            numberKeys[i].setBounds(xValue, yValue, keyWidth, keyHeight);
             numberKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
     }
 
-    /* Sets up letter buttons */
+    /**
+     * Scales up letter buttons.
+     */
     // TODO: Seperate into two functions (load and scale)
     private void loadAndScaleLetters() {
         double radian;
@@ -472,54 +594,14 @@ public class KeyboardFrame extends JFrame {
             yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
 
-            letterKeys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
+            letterKeys[i].setBounds(xValue, yValue, keyWidth, keyHeight);
             letterKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
     }
-    
-    private void letterActionListener(){
-        for (int i = 0; i < letterKeys.length; i++) {
-            // letterKeys[i] = new JButton(Character.toString(temp));
-            char lowercase = (char)('a' + i);
-            // String lowerTemp = Character.toString(lowercase);
-            char uppercase = (char)('A' + i);
-            // String upperTemp = Character.toString(uppercase);
-           
-            letterKeys[i].addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent ae) {
-                    if(mathMode.isSelected()) {
-                        if (isPredict && !predictionFrame.getPredictionState()) {
-                            predictionInput += (shiftClick || capsClick) ? ("" + uppercase) : ("" + lowercase);
-                            predictionFrame.predictSymbol(predictionInput);
-                        } else {
-                            isPredict = true;
-                            predictionInput = (shiftClick || capsClick) ? ("" + uppercase) : ("" + lowercase);
-                            predictionFrame.predictSymbol(predictionInput);
-                        }
-                    }
 
-                    if (!shiftClick && !capsClick) { // Lower case
-                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(lowercase));
-                        typeKey(keyCode);
-                    } else if (!shiftClick && capsClick) { // Upper case
-                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(uppercase));
-                        shiftKey(keyCode);
-                    } else if (shiftClick && !capsClick) { // Upper case
-                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(uppercase));
-                        shiftKey(keyCode);
-                        shiftClick = false;
-                    } else { // Lower case
-                        int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(lowercase));
-                        typeKey(keyCode);
-                        shiftClick = false;
-                    }
-                }
-            });
-        }
-    }
-
-    /* Sets size and position layer 3 buttons */    
+    /**
+     * Scales size and position layer 3 buttons.
+     */    
     private void scaleLayer3() {
         double radian;
         double initDegree = 55;
@@ -536,12 +618,14 @@ public class KeyboardFrame extends JFrame {
             yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
 
-            layer3Keys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
+            layer3Keys[i].setBounds(xValue, yValue, keyWidth, keyHeight);
             layer3Keys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
     }
 
-    /* Sets size and position of layer 4 buttons */
+    /**
+     * Scales size and position of layer 4 buttons.
+     */
     // TODO: Add shift and caps in the middle
     private void scaleLayer4() {
         double radian;
@@ -560,12 +644,14 @@ public class KeyboardFrame extends JFrame {
             yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
 
-            layer4Keys[i].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
+            layer4Keys[i].setBounds(xValue, yValue, keyWidth, keyHeight);
             layer4Keys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
     }
 
-    /* Set up change size buttons, which changes size as person presses the button */
+    /**
+     * Scales change size buttons, which changes size as person presses the button.
+     */
     private void scaleChangeSize(){
         //this.setSize(this.getWidth(),this.getHeight());
         int xValue = (int)(this.getWidth()*0.8);
@@ -575,11 +661,14 @@ public class KeyboardFrame extends JFrame {
             changeSizeButtons[i].setBorder(BorderFactory.createBevelBorder(10, Color.red, Color.gray));
             changeSizeButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
-        changeSizeButtons[0].setBounds(xValue, yValue, KEY_WIDTH, KEY_HEIGHT);
-        changeSizeButtons[1].setBounds(xValue + KEY_WIDTH, yValue, KEY_WIDTH, KEY_HEIGHT);
+        changeSizeButtons[0].setBounds(xValue, yValue, keyWidth, keyHeight);
+        changeSizeButtons[1].setBounds(xValue + keyWidth, yValue, keyWidth, keyHeight);
 
     }
 
+    /**
+     * Scales Math Mode button.
+     */
     private void scaleMathToggle() {
         int width = 110 + currScaleCount*20;
         int height = 30 + currScaleCount*5;
@@ -588,6 +677,9 @@ public class KeyboardFrame extends JFrame {
         mathMode.setFont(new Font("Arial", Font.PLAIN, (int)(14*(double)(this.getWidth()/500.0))));
     }
 
+    /**
+     * Scales all the keys based on frame dimensions.
+     */
     // TODO: Change key width, key height
     private void scaleKeys(){
         scaleSpecial();
@@ -600,6 +692,13 @@ public class KeyboardFrame extends JFrame {
         scaleMathToggle();
     }
 
+    /**
+     * Scales an image to the desired width and height.
+     * @param srcImg    the source image.
+     * @param w         the new width.
+     * @param h         the new height.
+     * @return          the scaled image.
+     */
     private Image getScaledImage(Image srcImg, int w, int h){
         BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = resizedImg.createGraphics();
@@ -611,6 +710,9 @@ public class KeyboardFrame extends JFrame {
         return resizedImg;
     }
 
+    /**
+     * Builds the GUI.
+     */
     private void loadGUI() {
         // Graphics
         loadBackground();
@@ -661,7 +763,7 @@ public class KeyboardFrame extends JFrame {
 
                     isPredict = false;
                     predictionInput = "";
-                    predictionFrame.predictSymbol("");
+                    predictionFrame.mathPredict("");
                 }
             }
         });
@@ -687,8 +789,8 @@ public class KeyboardFrame extends JFrame {
                                 background.setImage(getScaledImage(temp, (int)(panel.getWidth()/(SCALE_FACTOR)*0.95), (int)(panel.getWidth()/(SCALE_FACTOR)*0.95))); 
                             }
                             scaleKeys();
-                            KEY_WIDTH -= 5;
-                            KEY_HEIGHT -= 5;
+                            keyWidth -= 5;
+                            keyHeight -= 5;
                         }
                     } else { //If larger
                         if(currScaleCount != MAX_SCALE_COUNT) {
@@ -702,8 +804,8 @@ public class KeyboardFrame extends JFrame {
                                 background.setImage(getScaledImage(temp, (int)(panel.getWidth()*(SCALE_FACTOR*0.95)), (int)(panel.getWidth()*(SCALE_FACTOR*0.95))));    
                             }
                             scaleKeys();
-                            KEY_WIDTH += 5;
-                            KEY_HEIGHT += 5;
+                            keyWidth += 5;
+                            keyHeight += 5;
                         }
                     }
                 }
@@ -717,12 +819,5 @@ public class KeyboardFrame extends JFrame {
         this.add(panel);
         this.revalidate();
         this.repaint();
-    }
-
-    public KeyboardFrame(String title) {
-        super(title);
-        loadGUI();
-        predictionFrame = new PredictionFrame("Prediction List");
-        predictionFrame.setLocation(this.getX() + this.getWidth(), this.getY());
     }
 }
