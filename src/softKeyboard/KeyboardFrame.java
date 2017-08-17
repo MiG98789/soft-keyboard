@@ -175,7 +175,7 @@ public class KeyboardFrame extends JFrame {
 
             // Special cases
             else if (actionCommand == "(") { // Autocompletes ), then puts cursor between ( and )
-                if(mathMode.isSelected()) {
+                if (mathMode.isSelected()) {
                     shiftKey(KeyEvent.VK_9); // (
                     shiftKey(KeyEvent.VK_0); // )
                     typeKey(KeyEvent.VK_LEFT); // Go between ( and )
@@ -184,14 +184,14 @@ public class KeyboardFrame extends JFrame {
                 }
             } else if (actionCommand == "\\") { // Restart prediction
                 typeKey(KeyEvent.VK_BACK_SLASH);
-                if(mathMode.isSelected()) {
+                if (mathMode.isSelected()) {
                     predictionInput = "\\";
                     isValidPredictionInput = true;
                     predictionFrame.mathPredict(predictionInput);
                 }
             }
 
-            if(mathMode.isSelected()) {
+            if (mathMode.isSelected()) {
                 System.out.println("Input: " + predictionInput);
             }
             if (!isValidPredictionInput && mathMode.isSelected()) {
@@ -215,7 +215,7 @@ public class KeyboardFrame extends JFrame {
             letterKeys[i].addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent ae) {
-                    if(mathMode.isSelected()) {
+                    if (mathMode.isSelected()) {
                         if (isValidPredictionInput && !predictionFrame.isEmpty()) {
                             predictionInput += (shiftClick || capsClick) ? ("" + uppercase) : ("" + lowercase);
                             predictionFrame.mathPredict(predictionInput);
@@ -262,7 +262,7 @@ public class KeyboardFrame extends JFrame {
                             switch(x) {
                             case 0: // Backspace
                                 typeKey(KeyEvent.VK_BACK_SPACE);
-                                if(mathMode.isSelected()) {
+                                if (mathMode.isSelected()) {
                                     predictionInput = removeLastChar(predictionInput);
                                     predictionFrame.mathPredict(predictionInput);
                                 }
@@ -270,7 +270,7 @@ public class KeyboardFrame extends JFrame {
 
                             case 1: // Space
                                 typeKey(KeyEvent.VK_SPACE);
-                                if(mathMode.isSelected()) {
+                                if (mathMode.isSelected()) {
                                     isValidPredictionInput = false;
                                     predictionFrame.mathPredict("");
                                 }
@@ -371,12 +371,12 @@ public class KeyboardFrame extends JFrame {
      * Scales icon sizes.
      */
     private void scaleIcons() {
-        for(int i = 0; i < specialIcons.length; i++) {
+        for (int i = 0; i < specialIcons.length; i++) {
             specialIcons[i] = new ImageIcon(getClass().getResource(specialURLs[i]));
             Image temp = specialIcons[i].getImage();    
             int tempWidth = (int)(temp.getWidth(null)*(double)(this.getWidth()/450.00));
             int tempHeight = (int)(temp.getHeight(null)*(double)(this.getHeight()/450.0));
-            if(specialURLs[i] == "/enter.png") {
+            if (specialURLs[i] == "/enter.png") {
                 temp = temp.getScaledInstance((int)(tempWidth/20), (int)(tempHeight/20), Image.SCALE_SMOOTH);
             } else {
                 temp = temp.getScaledInstance((int)(tempWidth/7), (int)(tempHeight/7), Image.SCALE_SMOOTH);
@@ -390,7 +390,7 @@ public class KeyboardFrame extends JFrame {
      */
     private void loadKeysButtons() {
         // Left-side buttons
-        for(int i = 0; i < specialIcons.length; i++) {
+        for (int i = 0; i < specialIcons.length; i++) {
             specialKeys[i] = new JButton(specialIcons[i]);
         }
         specialKeys[3] = new JButton("\\");
@@ -460,7 +460,7 @@ public class KeyboardFrame extends JFrame {
     // TODO: Adjust bounds to fit better (increase size, and if possible, shape)
     private void scaleSpecial() {
         // Size
-        for(int i = 3; i < 6; i++) {
+        for (int i = 3; i < 6; i++) {
             specialKeys[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
         }
 
@@ -472,16 +472,16 @@ public class KeyboardFrame extends JFrame {
         yValue = (int)(this.getHeight()/2) - 40;
 
         int newkeyWidth, newkeyHeight;
-        newkeyWidth=(int)(keyWidth*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
-        newkeyHeight=(int)(keyHeight*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
+        newkeyWidth = (int)(keyWidth*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
+        newkeyHeight = (int)(keyHeight*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
 
         specialKeys[0].setBounds(xValue, yValue, newkeyWidth, newkeyHeight);
 
         // \
         xValue = (int)(this.getWidth()/2) - 68;
         yValue = (int)(this.getHeight()/2) - 45;
-        newkeyWidth=(int)(keyWidth*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
-        newkeyHeight=(int)(keyHeight*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
+        newkeyWidth = (int)(keyWidth*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
+        newkeyHeight = (int)(keyHeight*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
 
         specialKeys[3].setBounds(xValue, yValue, newkeyWidth,newkeyHeight);
 
@@ -516,7 +516,7 @@ public class KeyboardFrame extends JFrame {
             yValue = -1*(int)(Math.sin(radian)*radius) + midY;
             initDegree += incrementDegree;
 
-            specialKeys[i].setBounds(xValue, yValue, newkeyWidth, newkeyHeight+10);
+            specialKeys[i].setBounds(xValue, yValue, newkeyWidth, newkeyHeight + 10);
         }
     }
 
@@ -586,8 +586,6 @@ public class KeyboardFrame extends JFrame {
         int radius = (int)((this.getWidth())/2.5) - 13;
 
         for (int i = 0; i < letterKeys.length; i++) {
-
-
             // Calculates coordinates of each letter
             radian = Math.toRadians(initDegree);
             xValue = -1*(int)(Math.cos(radian)*radius) + midX;
@@ -676,7 +674,7 @@ public class KeyboardFrame extends JFrame {
         mathMode.setBounds(0, 0, width, height);
         mathMode.setFont(new Font("Arial", Font.PLAIN, (int)(14*(double)(this.getWidth()/500.0))));
     }
-
+    
     /**
      * Scales all the keys based on frame dimensions.
      */
@@ -689,7 +687,7 @@ public class KeyboardFrame extends JFrame {
         scaleLayer4();
         loadAndScaleLetters();
         scaleChangeSize();
-        scaleMathToggle();
+        scaleMathToggle();  
     }
 
     /**
@@ -729,10 +727,10 @@ public class KeyboardFrame extends JFrame {
         scaleLayer4();
         loadAndScaleLetters();
 
-        for(int i = 0; i < keys.length; i++) {
-            for(int j = 0; j < keys[i].length; j++) {
-                if(i > 0) {
-                    if(i < 5) {
+        for (int i = 0; i < keys.length; i++) {
+            for (int j = 0; j < keys[i].length; j++) {
+                if (i > 0) {
+                    if (i < 5) {
                         keys[i][j].removeActionListener(numericSymbolicListener);
                         keys[i][j].addActionListener(numericSymbolicListener);
                     }
@@ -777,10 +775,10 @@ public class KeyboardFrame extends JFrame {
                 @Override
                 public void mouseClicked (MouseEvent e) {
                     if (x == 0) { //If smaller
-                        if(currScaleCount != 0) {  
+                        if (currScaleCount != 0) {  
                             currScaleCount--;
                             setSize((int)(getWidth()/SCALE_FACTOR), (int)(getHeight()/SCALE_FACTOR));
-                            if(currScaleCount == 1) {
+                            if (currScaleCount == 1) {
                                 Image temp = new ImageIcon(getClass().getResource("/bg3.png")).getImage();
                                 background.setImage(getScaledImage(temp, (int)(panel.getWidth()/(SCALE_FACTOR)*0.95), (int)(panel.getWidth()/(SCALE_FACTOR)*0.95))); 
 
@@ -793,10 +791,10 @@ public class KeyboardFrame extends JFrame {
                             keyHeight -= 5;
                         }
                     } else { //If larger
-                        if(currScaleCount != MAX_SCALE_COUNT) {
+                        if (currScaleCount != MAX_SCALE_COUNT) {
                             currScaleCount++;
                             setSize((int)(getWidth()*SCALE_FACTOR),(int)(getHeight()*SCALE_FACTOR));
-                            if(currScaleCount == 1) {
+                            if (currScaleCount == 1) {
                                 Image temp = new ImageIcon(getClass().getResource("/bg3.png")).getImage();
                                 background.setImage(getScaledImage(temp, (int)(panel.getWidth()*(SCALE_FACTOR*0.95)), (int)(panel.getWidth()*(SCALE_FACTOR*0.95)))); 
                             } else {
