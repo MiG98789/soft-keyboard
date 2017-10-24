@@ -1,4 +1,4 @@
-package softKeyboard;
+package soft.prediction;
 
 import java.awt.AWTException;
 import java.awt.Robot;
@@ -11,6 +11,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import javax.swing.*;
+
+import soft.helper.Helper;
+import soft.keyboard.KeyboardFrame;
 
 /**
  * <h1>Prediction Frame</h1>
@@ -75,38 +78,6 @@ public class PredictionFrame extends JFrame {
     }
     
     /**
-     * Type a key once.
-     * @param keyCode   the key code of the corresponding KeyEvent.VK_[CHARACTER] to be typed.
-     * @see             java.awt.event.KeyEvent
-     */
-    private void typeKey(int keyCode) {
-        try {
-            Robot robot = new Robot();
-            robot.keyPress(keyCode);
-            robot.keyRelease(keyCode);
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Type a key once that requires the shift key to be pressed.
-     * @param keyCode   the key code of the corresponding KeyEvent.VK_[CHARACTER] to be typed.
-     * @see             java.awt.event.KeyEvent
-     */
-    private void shiftKey(int keyCode) {
-        try {
-            Robot robot = new Robot();
-            robot.keyPress(KeyEvent.VK_SHIFT);
-            typeKey(keyCode);
-            robot.keyRelease(keyCode);
-            robot.keyRelease(KeyEvent.VK_SHIFT);
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    /**
      * Predicts all possible math symbols or functions.
      * @param input the substring to be used for prediction.
      */
@@ -147,7 +118,7 @@ public class PredictionFrame extends JFrame {
                         
                         if(selection.equals("acos") || selection.equals("asin") || selection.equals("atan")) {
                             for(int i = 0; i < input.length(); i++) {
-                                typeKey(KeyEvent.VK_BACK_SPACE);
+                                Helper.typeKey(KeyEvent.VK_BACK_SPACE);
                                 tempInput = "";
                             }
                             if (selection.equals("acos")) {
@@ -167,22 +138,22 @@ public class PredictionFrame extends JFrame {
                                 char temp = selection.charAt(i);
 
                                 if(temp == '^') {
-                                    shiftKey(KeyEvent.VK_6);
+                                    Helper.shiftKey(KeyEvent.VK_6);
                                 } else {
                                     if (Character.isUpperCase(temp)) {
                                         robot.keyPress(KeyEvent.VK_SHIFT);
                                     }
                                     int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)temp);
-                                    typeKey(keyCode);
+                                    Helper.typeKey(keyCode);
                                     if (Character.isUpperCase(temp)) {
                                         robot.keyRelease(KeyEvent.VK_SHIFT);
                                     }
                                 }
                             }
                             if(isFunction) {
-                                shiftKey(KeyEvent.VK_9); // (
-                                shiftKey(KeyEvent.VK_0); // )
-                                typeKey(KeyEvent.VK_LEFT); // Go between ( and )
+                                Helper.shiftKey(KeyEvent.VK_9); // (
+                                Helper.shiftKey(KeyEvent.VK_0); // )
+                                Helper.typeKey(KeyEvent.VK_LEFT); // Go between ( and )
                             } else {
                                 robot.keyPress(KeyEvent.VK_SPACE);
                             }
