@@ -8,7 +8,6 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -101,20 +100,20 @@ public class KeyboardFrame extends JFrame {
         label.revalidate();
     }
 
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
 
     // Key variables    
 
@@ -129,10 +128,10 @@ public class KeyboardFrame extends JFrame {
         public double initDegree;
         public double endDegree;
         public int midX = width/2 - 20;
-        public int midY = height/2 - 32;
+        public int midY = height/2 - 35;
         public int radius;
         public int rowNum;
-        
+
         public Row(int rowNum) {
             this.rowNum = rowNum;
         }
@@ -178,14 +177,16 @@ public class KeyboardFrame extends JFrame {
             for (JButton key : row.keys) {
                 char letter = key.getName().charAt(0);
 
-                if (!shiftClick && !capsClick) { // Lower case
-                    key.setText("" + letter);
-                } else if (!shiftClick && capsClick) { // Upper case
-                    key.setText("" + Character.toUpperCase(letter));
-                } else if (shiftClick && !capsClick) { // Upper case
-                    key.setText("" + Character.toUpperCase(letter));
-                } else { // Lower case
-                    key.setText("" + Character.toUpperCase(letter));
+                if ((letter >= 'a' && letter <= 'z') || (letter >= 'A' && letter <= 'Z')) {
+                    if (!shiftClick && !capsClick) { // Lower case
+                        key.setText("" + letter);
+                    } else if (!shiftClick && capsClick) { // Upper case
+                        key.setText("" + Character.toUpperCase(letter));
+                    } else if (shiftClick && !capsClick) { // Upper case
+                        key.setText("" + Character.toUpperCase(letter));
+                    } else { // Lower case
+                        key.setText("" + Character.toLowerCase(letter));
+                    }
                 }
             }
         }
@@ -200,23 +201,23 @@ public class KeyboardFrame extends JFrame {
         letterActionListener = (new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
-                if (!shiftClick && !capsClick) { // Lower case
+                if (!shiftClick && !capsClick) { // Caps lower case
                     int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(letter));
                     Helper.typeKey(keyCode);
-                } else if (!shiftClick && capsClick) { // Upper case
+                } else if (!shiftClick && capsClick) { // Caps upper case
                     int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(letter));
                     Helper.shiftKey(keyCode);
-                } else if (shiftClick && !capsClick) { // Upper case
+                } else if (shiftClick && !capsClick) { // Shift upper case
                     int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(letter));
                     Helper.shiftKey(keyCode);
                     shiftClick = false;
-                } else { // Lower case
+                    toggleLetters();
+                } else { // Shift lower case
                     int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(letter));
                     Helper.typeKey(keyCode);
                     shiftClick = false;
+                    toggleLetters();
                 }
-
-                toggleLetters();
             }
         });
 
@@ -233,51 +234,52 @@ public class KeyboardFrame extends JFrame {
             String actionCommand = event.getActionCommand();
 
             // Numbers
-            if (actionCommand == "0") {Helper.typeKey(KeyEvent.VK_0);}
-            else if (actionCommand == "1") {Helper.typeKey(KeyEvent.VK_1);}
-            else if (actionCommand == "2") {Helper.typeKey(KeyEvent.VK_2);}
-            else if (actionCommand == "3") {Helper.typeKey(KeyEvent.VK_3);}
-            else if (actionCommand == "4") {Helper.typeKey(KeyEvent.VK_4);}
-            else if (actionCommand == "5") {Helper.typeKey(KeyEvent.VK_5);}
-            else if (actionCommand == "6") {Helper.typeKey(KeyEvent.VK_6);}
-            else if (actionCommand == "7") {Helper.typeKey(KeyEvent.VK_7);}
-            else if (actionCommand == "8") {Helper.typeKey(KeyEvent.VK_8);}
-            else if (actionCommand == "9") {Helper.typeKey(KeyEvent.VK_9);}
+            if (actionCommand.equals("0")) {Helper.typeKey(KeyEvent.VK_0);}
+            else if (actionCommand.equals("1")) {Helper.typeKey(KeyEvent.VK_1);}
+            else if (actionCommand.equals("2")) {Helper.typeKey(KeyEvent.VK_2);}
+            else if (actionCommand.equals("3")) {Helper.typeKey(KeyEvent.VK_3);}
+            else if (actionCommand.equals("4")) {Helper.typeKey(KeyEvent.VK_4);}
+            else if (actionCommand.equals("5")) {Helper.typeKey(KeyEvent.VK_5);}
+            else if (actionCommand.equals("6")) {Helper.typeKey(KeyEvent.VK_6);}
+            else if (actionCommand.equals("7")){Helper.typeKey(KeyEvent.VK_7);}
+            else if (actionCommand.equals("8")) {Helper.typeKey(KeyEvent.VK_8);}
+            else if (actionCommand.equals("9")) {Helper.typeKey(KeyEvent.VK_9);}
 
             // Symbols
-            else if (actionCommand == "`") {Helper.typeKey(KeyEvent.VK_BACK_QUOTE);}
-            else if (actionCommand == "~") {Helper.shiftKey(KeyEvent.VK_BACK_QUOTE);}
-            else if (actionCommand == "!") {Helper.shiftKey(KeyEvent.VK_1);}
-            else if (actionCommand == "@") {Helper.shiftKey(KeyEvent.VK_2);}
-            else if (actionCommand == "#") {Helper.shiftKey(KeyEvent.VK_3);}
-            else if (actionCommand == "$") {Helper.shiftKey(KeyEvent.VK_4);}
-            else if (actionCommand == "%") {Helper.shiftKey(KeyEvent.VK_5);}
-            else if (actionCommand == "^") {Helper.shiftKey(KeyEvent.VK_6);}
-            else if (actionCommand == "&") {Helper.shiftKey(KeyEvent.VK_7);}
-            else if (actionCommand == "*") {Helper.shiftKey(KeyEvent.VK_8);}                
-            else if (actionCommand == ")") {Helper.shiftKey(KeyEvent.VK_0);}
-            else if (actionCommand == "-") {Helper.typeKey(KeyEvent.VK_MINUS);}
-            else if (actionCommand == "_") {Helper.shiftKey(KeyEvent.VK_MINUS);}
-            else if (actionCommand == "=") {Helper.typeKey(KeyEvent.VK_EQUALS);}
-            else if (actionCommand == "+") {Helper.shiftKey(KeyEvent.VK_EQUALS);}
-            else if (actionCommand == "[") {Helper.typeKey(KeyEvent.VK_OPEN_BRACKET);}
-            else if (actionCommand == "{") {Helper.shiftKey(KeyEvent.VK_OPEN_BRACKET);}
-            else if (actionCommand == "]") {Helper.typeKey(KeyEvent.VK_CLOSE_BRACKET);}
-            else if (actionCommand == "}") {Helper.shiftKey(KeyEvent.VK_CLOSE_BRACKET);}
-            else if (actionCommand == "|") {Helper.shiftKey(KeyEvent.VK_BACK_SLASH);}
-            else if (actionCommand == ";") {Helper.typeKey(KeyEvent.VK_SEMICOLON);}
-            else if (actionCommand == ":") {Helper.shiftKey(KeyEvent.VK_SEMICOLON);}
-            else if (actionCommand == "'") {Helper.typeKey(KeyEvent.VK_QUOTE);}
-            else if (actionCommand == "\"") {Helper.shiftKey(KeyEvent.VK_QUOTE);}
-            else if (actionCommand == ",") {Helper.typeKey(KeyEvent.VK_COMMA);}
-            else if (actionCommand == "<") {Helper.shiftKey(KeyEvent.VK_COMMA);}
-            else if (actionCommand == ".") {Helper.typeKey(KeyEvent.VK_PERIOD);}
-            else if (actionCommand == ">") {Helper.shiftKey(KeyEvent.VK_PERIOD);}
-            else if (actionCommand == "/") {Helper.typeKey(KeyEvent.VK_SLASH);}
-            else if (actionCommand == "?") {Helper.shiftKey(KeyEvent.VK_SLASH);}
+            else if (actionCommand.equals("`")) {Helper.typeKey(KeyEvent.VK_BACK_QUOTE);}
+            else if (actionCommand.equals("~")) {Helper.shiftKey(KeyEvent.VK_BACK_QUOTE);}
+            else if (actionCommand.equals("!")) {Helper.shiftKey(KeyEvent.VK_1);}
+            else if (actionCommand.equals("@")) {Helper.shiftKey(KeyEvent.VK_2);}
+            else if (actionCommand.equals("#")) {Helper.shiftKey(KeyEvent.VK_3);}
+            else if (actionCommand.equals("$")) {Helper.shiftKey(KeyEvent.VK_4);}
+            else if (actionCommand.equals("%")) {Helper.shiftKey(KeyEvent.VK_5);}
+            else if (actionCommand.equals("^")) {Helper.shiftKey(KeyEvent.VK_6);}
+            else if (actionCommand.equals("&")) {Helper.shiftKey(KeyEvent.VK_7);}
+            else if (actionCommand.equals("*")) {Helper.shiftKey(KeyEvent.VK_8);}                
+            else if (actionCommand.equals(")")) {Helper.shiftKey(KeyEvent.VK_0);}
+            else if (actionCommand.equals("-")) {Helper.typeKey(KeyEvent.VK_MINUS);}
+            else if (actionCommand.equals("_")) {Helper.shiftKey(KeyEvent.VK_MINUS);}
+            else if (actionCommand.equals("=")) {Helper.typeKey(KeyEvent.VK_EQUALS);}
+            else if (actionCommand.equals("+")) {Helper.shiftKey(KeyEvent.VK_EQUALS);}
+            else if (actionCommand.equals("[")) {Helper.typeKey(KeyEvent.VK_OPEN_BRACKET);}
+            else if (actionCommand.equals("{")) {Helper.shiftKey(KeyEvent.VK_OPEN_BRACKET);}
+            else if (actionCommand.equals("]")) {Helper.typeKey(KeyEvent.VK_CLOSE_BRACKET);}
+            else if (actionCommand.equals("}")) {Helper.shiftKey(KeyEvent.VK_CLOSE_BRACKET);}
+            else if (actionCommand.equals("\\")) {Helper.typeKey(KeyEvent.VK_BACK_SLASH);}
+            else if (actionCommand.equals("|")) {Helper.shiftKey(KeyEvent.VK_BACK_SLASH);}
+            else if (actionCommand.equals(";")) {Helper.typeKey(KeyEvent.VK_SEMICOLON);}
+            else if (actionCommand.equals(":")) {Helper.shiftKey(KeyEvent.VK_SEMICOLON);}
+            else if (actionCommand.equals("'")) {Helper.typeKey(KeyEvent.VK_QUOTE);}
+            else if (actionCommand.equals("\"")) {Helper.shiftKey(KeyEvent.VK_QUOTE);}
+            else if (actionCommand.equals(",")) {Helper.typeKey(KeyEvent.VK_COMMA);}
+            else if (actionCommand.equals("<")) {Helper.shiftKey(KeyEvent.VK_COMMA);}
+            else if (actionCommand.equals(".")) {Helper.typeKey(KeyEvent.VK_PERIOD);}
+            else if (actionCommand.equals(">")) {Helper.shiftKey(KeyEvent.VK_PERIOD);}
+            else if (actionCommand.equals("/")) {Helper.typeKey(KeyEvent.VK_SLASH);}
+            else if (actionCommand.equals("?")) {Helper.shiftKey(KeyEvent.VK_SLASH);}
 
-            // Special cases
-            else if (actionCommand == "(") { // Autocompletes ), then puts cursor between ( and )
+            // Special case
+            else if (actionCommand.equals("(")) { // Autocompletes ), then puts cursor between ( and )
                 if (mathMode.isSelected()) {
                     Helper.shiftKey(KeyEvent.VK_9); // (
                     Helper.shiftKey(KeyEvent.VK_0); // )
@@ -418,7 +420,7 @@ public class KeyboardFrame extends JFrame {
                 rows[rowIndex] = new Row(6 - rowIndex);
             }        
             rows[rowIndex].keys = new ArrayList<JButton>();
-            
+
             for (String item : row) {
                 String url = "/" + item + ".png";
                 if(!Arrays.asList(iconURLs).contains(url)) {
@@ -447,8 +449,7 @@ public class KeyboardFrame extends JFrame {
                     addSpecialActionListener(key);
                 } else {
                     char letter = key.getName().charAt(0);
-                    if ((letter >= 'a' && letter <= 'z') ||
-                            (letter >= 'A' && letter <= 'Z')) {
+                    if ((letter >= 'a' && letter <= 'z') || (letter >= 'A' && letter <= 'Z')) {
                         addLetterActionListener(key);
                     } else {
                         key.removeActionListener(numericSymbolicActionListener);
@@ -464,34 +465,34 @@ public class KeyboardFrame extends JFrame {
      */
     private void scaleKeyPositions() {
         // Right side
-        rows[0].radius = 5;
+        rows[0].radius = -10;
         rows[0].initDegree = 0;
         rows[0].endDegree = 0;
         for (int i = 1; i <= 5; i++) {
             rows[i].radius = width/10 + 30*(i - 1);
-            rows[i].initDegree = 55;
-            rows[i].endDegree = 305;
+            rows[i].initDegree = 52;
+            rows[i].endDegree = 308;
         }
-        
+
         // Left side
-        rows[6].radius = -48;
+        rows[6].radius = 48;
         rows[6].initDegree = 0;
         rows[6].endDegree = 0;
         for (int i = 7; i <= 8; i++) {
-            rows[i].radius = width/4 - 15 + 50*(i - 7);
+            rows[i].radius = width/4 - 15 + 60*(i - 7);
             rows[i].initDegree = -25;
             rows[i].endDegree = 25;
         }
-        
+
         // Place keys
         for (Row row : rows) {
             double radian = Math.toRadians(row.initDegree);
-            double incrementDegree = (row.endDegree - row.initDegree)/(row.keys.size() - 1);
+            double incrementDegree = Math.toRadians((row.endDegree - row.initDegree)/(row.keys.size() - 1));
             for (JButton key : row.keys) {
                 int x = -1*(int)(Math.cos(radian)*row.radius) + row.midX;
                 int y = -1*(int)(Math.sin(radian)*row.radius) + row.midY;
                 radian += incrementDegree;
-                
+
                 if (row.rowNum > 0) {
                     key.setBounds(x, y, Key.width, Key.height);
                 } else {
@@ -504,22 +505,22 @@ public class KeyboardFrame extends JFrame {
         }
     }
 
-    
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////  
-      
+
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////  
+
 
     // Math Mode variables
     private JToggleButton mathMode = new JToggleButton("Normal Mode", false);
@@ -549,7 +550,7 @@ public class KeyboardFrame extends JFrame {
 
         for (int i = 0; i < 2; i++) {
             changeSizeButtons[i].setBorder(BorderFactory.createBevelBorder(10, Color.red, Color.gray));
-            changeSizeButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*(double)(this.getWidth()/500.0))));
+            changeSizeButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*this.getWidth()/500.0)));
         }
         changeSizeButtons[0].setBounds(xValue, yValue, Key.width, Key.height);
         changeSizeButtons[1].setBounds(xValue + Key.width, yValue, Key.width, Key.height);
@@ -564,7 +565,7 @@ public class KeyboardFrame extends JFrame {
         int height = 30 + currScaleCount*5;
 
         mathMode.setBounds(0, 0, width, height);
-        mathMode.setFont(new Font("Arial", Font.PLAIN, (int)(14*(double)(this.getWidth()/500.0))));
+        mathMode.setFont(new Font("Arial", Font.PLAIN, (int)(14*getWidth()/500.0)));
     }
 
     /**
@@ -572,9 +573,11 @@ public class KeyboardFrame extends JFrame {
      */
     // TODO: Change key width, key height
     private void scaleKeys() {
+        width = this.getWidth();
+        height = this.getHeight();
         scaleKeyPositions();
         scaleChangeSize();
-        scaleMathToggle();  
+        scaleMathToggle();
     }
 
     /**
@@ -590,6 +593,13 @@ public class KeyboardFrame extends JFrame {
 
         for (Row row : rows) {
             for (JButton key : row.keys) {
+                if (row.rowNum > 0) {
+                    key.setForeground(Color.WHITE);
+                }
+                key.setBorder(null);
+                key.setBorderPainted(false);
+                key.setContentAreaFilled(false);
+                key.setOpaque(false);
                 panel.add(key);
             }
         }
@@ -631,9 +641,9 @@ public class KeyboardFrame extends JFrame {
                                 Image temp = new ImageIcon(getClass().getResource("/bg3.png")).getImage();
                                 background.setImage(Helper.getScaledImage(temp, (int)(panel.getWidth()/(SCALE_FACTOR)*0.95), (int)(panel.getWidth()/(SCALE_FACTOR)*0.95))); 
                             }
-                            scaleKeys();
                             Key.width -= 5;
                             Key.height -= 5;
+                            scaleKeys();
                         }
                     } else { //If larger
                         if (currScaleCount != MAX_SCALE_COUNT) {
@@ -646,9 +656,9 @@ public class KeyboardFrame extends JFrame {
                                 Image temp = new ImageIcon(getClass().getResource("/bg3.png")).getImage();
                                 background.setImage(Helper.getScaledImage(temp, (int)(panel.getWidth()*(SCALE_FACTOR*0.95)), (int)(panel.getWidth()*(SCALE_FACTOR*0.95))));    
                             }
-                            scaleKeys();
                             Key.width += 5;
                             Key.height += 5;
+                            scaleKeys();
                         }
                     }
                 }

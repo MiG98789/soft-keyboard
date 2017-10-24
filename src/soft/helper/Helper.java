@@ -18,7 +18,7 @@ import java.awt.image.BufferedImage;
 public class Helper {
     /**
      * Type a key once.
-     * @param keyCode   the key code of the corresponding KeyEvent.VK_[CHARACTER] to be typed.
+     * @param keyCode   the key code of the corresponding KeyEvent.VK_<CHARACTER> to be typed.
      * @see             java.awt.event.KeyEvent
      */
     public static void typeKey(int keyCode) {
@@ -33,7 +33,7 @@ public class Helper {
 
     /**
      * Type a key once that requires the shift key to be pressed.
-     * @param keyCode   the key code of the corresponding KeyEvent.VK_[CHARACTER] to be typed.
+     * @param keyCode   the key code of the corresponding KeyEvent.VK_<CHARACTER> to be typed.
      * @see             java.awt.event.KeyEvent
      */
     public static void shiftKey(int keyCode) {
