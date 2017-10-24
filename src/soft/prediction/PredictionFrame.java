@@ -27,7 +27,6 @@ import soft.keyboard.KeyboardFrame;
 @SuppressWarnings("serial")
 public class PredictionFrame extends JFrame {
     private static PredictionFrame predictionFrame = null;
-    private KeyboardFrame keyboardFrame;
     
     // Frame variables
     private final int FRAME_WIDTH = 400;
@@ -59,14 +58,6 @@ public class PredictionFrame extends JFrame {
             predictionFrame = new PredictionFrame();
         }
         return predictionFrame;
-    }
-    
-    /**
-     * Sets a Keyboard Frame reference.
-     * @param keyboardFrame the Keyboard Frame to reference to.
-     */
-    public void setKeyboardFrame(KeyboardFrame keyboardFrame) {
-        this.keyboardFrame = keyboardFrame;
     }
     
     /**

@@ -280,7 +280,7 @@ public class KeyboardFrame extends JFrame {
 
             // Special case
             else if (actionCommand.equals("(")) { // Autocompletes ), then puts cursor between ( and )
-                if (mathMode.isSelected()) {
+                if (mathModeButton.isSelected()) {
                     Helper.shiftKey(KeyEvent.VK_9); // (
                     Helper.shiftKey(KeyEvent.VK_0); // )
                     Helper.typeKey(KeyEvent.VK_LEFT); // Go between ( and )
@@ -313,7 +313,7 @@ public class KeyboardFrame extends JFrame {
             specialActionListener = new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent event) {
-                    if (mathMode.isSelected()) { // Math mode
+                    if (mathModeButton.isSelected()) { // Math mode
                         try {
                             Robot robot = new Robot();
                             Helper.typeKey(KeyEvent.VK_ENTER);
@@ -521,9 +521,8 @@ public class KeyboardFrame extends JFrame {
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////  
 
-
     // Math Mode variables
-    private JToggleButton mathMode = new JToggleButton("Normal Mode", false);
+    private JToggleButton mathModeButton = new JToggleButton("Normal Mode", false);
 
     // Change Size variables
     private final double SCALE_FACTOR = 1.15;
@@ -535,95 +534,9 @@ public class KeyboardFrame extends JFrame {
      * Sets key text/image.
      */
     private void loadChangeSizeButtons() {
-        // Change size buttons
         changeSizeButtons[0] = new JButton("-");
         changeSizeButtons[1] = new JButton("+");
-    }
-
-    /**
-     * Scales change size buttons, which changes size as person presses the button.
-     */
-    private void scaleChangeSize() {
-        //this.setSize(this.getWidth(),this.getHeight());
-        int xValue = (int)(this.getWidth()*0.8);
-        int yValue = (int)(this.getHeight()*0.8);
-
-        for (int i = 0; i < 2; i++) {
-            changeSizeButtons[i].setBorder(BorderFactory.createBevelBorder(10, Color.red, Color.gray));
-            changeSizeButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*this.getWidth()/500.0)));
-        }
-        changeSizeButtons[0].setBounds(xValue, yValue, Key.width, Key.height);
-        changeSizeButtons[1].setBounds(xValue + Key.width, yValue, Key.width, Key.height);
-
-    }
-
-    /**
-     * Scales Math Mode button.
-     */
-    private void scaleMathToggle() {
-        int width = 110 + currScaleCount*20;
-        int height = 30 + currScaleCount*5;
-
-        mathMode.setBounds(0, 0, width, height);
-        mathMode.setFont(new Font("Arial", Font.PLAIN, (int)(14*getWidth()/500.0)));
-    }
-
-    /**
-     * Scales all the keys based on frame dimensions.
-     */
-    // TODO: Change key width, key height
-    private void scaleKeys() {
-        width = this.getWidth();
-        height = this.getHeight();
-        scaleKeyPositions();
-        scaleChangeSize();
-        scaleMathToggle();
-    }
-
-    /**
-     * Builds the GUI.
-     */
-    private void loadGUI() {
-        // Graphics
-        loadBackground();
-        scaleIcons();
-        loadKeyIcons();
-        loadKeyListeners();
-        scaleKeyPositions();
-
-        for (Row row : rows) {
-            for (JButton key : row.keys) {
-                if (row.rowNum > 0) {
-                    key.setForeground(Color.WHITE);
-                }
-                key.setBorder(null);
-                key.setBorderPainted(false);
-                key.setContentAreaFilled(false);
-                key.setOpaque(false);
-                panel.add(key);
-            }
-        }
-
-        // Add mode toggle button
-        scaleMathToggle();
-        mathMode.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent itemEvent) {
-                int state = itemEvent.getStateChange();
-                if (state == ItemEvent.SELECTED) {
-                    System.out.println("Math Mode");
-                    mathMode.setText("Math Mode");
-                } else {
-                    System.out.println("Normal Mode");
-                    mathMode.setText("Normal Mode");
-                }
-            }
-        });
-        panel.add(mathMode);
-
-        //change size buttons
-        loadChangeSizeButtons();
-        scaleChangeSize();
+        
         for (int i = 0; i < 2; i++) {
             final Integer x = new Integer(i);
             changeSizeButtons[x].addMouseListener(new MouseAdapter() {
@@ -665,6 +578,92 @@ public class KeyboardFrame extends JFrame {
             });
             panel.add(changeSizeButtons[i]);
         }
+    }
+
+    /**
+     * Scales change size buttons, which changes size as person presses the button.
+     */
+    private void scaleChangeSize() {
+        //this.setSize(this.getWidth(),this.getHeight());
+        int xValue = (int)(this.getWidth()*0.8);
+        int yValue = (int)(this.getHeight()*0.8);
+
+        for (int i = 0; i < 2; i++) {
+            changeSizeButtons[i].setBorder(BorderFactory.createBevelBorder(10, Color.red, Color.gray));
+            changeSizeButtons[i].setFont(new Font("Arial", Font.PLAIN, (int)(25*this.getWidth()/500.0)));
+        }
+        changeSizeButtons[0].setBounds(xValue, yValue, Key.width, Key.height);
+        changeSizeButtons[1].setBounds(xValue + Key.width, yValue, Key.width, Key.height);
+
+    }
+
+    /**
+     * Scales Math Mode button.
+     */
+    private void scaleMathToggle() {
+        int mathButtonWidth = 110 + currScaleCount*20;
+        int mathButtonHeight = 30 + currScaleCount*5;
+
+        mathModeButton.setBounds(0, 0, mathButtonWidth, mathButtonHeight);
+        mathModeButton.setFont(new Font("Arial", Font.PLAIN, (int)(14*getWidth()/500.0)));
+    }
+
+    /**
+     * Scales all the keys based on frame dimensions.
+     */
+    // TODO: Change key width, key height
+    private void scaleKeys() {
+        width = this.getWidth();
+        height = this.getHeight();
+        scaleKeyPositions();
+        scaleChangeSize();
+        scaleMathToggle();
+    }
+
+    /**
+     * Builds the GUI.
+     */
+    private void loadGUI() {
+        // Graphics
+        loadBackground();
+        scaleIcons();
+        loadKeyIcons();
+        loadKeyListeners();
+        scaleKeyPositions();
+
+        for (Row row : rows) {
+            for (JButton key : row.keys) {
+                if (row.rowNum > 0) {
+                    key.setForeground(Color.WHITE);
+                }
+                key.setBorder(null);
+                key.setBorderPainted(false);
+                key.setContentAreaFilled(false);
+                key.setOpaque(false);
+                panel.add(key);
+            }
+        }
+
+        // Add mode toggle button
+        scaleMathToggle();
+        mathModeButton.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent itemEvent) {
+                int state = itemEvent.getStateChange();
+                if (state == ItemEvent.SELECTED) {
+                    System.out.println("Math Mode");
+                    mathModeButton.setText("Math Mode");
+                } else {
+                    System.out.println("Normal Mode");
+                    mathModeButton.setText("Normal Mode");
+                }
+            }
+        });
+        panel.add(mathModeButton);
+
+        //change size buttons
+        loadChangeSizeButtons();
+        scaleChangeSize();
 
         panel.add(label);
         panel.revalidate();
