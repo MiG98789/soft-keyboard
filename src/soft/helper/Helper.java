@@ -17,6 +17,21 @@ import java.awt.image.BufferedImage;
  */
 public class Helper {
     /**
+     * Unescapes string loaded from file.
+     * @param s string to unescape.
+     */
+    public static String unicodeUnescape(String s) {
+        s = s.split(" ")[0].replace("\\","");
+        String[] arr = s.split("u");
+        String result = "";
+        for(int i = 1; i < arr.length; i++){
+            int hexVal = Integer.parseInt(arr[i], 16);
+            result += (char)hexVal;
+        }
+        return result;
+    }
+    
+    /**
      * Type a key once.
      * @param keyCode   the key code of the corresponding KeyEvent.VK_<CHARACTER> to be typed.
      * @see             java.awt.event.KeyEvent
@@ -43,6 +58,26 @@ public class Helper {
             typeKey(keyCode);
             robot.keyRelease(keyCode);
             robot.keyRelease(KeyEvent.VK_SHIFT);
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Type a Unicode character once.
+     * @param unicode   Unicode value.
+     */
+    public static void typeUnicode(String unicode) {
+        try {
+            Robot robot = new Robot();
+            
+            for (int i = 2; i < unicode.length(); i++) {
+                robot.keyPress(KeyEvent.getExtendedKeyCodeForChar(unicode.charAt(i)));
+            }
+            
+            robot.keyPress(KeyEvent.VK_ALT);
+            typeKey(KeyEvent.VK_X);
+            robot.keyRelease(KeyEvent.VK_ALT);
         } catch (AWTException e) {
             e.printStackTrace();
         }

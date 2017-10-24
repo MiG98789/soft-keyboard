@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 import soft.helper.Helper;
-import soft.keyboard.KeyboardFrame;
 
 /**
  * <h1>Prediction Frame</h1>

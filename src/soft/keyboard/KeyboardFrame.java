@@ -145,6 +145,7 @@ public class KeyboardFrame extends JFrame {
     private MouseAdapter keyHighlightMouseAdapter;
     private ActionListener letterActionListener;
     private ActionListener specialActionListener;
+    private ActionListener unicodeActionListener;
 
     /**
      * Highlights key background when cursor is hovering over it.
@@ -351,6 +352,21 @@ public class KeyboardFrame extends JFrame {
     }
 
     /**
+     * Type Unicode characters.
+     */
+    private void addUnicodeActionListener(JButton b) {
+        unicodeActionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                Helper.typeUnicode(b.getName());
+            }  
+        };
+        
+        b.removeActionListener(unicodeActionListener);
+        b.addActionListener(unicodeActionListener);
+    }
+    
+    /**
      * Scales icon sizes.
      */
     private void scaleIcons() {
@@ -422,15 +438,22 @@ public class KeyboardFrame extends JFrame {
             rows[rowIndex].keys = new ArrayList<JButton>();
 
             for (String item : row) {
+                String name = item;
                 String url = "/" + item + ".png";
                 if(!Arrays.asList(iconURLs).contains(url)) {
-                    rows[rowIndex].keys.add(new JButton(item));
+                    if (item.length() == 1) {
+                        rows[rowIndex].keys.add(new JButton(item));
+                    }
+                    else if (item.contains("\\u")) {
+                        String unicode = Helper.unicodeUnescape(item);
+                        rows[rowIndex].keys.add(new JButton(unicode));
+                    }
                 } else {
-                    item = url;
-                    int index = Arrays.asList(iconURLs).indexOf(item);
+                    name = url;
+                    int index = Arrays.asList(iconURLs).indexOf(name);
                     rows[rowIndex].keys.add(new JButton(icons[index]));
                 }
-                rows[rowIndex].keys.get(rows[rowIndex].keys.size() - 1).setName(item);
+                rows[rowIndex].keys.get(rows[rowIndex].keys.size() - 1).setName(name);
             }
             rowIndex++;
         }
@@ -447,6 +470,8 @@ public class KeyboardFrame extends JFrame {
 
                 if (key.getName().contains(".png")) {
                     addSpecialActionListener(key);
+                } else if (key.getName().contains("\\u")) {
+                    addUnicodeActionListener(key);
                 } else {
                     char letter = key.getName().charAt(0);
                     if ((letter >= 'a' && letter <= 'z') || (letter >= 'A' && letter <= 'Z')) {
@@ -500,11 +525,10 @@ public class KeyboardFrame extends JFrame {
                     int newKeyHeight = (int)(Key.height*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
                     key.setBounds(x, y, newKeyWidth, newKeyHeight);
                 }
-                key.setFont(new Font("Arial", Font.PLAIN, (int)(25*width/500.0)));
+                key.setFont(new Font("Arial Unicode MS", Font.PLAIN, (int)(25*width/500.0)));
             }
         }
     }
-
 
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
