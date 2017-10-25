@@ -71,13 +71,16 @@ public class Helper {
         try {
             Robot robot = new Robot();
             
+            typeKey(KeyEvent.VK_SPACE);
             for (int i = 2; i < unicode.length(); i++) {
                 typeKey(KeyEvent.getExtendedKeyCodeForChar(unicode.charAt(i)));
             }
-            
             robot.keyPress(KeyEvent.VK_ALT);
             typeKey(KeyEvent.VK_X);
             robot.keyRelease(KeyEvent.VK_ALT);
+            typeKey(KeyEvent.VK_LEFT);
+            typeKey(KeyEvent.VK_BACK_SPACE);
+            typeKey(KeyEvent.VK_RIGHT);
         } catch (AWTException e) {
             e.printStackTrace();
         }
