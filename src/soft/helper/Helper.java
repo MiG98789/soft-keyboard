@@ -72,7 +72,7 @@ public class Helper {
             Robot robot = new Robot();
             
             for (int i = 2; i < unicode.length(); i++) {
-                robot.keyPress(KeyEvent.getExtendedKeyCodeForChar(unicode.charAt(i)));
+                typeKey(KeyEvent.getExtendedKeyCodeForChar(unicode.charAt(i)));
             }
             
             robot.keyPress(KeyEvent.VK_ALT);
