@@ -127,8 +127,8 @@ public class KeyboardFrame extends JFrame {
         public ArrayList<JButton> keys;
         public double initDegree;
         public double endDegree;
-        public int midX = width/2 - 20;
-        public int midY = height/2 - 35;
+        public int midX = width/2 - 22;
+        public int midY = height/2 - 40;
         public int radius;
         public int rowNum;
 
@@ -369,7 +369,7 @@ public class KeyboardFrame extends JFrame {
     /**
      * Scales icon sizes.
      */
-    private void scaleIcons() {
+    private void scaleKeyIcons() {
         for (int i = 0; i < icons.length; i++) {
             icons[i] = new ImageIcon(getClass().getResource(iconURLs[i]));
             Image temp = icons[i].getImage();    
@@ -401,6 +401,10 @@ public class KeyboardFrame extends JFrame {
             String line;
 
             while ((line = bufferedReader.readLine()) != null) {
+                if (line.startsWith("<%") || line.isEmpty()) {
+                    continue;
+                }
+                
                 String[] tempArray = line.split("\\s+");
                 ArrayList<String> tempArrayList = new ArrayList<String>();
                 for (String item : tempArray) {
@@ -461,7 +465,6 @@ public class KeyboardFrame extends JFrame {
 
     /**
      * Loads keys' appropriate listeners.
-     * TODO: Handle Greek alphabet
      */
     private void loadKeyListeners() {
         for (Row row : rows) {
@@ -494,10 +497,11 @@ public class KeyboardFrame extends JFrame {
         rows[0].initDegree = 0;
         rows[0].endDegree = 0;
         for (int i = 1; i <= 5; i++) {
-            rows[i].radius = width/10 + 30*(i - 1);
+            rows[i].radius = width/10 + 30*(i - 1) + 5*currScaleCount*(i - 1);
             rows[i].initDegree = 52;
             rows[i].endDegree = 308;
         }
+        System.out.println("Radius: " + rows[5].radius);
 
         // Left side
         rows[6].radius = 48;
@@ -517,14 +521,7 @@ public class KeyboardFrame extends JFrame {
                 int x = -1*(int)(Math.cos(radian)*row.radius) + row.midX;
                 int y = -1*(int)(Math.sin(radian)*row.radius) + row.midY;
                 radian += incrementDegree;
-
-                if (row.rowNum > 0) {
-                    key.setBounds(x, y, Key.width, Key.height);
-                } else {
-                    int newKeyWidth = (int)(Key.width*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
-                    int newKeyHeight = (int)(Key.height*1.2*Math.pow(SCALE_FACTOR, currScaleCount+1));
-                    key.setBounds(x, y, newKeyWidth, newKeyHeight);
-                }
+                key.setBounds(x, y, Key.width, Key.height);
                 key.setFont(new Font("Arial Unicode MS", Font.PLAIN, (int)(25*width/500.0)));
             }
         }
@@ -548,6 +545,51 @@ public class KeyboardFrame extends JFrame {
     // Math Mode variables
     private JToggleButton mathModeButton = new JToggleButton("Normal Mode", false);
 
+    /**
+     * Loads Math Mode button.
+     */
+    private void loadMathModeButton() {
+        mathModeButton.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent itemEvent) {
+                int state = itemEvent.getStateChange();
+                if (state == ItemEvent.SELECTED) {
+                    System.out.println("Math Mode");
+                    mathModeButton.setText("Math Mode");
+                } else {
+                    System.out.println("Normal Mode");
+                    mathModeButton.setText("Normal Mode");
+                }
+            }
+        });
+    }
+    
+    /**
+     * Scales Math Mode button.
+     */
+    private void scaleMathModeButton() {
+        int mathButtonWidth = 110 + currScaleCount*20;
+        int mathButtonHeight = 30 + currScaleCount*5;
+
+        mathModeButton.setBounds(0, 0, mathButtonWidth, mathButtonHeight);
+        mathModeButton.setFont(new Font("Arial", Font.PLAIN, (int)(14*getWidth()/500.0)));
+    }
+
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////  
+    
     // Change Size variables
     private final double SCALE_FACTOR = 1.15;
     private int currScaleCount = 0;
@@ -569,32 +611,33 @@ public class KeyboardFrame extends JFrame {
                     if (x == 0) { //If smaller
                         if (currScaleCount != 0) {  
                             currScaleCount--;
-                            setSize((int)(getWidth()/SCALE_FACTOR), (int)(getHeight()/SCALE_FACTOR));
-                            if (currScaleCount == 1) {
-                                Image temp = new ImageIcon(getClass().getResource("/bg3.png")).getImage();
-                                background.setImage(Helper.getScaledImage(temp, (int)(panel.getWidth()/(SCALE_FACTOR)*0.95), (int)(panel.getWidth()/(SCALE_FACTOR)*0.95))); 
-
-                            } else {
-                                Image temp = new ImageIcon(getClass().getResource("/bg3.png")).getImage();
-                                background.setImage(Helper.getScaledImage(temp, (int)(panel.getWidth()/(SCALE_FACTOR)*0.95), (int)(panel.getWidth()/(SCALE_FACTOR)*0.95))); 
-                            }
+                            setSize((int)(width/SCALE_FACTOR) + 1, (int)(height/SCALE_FACTOR) + 1);
                             Key.width -= 5;
                             Key.height -= 5;
+                            width = getWidth();
+                            height = getHeight();
+                            for (Row row : rows) {
+                                row.midX = width/2 - 22;
+                                row.midY = height/2 - 40;
+                            }
+                            Image temp = new ImageIcon(getClass().getResource("/bg.png")).getImage();
+                            background.setImage(Helper.getScaledImage(temp, width - 50, width - 50));
                             scaleKeys();
                         }
                     } else { //If larger
                         if (currScaleCount != MAX_SCALE_COUNT) {
                             currScaleCount++;
-                            setSize((int)(getWidth()*SCALE_FACTOR),(int)(getHeight()*SCALE_FACTOR));
-                            if (currScaleCount == 1) {
-                                Image temp = new ImageIcon(getClass().getResource("/bg3.png")).getImage();
-                                background.setImage(Helper.getScaledImage(temp, (int)(panel.getWidth()*(SCALE_FACTOR*0.95)), (int)(panel.getWidth()*(SCALE_FACTOR*0.95)))); 
-                            } else {
-                                Image temp = new ImageIcon(getClass().getResource("/bg3.png")).getImage();
-                                background.setImage(Helper.getScaledImage(temp, (int)(panel.getWidth()*(SCALE_FACTOR*0.95)), (int)(panel.getWidth()*(SCALE_FACTOR*0.95))));    
-                            }
+                            setSize((int)(width*SCALE_FACTOR),(int)(height*SCALE_FACTOR));
                             Key.width += 5;
                             Key.height += 5;
+                            width = getWidth();
+                            height = getHeight();
+                            for (Row row : rows) {
+                                row.midX = width/2 - 22;
+                                row.midY = height/2 - 40;
+                            }
+                            Image temp = new ImageIcon(getClass().getResource("/bg.png")).getImage();
+                            background.setImage(Helper.getScaledImage(temp, width - 50, width - 50));
                             scaleKeys();
                         }
                     }
@@ -607,10 +650,9 @@ public class KeyboardFrame extends JFrame {
     /**
      * Scales change size buttons, which changes size as person presses the button.
      */
-    private void scaleChangeSize() {
-        //this.setSize(this.getWidth(),this.getHeight());
-        int xValue = (int)(this.getWidth()*0.8);
-        int yValue = (int)(this.getHeight()*0.8);
+    private void scaleChangeSizeButtons() {
+        int xValue = (int)(width*0.8);
+        int yValue = (int)(height*0.8);
 
         for (int i = 0; i < 2; i++) {
             changeSizeButtons[i].setBorder(BorderFactory.createBevelBorder(10, Color.red, Color.gray));
@@ -622,26 +664,16 @@ public class KeyboardFrame extends JFrame {
     }
 
     /**
-     * Scales Math Mode button.
-     */
-    private void scaleMathToggle() {
-        int mathButtonWidth = 110 + currScaleCount*20;
-        int mathButtonHeight = 30 + currScaleCount*5;
-
-        mathModeButton.setBounds(0, 0, mathButtonWidth, mathButtonHeight);
-        mathModeButton.setFont(new Font("Arial", Font.PLAIN, (int)(14*getWidth()/500.0)));
-    }
-
-    /**
      * Scales all the keys based on frame dimensions.
      */
     // TODO: Change key width, key height
     private void scaleKeys() {
-        width = this.getWidth();
-        height = this.getHeight();
+        System.out.println("Width = " + width);
+        System.out.println("Height = " + height);
+        
         scaleKeyPositions();
-        scaleChangeSize();
-        scaleMathToggle();
+        scaleChangeSizeButtons();
+        scaleMathModeButton();
     }
 
     /**
@@ -650,7 +682,7 @@ public class KeyboardFrame extends JFrame {
     private void loadGUI() {
         // Graphics
         loadBackground();
-        scaleIcons();
+        scaleKeyIcons();
         loadKeyIcons();
         loadKeyListeners();
         scaleKeyPositions();
@@ -669,25 +701,15 @@ public class KeyboardFrame extends JFrame {
         }
 
         // Add mode toggle button
-        scaleMathToggle();
-        mathModeButton.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent itemEvent) {
-                int state = itemEvent.getStateChange();
-                if (state == ItemEvent.SELECTED) {
-                    System.out.println("Math Mode");
-                    mathModeButton.setText("Math Mode");
-                } else {
-                    System.out.println("Normal Mode");
-                    mathModeButton.setText("Normal Mode");
-                }
-            }
-        });
+        loadMathModeButton();
+        scaleMathModeButton();
         panel.add(mathModeButton);
 
         //change size buttons
+        System.out.println("Width = " + width);
+        System.out.println("Height = " + height);
         loadChangeSizeButtons();
-        scaleChangeSize();
+        scaleChangeSizeButtons();
 
         panel.add(label);
         panel.revalidate();
