@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>SIGHT Soft Keyboard Testing Interface</title>
 
@@ -13,16 +14,29 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="resources/js/index.js"></script>
 </head>
+
 <body>
+
+  <!-- Floater for stopwatch -->
+  <div id="floater">
+    <p id="stopwatch">00:00</p>
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+    <button id="reset">Reset</button>
+  </div>
+
 
   <!-- Row for title -->
   <div class="row">
     <h1 id="title">SIGHT Soft Keyboard Testing Interface</h1>
   </div>
 
-  <!-- Row for stopwatch -->
+  <!-- Row for questions -->
   <div class="row">
-    <p id="stopwatch">0m 0s</p>
+    <div id="question">
+
+    </div>
   </div>
 </body>
+
 </html>

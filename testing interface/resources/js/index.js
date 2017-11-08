@@ -1,21 +1,48 @@
-// https://www.w3schools.com/howto/howto_js_countdown.asp
+window.onload = function () {
+  // STOPWATCH
+  // https://jsfiddle.net/Daniel_Hug/pvk6p/
 
-// Set the initial time
-var stopwatchInit = new Date().getTime();
+  var stopwatch = document.getElementById("stopwatch");
+  var start = document.getElementById("start");
+  var stop = document.getElementById("stop");
+  var reset = document.getElementById("reset");
+  var seconds = 0;
+  var minutes = 0;
+  var timeout;
 
-// Update the count down every 1 second
-var x = setInterval(function() {
+  function incrementStopwatch() {
+    seconds++;
+    if (seconds >= 60) {
+      seconds = 0;
+      minutes++;
+      if (minutes >= 60) {
+        minutes = 0;
+      }
+    }
 
-  // Get current time
-  var now = new Date().getTime();
+    stopwatch.textContent = (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
+    timeout = setTimeout(incrementStopwatch, 1000);
+  }
 
-  // Find the distance between now and the initial time
-  var distance = now - stopwatchInit;
+  // Start button
+  start.onclick = function () {
+    timeout = setTimeout(incrementStopwatch, 1000);
+  };
 
-  // Time calculations for minutes and seconds
-  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  // Stop button
+  stop.onclick = function () {
+    clearTimeout(timeout);
+  };
 
-  // Display the result in the element with id="stopwatch"
-  document.getElementById("stopwatch").innerHTML = minutes + "m " + seconds + "s ";
-}, 1000);
+  // Reset button
+  reset.onclick = function () {
+    stopwatch.textContent = "00:00";
+    seconds = 0;
+    minutes = 0;
+    clearTimeout(timeout);
+  };
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+}
