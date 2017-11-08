@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>SIGHT Soft Keyboard Testing Interface</title>
 
@@ -13,35 +14,60 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="resources/js/index.js"></script>
 </head>
+
 <body>
   <!-- Floater for stopwatch -->
   <div id="floater">
     <p id="stopwatch">00:00.00</p>
-    <button id="start">Start</button>
-    <button id="stop">Stop</button>
-    <button id="reset">Reset</button>
+    <button class="btn btn-default btn-sm" id="start">Start</button>
+    <button class="btn btn-default btn-sm" id="stop">Stop</button>
+    <button class="btn btn-default btn-sm" id="reset">Reset</button>
   </div>
 
-  <!-- Row for title -->
-  <div class="row">
-    <div class="col-sm-3"></div>
-    
-        <div class="col-sm-6">
-            <h1 id="title">SIGHT Soft Keyboard Testing Interface</h1>
+  <!-- Modal for completed notification -->
+  <div class="modal fade" id="completedModal" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Congratulations!</h4>
         </div>
-    
-        <div class="col-sm-3"></div>
+        <div class="modal-body">
+          <p>You've answered everything correctly!</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+
+    </div>
   </div>
 
-  <!-- Row for questions -->
-  <div class="row">
-    <div class="col-sm-3"></div>
+  <div class="container-fluid">
+    <!-- Row for title -->
+    <div class="row">
+      <div class="col-sm-3"></div>
 
-    <div class="col-sm-6">
-      <div id="question-container"></div>
+      <div class="col-sm-6">
+        <h1 id="title">SIGHT Soft Keyboard Testing Interface</h1>
+      </div>
+
+      <div class="col-sm-3"></div>
     </div>
 
-    <div class="col-sm-3"></div>
+    <!-- Row for questions -->
+    <div class="row">
+      <div class="col-sm-3"></div>
+
+      <div class="col-sm-6">
+        <div id="question-container"></div>
+      </div>
+
+      <div class="col-sm-3"></div>
+    </div>
   </div>
 </body>
+
 </html>

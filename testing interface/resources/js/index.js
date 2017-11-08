@@ -100,11 +100,15 @@ window.onload = function () {
             } else if (questions[j] === answers[j]) {
               correctCount++;
               isAnswerDone[j] = true;
+
+              $(this).css("background-color", "lawngreen"); 
+
               answerTimes[$(this).data("number")] = (answerTimes[$(this).data("number")] * 100
                 + minutes * 60 * 100 + seconds * 100 + milliseconds
                 - startFocusTimes[$(this).data("number")] * 100) / 100;
               console.log("answerTimes:");
               console.log(answerTimes);
+
               console.log("Done with " + questions[j]);
             }
           }
@@ -113,6 +117,8 @@ window.onload = function () {
             clearTimeout(stopwatchTimeout);
             stopwatchRun = false;
             isFinished = true;
+            $("#completedModal").modal();
+
             console.log("All correct");
           }
         }
