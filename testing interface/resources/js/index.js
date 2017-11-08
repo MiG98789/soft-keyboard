@@ -2,7 +2,8 @@ window.onload = function () {
   // STOPWATCH
   // https://jsfiddle.net/Daniel_Hug/pvk6p/
 
-  var stopwatchRun = false;
+  var isStopwatchRun = false;
+  var isFinished = false;
   var stopwatch = document.getElementById("stopwatch");
   var start = document.getElementById("start");
   var stop = document.getElementById("stop");
@@ -27,14 +28,16 @@ window.onload = function () {
 
   // Start button
   start.onclick = function () {
-    timeout = setTimeout(incrementStopwatch, 1000);
-    stopwatchRun = true;
+    if (!isFinished) {
+      timeout = setTimeout(incrementStopwatch, 1000);
+      isStopwatchRun = true;
+    }
   }
 
   // Stop button
   stop.onclick = function () {
     clearTimeout(timeout);
-    stopwatchRun = false;
+    isStopwatchRun = false;
   }
 
   // Reset button
@@ -43,7 +46,8 @@ window.onload = function () {
     seconds = 0;
     minutes = 0;
     clearTimeout(timeout);
-    stopwatchRun = false;
+    isStopwatchRun = false;
+    isFinished = false;
     questionInit();
   }
 
@@ -60,16 +64,31 @@ window.onload = function () {
   var responses = new Array(questions.length);
   var questionTextBox = "";
 
-  // Get answers on type
   var questionUpdate = function () {
+    // Get answers on type
     $("textarea#question[data-number]").each(function () {
       $(this).keyup(function () {
-        if (!stopwatchRun) {
-          stopwatchRun = true;
+        // Update stopwatch if not running
+        if (!isStopwatchRun && !isFinished) {
+          isStopwatchRun = true;
           timeout = setTimeout(incrementStopwatch, 1000);
         }
         responses[$(this).data("number")] = $(this).val();
         console.log(responses);
+
+        // Check answers
+        correctCount = 0;
+        for (var i = 0; i < questions.length; i++) {
+          if (questions[i] === responses[i]) {
+            correctCount++;
+          }
+        }
+        if (correctCount === questions.length) {
+          clearTimeout(timeout);
+          stopwatchRun = false;
+          isFinished = true;
+          console.log("All correct");
+        }
       });
     });
   }
