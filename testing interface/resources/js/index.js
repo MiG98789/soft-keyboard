@@ -69,12 +69,22 @@ window.onload = function () {
   // https://stackoverflow.com/questions/10322891/loop-through-all-text-boxes-in-a-form-using-jquery
   // https://stackoverflow.com/questions/11759358/selecting-custom-data-attributes-in-jquery
 
-  var questions = ["y=mx+c", "1+2=3"];
+  var keyboardSpecialSymbols = [" 031", " 032", " 22a"]; // alpha, beta, sqrt
+  var unicodeSymbols = ["\u03B1", "\u03B2", "\u221A"];
+  var questions = ["y=mx+c", "quad", "\u03B1^2-\u03B2^2=(\u03B1-\u03B2)(\u03B1+\u03B2)"];
   var answers = new Array(questions.length);
   var answerTimes = new Array(questions.length);
   var startFocusTimes = new Array(questions.length);
   var isAnswerDone = new Array(questions.length);
   var questionTextBox = "";
+
+  var string2Unicode = function (text) {
+    var res = text;
+    for (var i = 0; i < unicodeSymbols.length; i++) {
+      res = res.replace(keyboardSpecialSymbols[i], unicodeSymbols[i]);
+    }
+    return res;
+  }
 
   var questionUpdate = function () {
     // Loop through each answer
@@ -87,7 +97,8 @@ window.onload = function () {
             isStopwatchRun = true;
             timeout = setTimeout(incrementStopwatch, stopwatchInterval);
           }
-          answers[$(this).data("number")] = $(this).val();
+          $(this).val(string2Unicode($(this).val()));
+          answers[$(this).data("number")] = $(this).val().replace(/ /g,'');
           console.log("answers");
           console.log(answers);
 
@@ -117,7 +128,7 @@ window.onload = function () {
             clearTimeout(stopwatchTimeout);
             stopwatchRun = false;
             isFinished = true;
-            $("#completedModal").modal();
+            $("#completed-modal").modal();
 
             console.log("All correct");
           }
