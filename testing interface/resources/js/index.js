@@ -28,9 +28,9 @@ window.onload = function () {
       }
     }
 
-    stopwatch.textContent = (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + 
-    ":" + (seconds > 9 ? seconds : "0" + seconds) + 
-    "." + (milliseconds ? (milliseconds > 9 ? milliseconds : "0" + milliseconds) : "00");
+    stopwatch.textContent = (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") +
+      ":" + (seconds > 9 ? seconds : "0" + seconds) +
+      "." + (milliseconds ? (milliseconds > 9 ? milliseconds : "0" + milliseconds) : "00");
     stopwatchTimeout = setTimeout(incrementStopwatch, stopwatchInterval);
   }
 
@@ -70,33 +70,51 @@ window.onload = function () {
   // https://stackoverflow.com/questions/11759358/selecting-custom-data-attributes-in-jquery
 
   var questions = ["y=mx+c", "1+2=3"];
-  var responses = new Array(questions.length);
+  var answers = new Array(questions.length);
+  var answerTimes = new Array(questions.length);
+  var startFocusTimes = new Array(questions.length);
+  var isAnswerDone = new Array(questions.length);
   var questionTextBox = "";
 
   var questionUpdate = function () {
-    // Get answers on type
-    $("textarea#answer[data-number]").each(function () {
+    // Loop through each answer
+    $(".answer").each(function (i, obj) {
+      // Get answers on type
       $(this).keyup(function () {
-        // Update stopwatch if not running
-        if (!isStopwatchRun && !isFinished) {
-          isStopwatchRun = true;
-          timeout = setTimeout(incrementStopwatch, stopwatchInterval);
-        }
-        responses[$(this).data("number")] = $(this).val();
-        console.log(responses);
-
-        // Check answers
-        correctCount = 0;
-        for (var i = 0; i < questions.length; i++) {
-          if (questions[i] === responses[i]) {
-            correctCount++;
+        if (!isFinished) {
+          // Update stopwatch if not running
+          if (!isStopwatchRun) {
+            isStopwatchRun = true;
+            timeout = setTimeout(incrementStopwatch, stopwatchInterval);
           }
-        }
-        if (correctCount === questions.length) {
-          clearTimeout(stopwatchTimeout);
-          stopwatchRun = false;
-          isFinished = true;
-          console.log("All correct");
+          answers[$(this).data("number")] = $(this).val();
+          console.log("answers");
+          console.log(answers);
+
+          // Check answers
+          var correctCount = 0;
+          for (var j = 0; j < questions.length; j++) {
+            if (isAnswerDone[j]) {
+              correctCount++;
+              continue;
+            } else if (questions[j] === answers[j]) {
+              correctCount++;
+              isAnswerDone[j] = true;
+              answerTimes[$(this).data("number")] = (answerTimes[$(this).data("number")] * 100
+                + minutes * 60 * 100 + seconds * 100 + milliseconds
+                - startFocusTimes[$(this).data("number")] * 100) / 100;
+              console.log("answerTimes:");
+              console.log(answerTimes);
+              console.log("Done with " + questions[j]);
+            }
+          }
+          
+          if (correctCount === questions.length) {
+            clearTimeout(stopwatchTimeout);
+            stopwatchRun = false;
+            isFinished = true;
+            console.log("All correct");
+          }
         }
       });
     });
@@ -105,10 +123,43 @@ window.onload = function () {
   var questionInit = function () {
     questionTextBox = "";
     for (var i = 0; i < questions.length; i++) {
-      questionTextBox += "<label for='answer' id='question'>Question " + (i + 1) + ": <br>" + questions[i] + "</label>";
-      questionTextBox += "<textarea class='form-control'  rows='5'  id='answer' data-number=" + i + "></textarea><br>";
+      questionTextBox += "<label for='answer-" + i + "' class='question'>Question " + (i + 1) + ": <br>" + questions[i] + "</label>";
+      questionTextBox += "<textarea class='form-control answer' rows='5' id='answer-" + i + "'  data-number='" + i + "'></textarea><br>";
     }
     document.getElementById("question-container").innerHTML = questionTextBox;
+
+    answers = new Array(questions.length);
+    answerTimes = new Array(questions.length);
+    startFocusTimes = new Array(questions.length);
+
+    for (var i = 0; i < questions.length; i++) {
+      answerTimes[i] = 0;
+      startFocusTimes[i] = 0;
+      isAnswerDone[i] = false;
+    }
+
+    $(".answer").each(function (i, obj) {
+      // Update start time on focus
+      $(this).focus(function () {
+        if (isStopwatchRun && !isFinished && !isAnswerDone[$(this).data("number")]) {
+          startFocusTimes[$(this).data("number")] = (minutes * 60 * 100 + seconds * 100 + milliseconds) / 100;
+          console.log("startFocus:");
+          console.log(startFocusTimes);
+        }
+      });
+
+      // Update total time on end focus
+      $(this).blur(function () {
+        if (isStopwatchRun && !isFinished && !isAnswerDone[$(this).data("number")]) {
+          answerTimes[$(this).data("number")] = (answerTimes[$(this).data("number")] * 100
+            + minutes * 60 * 100 + seconds * 100 + milliseconds
+            - startFocusTimes[$(this).data("number")] * 100) / 100;
+          console.log("answerTimes:");
+          console.log(answerTimes);
+        }
+      });
+    });
+
     questionUpdate();
   }
   questionInit();

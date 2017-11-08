@@ -30,12 +30,12 @@
     font-size: 1.1em;
 }
 
-#question {
+.question {
     font-weight: bold;
     font-size: 1.5em;
 }
 
-#answer {
+.form-control {
     font-weight: bold;
     font-size: 1.2em;
 }
