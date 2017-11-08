@@ -8,44 +8,53 @@ window.onload = function () {
   var start = document.getElementById("start");
   var stop = document.getElementById("stop");
   var reset = document.getElementById("reset");
-  var seconds = 0;
+  var stopwatchInterval = 10;
   var minutes = 0;
-  var timeout;
+  var seconds = 0;
+  var milliseconds = 0;
+  var stopwatchTimeout;
 
   var incrementStopwatch = function () {
-    seconds++;
-    if (seconds >= 60) {
-      seconds = 0;
-      minutes++;
-      if (minutes >= 60) {
-        minutes = 0;
+    milliseconds++;
+    if (milliseconds >= 100) {
+      milliseconds = 0;
+      seconds++;
+      if (seconds >= 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes >= 60) {
+          minutes = 0;
+        }
       }
     }
 
-    stopwatch.textContent = (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
-    timeout = setTimeout(incrementStopwatch, 1000);
+    stopwatch.textContent = (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + 
+    ":" + (seconds > 9 ? seconds : "0" + seconds) + 
+    "." + (milliseconds ? (milliseconds > 9 ? milliseconds : "0" + milliseconds) : "00");
+    stopwatchTimeout = setTimeout(incrementStopwatch, stopwatchInterval);
   }
 
   // Start button
   start.onclick = function () {
     if (!isFinished) {
-      timeout = setTimeout(incrementStopwatch, 1000);
+      stopwatchTimeout = setTimeout(incrementStopwatch, stopwatchInterval);
       isStopwatchRun = true;
     }
   }
 
   // Stop button
   stop.onclick = function () {
-    clearTimeout(timeout);
+    clearTimeout(stopwatchTimeout);
     isStopwatchRun = false;
   }
 
   // Reset button
   reset.onclick = function () {
-    stopwatch.textContent = "00:00";
+    stopwatch.textContent = "00:00.00";
+    milliseconds = 0;
     seconds = 0;
     minutes = 0;
-    clearTimeout(timeout);
+    clearTimeout(stopwatchTimeout);
     isStopwatchRun = false;
     isFinished = false;
     questionInit();
@@ -66,12 +75,12 @@ window.onload = function () {
 
   var questionUpdate = function () {
     // Get answers on type
-    $("textarea#question[data-number]").each(function () {
+    $("textarea#answer[data-number]").each(function () {
       $(this).keyup(function () {
         // Update stopwatch if not running
         if (!isStopwatchRun && !isFinished) {
           isStopwatchRun = true;
-          timeout = setTimeout(incrementStopwatch, 1000);
+          timeout = setTimeout(incrementStopwatch, stopwatchInterval);
         }
         responses[$(this).data("number")] = $(this).val();
         console.log(responses);
@@ -84,7 +93,7 @@ window.onload = function () {
           }
         }
         if (correctCount === questions.length) {
-          clearTimeout(timeout);
+          clearTimeout(stopwatchTimeout);
           stopwatchRun = false;
           isFinished = true;
           console.log("All correct");
@@ -96,8 +105,8 @@ window.onload = function () {
   var questionInit = function () {
     questionTextBox = "";
     for (var i = 0; i < questions.length; i++) {
-      questionTextBox += "<label for='question'>Question " + (i + 1) + ": <br>" + questions[i] + "</label>";
-      questionTextBox += "<textarea class='form-control'  rows='5'  id='question' data-number=" + i + "></textarea><br>";
+      questionTextBox += "<label for='answer' id='question'>Question " + (i + 1) + ": <br>" + questions[i] + "</label>";
+      questionTextBox += "<textarea class='form-control'  rows='5'  id='answer' data-number=" + i + "></textarea><br>";
     }
     document.getElementById("question-container").innerHTML = questionTextBox;
     questionUpdate();

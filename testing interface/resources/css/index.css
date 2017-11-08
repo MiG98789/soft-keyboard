@@ -24,3 +24,18 @@
     font-size: 2em;
     color: white;
 }
+
+#start, #stop, #reset {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+#question {
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+#answer {
+    font-weight: bold;
+    font-size: 1.2em;
+}
