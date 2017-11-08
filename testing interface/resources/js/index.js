@@ -140,7 +140,7 @@ window.onload = function () {
   var questionInit = function () {
     questionTextBox = "";
     for (var i = 0; i < questions.length; i++) {
-      questionTextBox += "<label for='answer-" + i + "' class='question'>Question " + (i + 1) + ": <br>" + questions[i] + "</label>";
+      questionTextBox += "<hr><label for='answer-" + i + "' class='question'>Question " + (i + 1) + ": <br>" + questions[i] + "</label>";
       questionTextBox += "<textarea class='form-control answer' rows='5' id='answer-" + i + "'  data-number='" + i + "'></textarea><br>";
     }
     document.getElementById("question-container").innerHTML = questionTextBox;
