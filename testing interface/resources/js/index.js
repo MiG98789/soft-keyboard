@@ -45,4 +45,19 @@ window.onload = function () {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
+
+  // QUESTIONS
+  // https://stackoverflow.com/questions/7165519/update-text-on-textarea-value-change-w-jquery
+  // https://stackoverflow.com/questions/10322891/loop-through-all-text-boxes-in-a-form-using-jquery
+
+  var questions = ["y=mx+c", "1*2=3"];
+  var responses = [""];
+  var questionTextBox = "";
+
+  for (var i = 0; i < questions.length; i++) {
+    questionTextBox += "<label for='question'>Question " + (i+1) + ": <br>" + questions[i] +  "</label>";
+    questionTextBox += "<textarea class='form-control'  rows='5'  id='question'></textarea><br>";
+  }
+
+  document.getElementById("question-container").innerHTML = questionTextBox;
 }
