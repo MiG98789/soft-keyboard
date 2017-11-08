@@ -2,6 +2,7 @@ window.onload = function () {
   // STOPWATCH
   // https://jsfiddle.net/Daniel_Hug/pvk6p/
 
+  var stopwatchRun = false;
   var stopwatch = document.getElementById("stopwatch");
   var start = document.getElementById("start");
   var stop = document.getElementById("stop");
@@ -27,11 +28,13 @@ window.onload = function () {
   // Start button
   start.onclick = function () {
     timeout = setTimeout(incrementStopwatch, 1000);
+    stopwatchRun = true;
   }
 
   // Stop button
   stop.onclick = function () {
     clearTimeout(timeout);
+    stopwatchRun = false;
   }
 
   // Reset button
@@ -40,6 +43,7 @@ window.onload = function () {
     seconds = 0;
     minutes = 0;
     clearTimeout(timeout);
+    stopwatchRun = false;
     questionInit();
   }
 
@@ -56,6 +60,20 @@ window.onload = function () {
   var responses = new Array(questions.length);
   var questionTextBox = "";
 
+  // Get answers on type
+  var questionUpdate = function () {
+    $("textarea#question[data-number]").each(function () {
+      $(this).keyup(function () {
+        if (!stopwatchRun) {
+          stopwatchRun = true;
+          timeout = setTimeout(incrementStopwatch, 1000);
+        }
+        responses[$(this).data("number")] = $(this).val();
+        console.log(responses);
+      });
+    });
+  }
+
   var questionInit = function () {
     questionTextBox = "";
     for (var i = 0; i < questions.length; i++) {
@@ -63,13 +81,7 @@ window.onload = function () {
       questionTextBox += "<textarea class='form-control'  rows='5'  id='question' data-number=" + i + "></textarea><br>";
     }
     document.getElementById("question-container").innerHTML = questionTextBox;
+    questionUpdate();
   }
   questionInit();
-
-  $("textarea#question[data-number]").each(function () {
-    $(this).keyup(function () {
-      responses[$(this).data("number")] = $(this).val();
-      console.log(responses);
-    });
-  });
 }
