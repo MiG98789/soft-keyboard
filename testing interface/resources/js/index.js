@@ -69,8 +69,8 @@ window.onload = function () {
   // https://stackoverflow.com/questions/10322891/loop-through-all-text-boxes-in-a-form-using-jquery
   // https://stackoverflow.com/questions/11759358/selecting-custom-data-attributes-in-jquery
 
-  var keyboardSpecialSymbols = [" 031", " 032", " 22a"]; // alpha, beta, sqrt
-  var unicodeSymbols = ["\u03B1", "\u03B2", "\u221A"];
+  var keyboardSpecialSymbols = [" 031", " 032", " 22a", " 001"]; // alpha, beta, sqrt, plus-minus
+  var unicodeSymbols = ["\u03B1", "\u03B2", "\u221A", "\u00B1"];
   var questions = ["y=mx+c", "x=(-b\u00B1\u221A(b^2-4ac))/2a", "\u03B1^2-\u03B2^2=(\u03B1-\u03B2)(\u03B1+\u03B2)"];
   var questionImageSrcs = ["slope_equation.png", "quadratic_equation.png", "factorisation.png"];
   var answers = new Array(questions.length);
