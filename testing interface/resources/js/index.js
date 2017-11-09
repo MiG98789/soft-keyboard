@@ -71,7 +71,8 @@ window.onload = function () {
 
   var keyboardSpecialSymbols = [" 031", " 032", " 22a"]; // alpha, beta, sqrt
   var unicodeSymbols = ["\u03B1", "\u03B2", "\u221A"];
-  var questions = ["y=mx+c", "quad", "\u03B1^2-\u03B2^2=(\u03B1-\u03B2)(\u03B1+\u03B2)"];
+  var questions = ["y=mx+c", "x=(-b\u00B1\u221A(b^2-4ac))/2a", "\u03B1^2-\u03B2^2=(\u03B1-\u03B2)(\u03B1+\u03B2)"];
+  var questionImageSrcs = ["slope_equation.png", "quadratic_equation.png", "factorisation.png"];
   var answers = new Array(questions.length);
   var answerTimes = new Array(questions.length);
   var startFocusTimes = new Array(questions.length);
@@ -140,7 +141,8 @@ window.onload = function () {
   var questionInit = function () {
     questionTextBox = "";
     for (var i = 0; i < questions.length; i++) {
-      questionTextBox += "<hr><label for='answer-" + i + "' class='question'>Question " + (i + 1) + ": <br>" + questions[i] + "</label>";
+      questionTextBox += "<hr><label for='answer-" + i + "' class='question'>Question " + (i + 1) + ": <br>";
+      questionTextBox += "<img src='resources/images/" + questionImageSrcs[i] + "'><br><br>Type: " + questions[i] + "</label>";
       questionTextBox += "<textarea class='form-control answer' rows='5' id='answer-" + i + "'  data-number='" + i + "'></textarea><br>";
     }
     document.getElementById("question-container").innerHTML = questionTextBox;
