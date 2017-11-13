@@ -16,12 +16,29 @@
 </head>
 
 <body>
+  <!-- Floater for SIGHT logo -->
+  <div id="sight-logo-floater">
+      <img src="resources/images/sight-logo.jpg" id="sight-logo">
+  </div>
+
+
   <!-- Floater for stopwatch -->
-  <div id="floater">
+  <div id="stopwatch-floater">
     <p id="stopwatch">00:00.00</p>
     <button class="btn btn-default btn-sm" id="start">Start</button>
     <button class="btn btn-default btn-sm" id="stop">Stop</button>
     <button class="btn btn-default btn-sm" id="reset">Reset</button>
+    <br>
+    <br>
+    <div class="dropdown">
+      <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" id="dropdown-button">Pick your name
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu" aria-labelledby="menu1" id="name-dropdown">
+      </ul>
+    </div>
+    <br>
+    <button class="btn btn-default btn-sm" id="submit">Submit</button>
   </div>
 
   <!-- Modal for completed notification -->

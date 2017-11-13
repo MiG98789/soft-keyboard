@@ -64,15 +64,62 @@ window.onload = function () {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
 
+  // NAMES
+  // https://stackoverflow.com/questions/13437446/how-to-display-selected-item-in-bootstrap-button-dropdown-title
+
+  var names = [
+    ["Hong Kong Red Cross John F. Kennedy Centre", "John Doe"],
+    ["Hong Kong University of Science and Technology", "Erika Mustermann"],
+    ["Hong Kong Red Cross John F. Kennedy Centre", "Jane Doe"]
+  ];
+  names.sort((a, b) => (a[0] == b[0] ? 0 : (a[0] < b[0] ? -1 : 1)) || (a[1] == b[1] ? 0 : (a[1] < b[1] ? -1 : 1)));
+
+  var currentSchool = names[0][0];
+  $(".dropdown-menu").append("<li style='white-space: normal; font-weight: bold; font-size: 1.2em' class='dropdown-header'>" + currentSchool + "</li>");
+  var isFirst = true;
+  for (i in names) {
+    if (names[i][0] !== currentSchool) {
+      currentSchool = names[i][0];
+
+      if (isFirst) {
+        isFirst = false;
+        $(".dropdown-menu").append("<li class='divider'></li>");
+      }
+
+      $(".dropdown-menu").append("<li style='white-space: normal; font-weight: bold; font-size: 1.2em' class='dropdown-header'>" + currentSchool + "</li>");
+    }
+
+    $(".dropdown-menu").append("<li role='presentation'><a style='white-space: normal; font-weight: bold' role='menuitem' tabindex='-1' href='#'>" + names[i][1] + "</a></li>")
+  }
+
+  $(function () {
+    $(".dropdown-menu").on("click", "li a", function () {
+      $(".btn:first-child").text($(this).text());
+      $(".btn:first-child").val($(this).text());
+    });
+  });
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+
   // QUESTIONS
   // https://stackoverflow.com/questions/7165519/update-text-on-textarea-value-change-w-jquery
   // https://stackoverflow.com/questions/10322891/loop-through-all-text-boxes-in-a-form-using-jquery
   // https://stackoverflow.com/questions/11759358/selecting-custom-data-attributes-in-jquery
 
-  var keyboardSpecialSymbols = [" 031", " 032", " 22a", " 001"]; // alpha, beta, sqrt, plus-minus
-  var unicodeSymbols = ["\u03B1", "\u03B2", "\u221A", "\u00B1"];
-  var questions = ["y=mx+c", "x=(-b\u00B1\u221A(b^2-4ac))/2a", "\u03B1^2-\u03B2^2=(\u03B1-\u03B2)(\u03B1+\u03B2)"];
-  var questionImageSrcs = ["slope_equation.png", "quadratic_equation.png", "factorisation.png"];
+  var unicodeSymbols = [
+    [" 031", "\u03B1"], // Alpha
+    [" 032", "\u03B2"], // Beta
+    [" 22a", "\u221A"], // Square root
+    [" 001", "\u00B1"] // Plus minus
+  ];
+
+  var questions = [
+    ["y=mx+c", "slope_equation.png"],
+    ["x=(-b\u00B1\u221A(b^2-4ac))/2a", "quadratic_equation.png"],
+    ["\u03B1^2-\u03B2^2=(\u03B1-\u03B2)(\u03B1+\u03B2)", "factorisation.png"]
+  ];
   var answers = new Array(questions.length);
   var answerTimes = new Array(questions.length);
   var startFocusTimes = new Array(questions.length);
@@ -81,8 +128,8 @@ window.onload = function () {
 
   var string2Unicode = function (text) {
     var res = text;
-    for (var i = 0; i < unicodeSymbols.length; i++) {
-      res = res.replace(keyboardSpecialSymbols[i], unicodeSymbols[i]);
+    for (i in unicodeSymbols) {
+      res = res.replace(unicodeSymbols[i][0], unicodeSymbols[i][1]);
     }
     return res;
   }
@@ -99,21 +146,21 @@ window.onload = function () {
             timeout = setTimeout(incrementStopwatch, stopwatchInterval);
           }
           $(this).val(string2Unicode($(this).val()));
-          answers[$(this).data("number")] = $(this).val().replace(/ /g,'');
+          answers[$(this).data("number")] = $(this).val().replace(/ /g, '');
           console.log("answers");
           console.log(answers);
 
           // Check answers
           var correctCount = 0;
-          for (var j = 0; j < questions.length; j++) {
+          for (j in questions) {
             if (isAnswerDone[j]) {
               correctCount++;
               continue;
-            } else if (questions[j] === answers[j]) {
+            } else if (questions[j][0] === answers[j]) {
               correctCount++;
               isAnswerDone[j] = true;
 
-              $(this).css("background-color", "lawngreen"); 
+              $(this).css("background-color", "lawngreen");
 
               answerTimes[$(this).data("number")] = (answerTimes[$(this).data("number")] * 100
                 + minutes * 60 * 100 + seconds * 100 + milliseconds
@@ -121,10 +168,10 @@ window.onload = function () {
               console.log("answerTimes:");
               console.log(answerTimes);
 
-              console.log("Done with " + questions[j]);
+              console.log("Done with " + questions[j][0]);
             }
           }
-          
+
           if (correctCount === questions.length) {
             clearTimeout(stopwatchTimeout);
             stopwatchRun = false;
@@ -138,11 +185,11 @@ window.onload = function () {
     });
   }
 
-  var questionInit = function () {
+  var questionsInit = function () {
     questionTextBox = "";
-    for (var i = 0; i < questions.length; i++) {
-      questionTextBox += "<hr><label for='answer-" + i + "' class='question'>Question " + (i + 1) + ": <br>";
-      questionTextBox += "<img src='resources/images/" + questionImageSrcs[i] + "'><br><br>Type: " + questions[i] + "</label>";
+    for (i in questions) {
+      questionTextBox += "<hr><label for='answer-" + i + "' class='question'>Question " + (parseInt(i) + 1) + ": <br>";
+      questionTextBox += "<img src='resources/images/" + questions[i][1] + "' class='question-images'><br><br>Type: " + questions[i][0] + "</label>";
       questionTextBox += "<textarea class='form-control answer' rows='5' id='answer-" + i + "'  data-number='" + i + "'></textarea><br>";
     }
     document.getElementById("question-container").innerHTML = questionTextBox;
@@ -151,7 +198,7 @@ window.onload = function () {
     answerTimes = new Array(questions.length);
     startFocusTimes = new Array(questions.length);
 
-    for (var i = 0; i < questions.length; i++) {
+    for (i in questions) {
       answerTimes[i] = 0;
       startFocusTimes[i] = 0;
       isAnswerDone[i] = false;
@@ -181,5 +228,5 @@ window.onload = function () {
 
     questionUpdate();
   }
-  questionInit();
+  questionsInit();
 }
