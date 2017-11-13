@@ -137,7 +137,7 @@ window.onload = function () {
 
           if (correctCount === questions.length) {
             clearTimeout(stopwatchTimeout);
-            stopwatchRun = false;
+            isStopwatchRun = false;
             isFinished = true;
 
             var name = $("#dropdown-button").text().trim();
