@@ -57,7 +57,7 @@ window.onload = function () {
     clearTimeout(stopwatchTimeout);
     isStopwatchRun = false;
     isFinished = false;
-    questionInit();
+    questionsInit();
   }
 
   ////////////////////////////////////////////////////////////////////////////////////
@@ -77,8 +77,8 @@ window.onload = function () {
   ];
 
   var questions = [
-    ["y=mx+c", "slope_equation.png"],
-    ["x=(-b\u00B1\u221A(b^2-4ac))/2a", "quadratic_equation.png"],
+    ["y=mx+c", "slope-equation.png"],
+    ["x=(-b\u00B1\u221A(b^2-4ac))/2a", "quadratic-equation.png"],
     ["\u03B1^2-\u03B2^2=(\u03B1-\u03B2)(\u03B1+\u03B2)", "factorisation.png"]
   ];
   var answers = new Array(questions.length);
@@ -87,6 +87,7 @@ window.onload = function () {
   var isAnswerDone = new Array(questions.length);
   var questionTextBox = "";
   var correctCount = 0;
+  var isSubmit = false;
 
   var string2Unicode = function (text) {
     var res = text;
@@ -96,7 +97,7 @@ window.onload = function () {
     return res;
   }
 
-  var questionUpdate = function () {
+  var questionsUpdate = function () {
     // Loop through each answer
     $(".answer").each(function (i, obj) {
       // Get answers on type
@@ -143,10 +144,13 @@ window.onload = function () {
             if (name !== "Please select your name") {
               $("#modal-title").text("Congratulations, " + name + "!");
               $("#modal-body").text("Everything has been answered correctly! Your results have been saved.");
+              $("#modal-dismiss").text("Close");              
               $("#notification-modal").modal();
+              isSubmit = true;
             } else {
               $("#modal-title").text("Error!");
               $("#modal-body").text("Everything has been answered correctly, but you have not selected your name. Please select it, then submit again.");
+              $("#modal-dismiss").text("Close");              
               $("#notification-modal").modal();
             }
             console.log("All correct");
@@ -158,16 +162,17 @@ window.onload = function () {
 
   var questionsInit = function () {
     questionTextBox = "";
+    answers = new Array(questions.length);
+    answerTimes = new Array(questions.length);
+    startFocusTimes = new Array(questions.length);
+    isSubmit = false;
+
     for (i in questions) {
       questionTextBox += "<hr><label for='answer-" + i + "' class='question'>Question " + (parseInt(i) + 1) + ": <br>";
       questionTextBox += "<img src='resources/images/" + questions[i][1] + "' class='question-images'><br><br>Type: " + questions[i][0] + "</label>";
       questionTextBox += "<textarea class='form-control answer' rows='5' id='answer-" + i + "'  data-number='" + i + "'></textarea><br>";
     }
     document.getElementById("question-container").innerHTML = questionTextBox;
-
-    answers = new Array(questions.length);
-    answerTimes = new Array(questions.length);
-    startFocusTimes = new Array(questions.length);
 
     for (i in questions) {
       answerTimes[i] = 0;
@@ -197,10 +202,9 @@ window.onload = function () {
       });
     });
 
-    questionUpdate();
+    questionsUpdate();
   }
   questionsInit();
-
 
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
@@ -248,30 +252,42 @@ window.onload = function () {
   var submit = document.getElementById("submit");
   submit.onclick = function () {
     var name = $("#dropdown-button").text().trim();
-    if (name !== "Please select your name" && !isStopwatchRun && stopwatch.textContent !== "00:00.00") {
+    if (isSubmit) {
+      $("#modal-title").text("Already submitted");
+      $("#modal-body").text("Please press the Reset button or refresh the page to attempt again.");
+      $("#modal-dismiss").text("Close");
+      $("#notification-modal").modal();
+    } else if (name !== "Please select your name" && !isStopwatchRun && stopwatch.textContent !== "00:00.00") {
       console.log("Submitted by " + $("#dropdown-button").text() + " with " + correctCount + " out of " + questions.length + " correct");
       $("#modal-title").text("Submitted by " + name);
       $("#modal-body").text("You got " + correctCount + " out of " + questions.length + " correct. Your results have been saved!");
+      $("#modal-dismiss").text("Close");
       $("#notification-modal").modal();
+      isSubmit = true;
     } else if (name === "Please select your name" && stopwatch.textContent === "00:00.00") {
       $("#modal-title").text("Error");
       $("#modal-body").text("Please select your name and attempt answering a question, then submit again.");
+      $("#modal-dismiss").text("Close");      
       $("#notification-modal").modal();
     } else if (stopwatch.textContent === "00:00.00") {
       $("#modal-title").text("Error");
       $("#modal-body").text("Please attempt answering a question, then submit again.");
+      $("#modal-dismiss").text("Close");      
       $("#notification-modal").modal();
     } else if (name === "Please select your name" && isStopwatchRun) {
       $("#modal-title").text("Error");
       $("#modal-body").text("Please select your name and stop the stopwatch, then submit again.");
+      $("#modal-dismiss").text("Close");      
       $("#notification-modal").modal();
     } else if (name === "Please select your name") {
       $("#modal-title").text("Error");
       $("#modal-body").text("Please select your name, then submit again.");
+      $("#modal-dismiss").text("Close");      
       $("#notification-modal").modal();
     } else if (isStopwatchRun) {
       $("#modal-title").text("Error");
       $("#modal-body").text("Please stop the stopwatch, then submit again.");
+      $("#modal-dismiss").text("Close");      
       $("#notification-modal").modal();
     }
   }
