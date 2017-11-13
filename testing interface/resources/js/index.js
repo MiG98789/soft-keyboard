@@ -36,7 +36,7 @@ window.onload = function () {
 
   // Start button
   start.onclick = function () {
-    if (!isFinished) {
+    if (!isFinished && !isStopwatchRun) {
       stopwatchTimeout = setTimeout(incrementStopwatch, stopwatchInterval);
       isStopwatchRun = true;
     }
@@ -64,45 +64,6 @@ window.onload = function () {
   ////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////////
 
-  // NAMES
-  // https://stackoverflow.com/questions/13437446/how-to-display-selected-item-in-bootstrap-button-dropdown-title
-
-  var names = [
-    ["Hong Kong Red Cross John F. Kennedy Centre", "John Doe"],
-    ["Hong Kong University of Science and Technology", "Erika Mustermann"],
-    ["Hong Kong Red Cross John F. Kennedy Centre", "Jane Doe"]
-  ];
-  names.sort((a, b) => (a[0] == b[0] ? 0 : (a[0] < b[0] ? -1 : 1)) || (a[1] == b[1] ? 0 : (a[1] < b[1] ? -1 : 1)));
-
-  var currentSchool = names[0][0];
-  $(".dropdown-menu").append("<li style='white-space: normal; font-weight: bold; font-size: 1.2em' class='dropdown-header'>" + currentSchool + "</li>");
-  var isFirst = true;
-  for (i in names) {
-    if (names[i][0] !== currentSchool) {
-      currentSchool = names[i][0];
-
-      if (isFirst) {
-        isFirst = false;
-        $(".dropdown-menu").append("<li class='divider'></li>");
-      }
-
-      $(".dropdown-menu").append("<li style='white-space: normal; font-weight: bold; font-size: 1.2em' class='dropdown-header'>" + currentSchool + "</li>");
-    }
-
-    $(".dropdown-menu").append("<li role='presentation'><a style='white-space: normal; font-weight: bold' role='menuitem' tabindex='-1' href='#'>" + names[i][1] + "</a></li>")
-  }
-
-  $(function () {
-    $(".dropdown-menu").on("click", "li a", function () {
-      $(".btn:first-child").text($(this).text());
-      $(".btn:first-child").val($(this).text());
-    });
-  });
-
-  ////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////////////////////
-
   // QUESTIONS
   // https://stackoverflow.com/questions/7165519/update-text-on-textarea-value-change-w-jquery
   // https://stackoverflow.com/questions/10322891/loop-through-all-text-boxes-in-a-form-using-jquery
@@ -125,6 +86,7 @@ window.onload = function () {
   var startFocusTimes = new Array(questions.length);
   var isAnswerDone = new Array(questions.length);
   var questionTextBox = "";
+  var correctCount = 0;
 
   var string2Unicode = function (text) {
     var res = text;
@@ -151,7 +113,7 @@ window.onload = function () {
           console.log(answers);
 
           // Check answers
-          var correctCount = 0;
+          correctCount = 0;
           for (j in questions) {
             if (isAnswerDone[j]) {
               correctCount++;
@@ -176,8 +138,17 @@ window.onload = function () {
             clearTimeout(stopwatchTimeout);
             stopwatchRun = false;
             isFinished = true;
-            $("#completed-modal").modal();
 
+            var name = $("#dropdown-button").text().trim();
+            if (name !== "Please select your name") {
+              $("#modal-title").text("Congratulations, " + name + "!");
+              $("#modal-body").text("Everything has been answered correctly! Your results have been saved.");
+              $("#notification-modal").modal();
+            } else {
+              $("#modal-title").text("Error!");
+              $("#modal-body").text("Everything has been answered correctly, but you have not selected your name. Please select it, then submit again.");
+              $("#notification-modal").modal();
+            }
             console.log("All correct");
           }
         }
@@ -229,4 +200,79 @@ window.onload = function () {
     questionUpdate();
   }
   questionsInit();
+
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+
+  // NAMES
+  // https://stackoverflow.com/questions/13437446/how-to-display-selected-item-in-bootstrap-button-dropdown-title
+
+  var testTakerName = '';
+  var names = [
+    ["Hong Kong Red Cross John F. Kennedy Centre", "John Doe"],
+    ["Hong Kong University of Science and Technology", "Erika Mustermann"],
+    ["Hong Kong Red Cross John F. Kennedy Centre", "Jane Doe"]
+  ];
+  names.sort((a, b) => (a[0] == b[0] ? 0 : (a[0] < b[0] ? -1 : 1)) || (a[1] == b[1] ? 0 : (a[1] < b[1] ? -1 : 1)));
+
+  var currentSchool = names[0][0];
+  $(".dropdown-menu").append("<li style='white-space: normal; font-weight: bold; font-size: 1.2em' class='dropdown-header'>" + currentSchool + "</li>");
+  var isFirst = true;
+  for (i in names) {
+    if (names[i][0] !== currentSchool) {
+      currentSchool = names[i][0];
+
+      if (isFirst) {
+        isFirst = false;
+        $(".dropdown-menu").append("<li class='divider'></li>");
+      }
+
+      $(".dropdown-menu").append("<li style='white-space: normal; font-weight: bold; font-size: 1.2em' class='dropdown-header'>" + currentSchool + "</li>");
+    }
+
+    $(".dropdown-menu").append("<li role='presentation'><a style='white-space: normal; font-weight: bold' role='menuitem' tabindex='-1' href='#'>" + names[i][1] + "</a></li>")
+  }
+
+  $(function () {
+    $(".dropdown-menu").on("click", "li a", function () {
+      $(".btn:first-child").text($(this).text());
+      $(".btn:first-child").val($(this).text());
+      testTakerName = $(this).text();
+    });
+  });
+
+  // Submit button
+  // Can only submit through the button if name is selected, and the stopwatch has already been run
+  var submit = document.getElementById("submit");
+  submit.onclick = function () {
+    var name = $("#dropdown-button").text().trim();
+    if (name !== "Please select your name" && !isStopwatchRun && stopwatch.textContent !== "00:00.00") {
+      console.log("Submitted by " + $("#dropdown-button").text() + " with " + correctCount + " out of " + questions.length + " correct");
+      $("#modal-title").text("Submitted by " + name);
+      $("#modal-body").text("You got " + correctCount + " out of " + questions.length + " correct. Your results have been saved!");
+      $("#notification-modal").modal();
+    } else if (name === "Please select your name" && stopwatch.textContent === "00:00.00") {
+      $("#modal-title").text("Error");
+      $("#modal-body").text("Please select your name and attempt answering a question, then submit again.");
+      $("#notification-modal").modal();
+    } else if (stopwatch.textContent === "00:00.00") {
+      $("#modal-title").text("Error");
+      $("#modal-body").text("Please attempt answering a question, then submit again.");
+      $("#notification-modal").modal();
+    } else if (name === "Please select your name" && isStopwatchRun) {
+      $("#modal-title").text("Error");
+      $("#modal-body").text("Please select your name and stop the stopwatch, then submit again.");
+      $("#notification-modal").modal();
+    } else if (name === "Please select your name") {
+      $("#modal-title").text("Error");
+      $("#modal-body").text("Please select your name, then submit again.");
+      $("#notification-modal").modal();
+    } else if (isStopwatchRun) {
+      $("#modal-title").text("Error");
+      $("#modal-body").text("Please stop the stopwatch, then submit again.");
+      $("#notification-modal").modal();
+    }
+  }
 }

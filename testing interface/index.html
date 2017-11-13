@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>SIGHT Soft Keyboard Testing Interface</title>
+  <title>SIGHT@HKUST Soft Keyboard Testing Interface</title>
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,7 +18,7 @@
 <body>
   <!-- Floater for SIGHT logo -->
   <div id="sight-logo-floater">
-      <img src="resources/images/sight-logo.jpg" id="sight-logo">
+    <img src="resources/images/sight-logo.jpg" id="sight-logo">
   </div>
 
 
@@ -30,8 +30,9 @@
     <button class="btn btn-default btn-sm" id="reset">Reset</button>
     <br>
     <br>
+    <!-- Dropdown list for names -->
     <div class="dropdown">
-      <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" id="dropdown-button">Pick your name
+      <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" id="dropdown-button">Please select your name
         <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" role="menu" aria-labelledby="menu1" id="name-dropdown">
@@ -41,24 +42,23 @@
     <button class="btn btn-default btn-sm" id="submit">Submit</button>
   </div>
 
-  <!-- Modal for completed notification -->
-  <div class="modal fade" id="completed-modal" role="dialog">
+  <!-- Modal for notification -->
+  <div class="modal fade" id="notification-modal" role="dialog">
     <div class="modal-dialog">
 
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Congratulations!</h4>
+          <h4 class="modal-title" id="modal-title"></h4>
         </div>
         <div class="modal-body">
-          <p>You've answered everything correctly!</p>
+          <p id="modal-body"></p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </div>
-
     </div>
   </div>
 
@@ -68,7 +68,7 @@
       <div class="col-sm-3"></div>
 
       <div class="col-sm-6">
-        <h1 id="title">SIGHT Soft Keyboard Testing Interface</h1>
+        <h1 id="title">SIGHT@HKUST Soft Keyboard Testing Interface</h1>
       </div>
 
       <div class="col-sm-3"></div>
