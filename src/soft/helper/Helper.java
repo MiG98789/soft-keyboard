@@ -5,8 +5,12 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Robot;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+
+import javax.swing.*;
 
 /**
  * <h1>Helper</h1>
@@ -102,5 +106,30 @@ public class Helper {
         g2.dispose();
 
         return resizedImg;
+    }
+    
+    /**
+     * Clones a JButton.
+     * @param b the button to clone.
+     */
+    public static JButton cloneJButton(JButton b) {
+        JButton result = new JButton(b.getName());
+        
+        // Get all action listeners
+        ActionListener[] actionListeners = b.getActionListeners();
+        for (ActionListener l : actionListeners) {
+            result.addActionListener(l);
+        }
+        
+        // Get all mouse adapters
+        MouseListener[] mouseListeners = b.getMouseListeners();
+        for (MouseListener l : mouseListeners) {
+            result.addMouseListener(l);
+        }
+        
+        result.setBounds(b.getBounds());
+        result.setFont(b.getFont());
+        
+        return result;
     }
 }

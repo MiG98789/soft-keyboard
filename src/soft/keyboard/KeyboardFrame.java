@@ -409,6 +409,7 @@ public class KeyboardFrame extends JFrame {
 
     /**
      * Type Unicode characters.
+     * @param b the button to add the listener to.
      */
     private void addUnicodeActionListener(JButton b) {
         unicodeActionListener = new ActionListener() {
@@ -421,7 +422,7 @@ public class KeyboardFrame extends JFrame {
         b.removeActionListener(unicodeActionListener);
         b.addActionListener(unicodeActionListener);
     }
-
+    
     /**
      * Scales icon sizes.
      */
@@ -523,6 +524,7 @@ public class KeyboardFrame extends JFrame {
      * Loads keys' appropriate listeners.
      */
     private void loadKeyListeners() {
+        // Typing listeners
         for (Row row : rows) {
             for (JButton key : row.keys) {
                 addKeyHighlightAdapter(key);
