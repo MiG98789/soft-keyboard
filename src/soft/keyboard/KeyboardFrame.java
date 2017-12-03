@@ -157,13 +157,18 @@ public class KeyboardFrame extends JFrame {
         try {
             AudioInputStream tempAudioIn = AudioSystem.getAudioInputStream(getClass().getResource(soundPath));
             Clip tempClip = AudioSystem.getClip();
+            tempClip.addLineListener(event -> {
+                if(LineEvent.Type.STOP.equals(event.getType())) {
+                    tempClip.close();
+                }
+            });
             tempClip.open(tempAudioIn);
             tempClip.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Highlights key background when cursor is hovering over it.
      * @param b the button to add the MouseAdapter to.
@@ -316,13 +321,13 @@ public class KeyboardFrame extends JFrame {
                     Helper.shiftKey(KeyEvent.VK_9);
                 }
             }
-            
+
             // Add sounds
             // Numbers
             try {
-            if (Integer.parseInt(actionCommand) >= 0 && Integer.parseInt(actionCommand) <= 9) {
-                playSound("/sounds/numbers/" + actionCommand + ".wav");
-            }
+                if (Integer.parseInt(actionCommand) >= 0 && Integer.parseInt(actionCommand) <= 9) {
+                    playSound("/sounds/numbers/" + actionCommand + ".wav");
+                }
             } catch (NumberFormatException e) {
                 // Special cases
                 if (actionCommand.equals("*")) { playSound("/sounds/symbols/asterisk.wav"); }
@@ -422,7 +427,7 @@ public class KeyboardFrame extends JFrame {
         b.removeActionListener(unicodeActionListener);
         b.addActionListener(unicodeActionListener);
     }
-    
+
     /**
      * Scales icon sizes.
      */
@@ -584,6 +589,71 @@ public class KeyboardFrame extends JFrame {
             }
         }
     }
+    
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////  
+    
+    // Change Background variables
+    private JButton changeBackgroundButton = new JButton("Change BG");
+    private int backgroundIndex = 0;
+    private String[] backgroundFilePaths = {"/backgrounds/bg.png",
+            "/backgrounds/bbg.png", "/backgrounds/wbg.png"};
+    
+    /**
+     * Loads Change Background button.
+     */
+    private void loadChangeBackgroundButton() {
+        changeBackgroundButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                backgroundIndex = (backgroundIndex + 1) % backgroundFilePaths.length;
+                backgroundPath = backgroundFilePaths[backgroundIndex];
+                Image temp = new ImageIcon(getClass().getResource(backgroundPath)).getImage();
+                background.setImage(Helper.getScaledImage(temp, width - 50, width - 50));
+                label.revalidate();
+                label.repaint();
+                playSound("/sounds/buttons/change background.wav");
+                
+                // If white bg, set keys to black
+                if (backgroundPath.equals("/backgrounds/wbg.png")) {
+                    for (Row row : rows) {
+                        for (JButton key : row.keys) {
+                            key.setForeground(Color.BLACK);
+                        }
+                    }
+                } else {
+                    for (Row row : rows) {
+                        for (JButton key : row.keys) {
+                            key.setForeground(Color.WHITE);
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    /**
+     * Scales Math Mode button.
+     */
+    private void scaleChangeBackgroundButton() {
+        int changeBackgroundButtonWidth = 110 + currScaleCount*20;
+        int changeBackgroundButtonHeight = 30 + currScaleCount*5;
+        
+        changeBackgroundButton.setBounds((int)(width*0.95 - changeBackgroundButtonWidth), 0, changeBackgroundButtonWidth, changeBackgroundButtonHeight);
+        changeBackgroundButton.setFont(new Font("Arial", Font.BOLD, (int)(14*getWidth()/500.0)));
+    }
 
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
@@ -683,7 +753,7 @@ public class KeyboardFrame extends JFrame {
                             Image temp = new ImageIcon(getClass().getResource(backgroundPath)).getImage();
                             background.setImage(Helper.getScaledImage(temp, width - 50, width - 50));
                             scaleKeys();
-                            
+
                             playSound("/sounds/buttons/decrease size.wav");
                         }
                     } else { //If increasing size
@@ -701,7 +771,7 @@ public class KeyboardFrame extends JFrame {
                             Image temp = new ImageIcon(getClass().getResource(backgroundPath)).getImage();
                             background.setImage(Helper.getScaledImage(temp, width - 50, width - 50));
                             scaleKeys();
-                            
+
                             playSound("/sounds/buttons/increase size.wav");
                         }
                     }
@@ -736,6 +806,7 @@ public class KeyboardFrame extends JFrame {
 
         scaleKeyPositions();
         scaleChangeSizeButtons();
+        scaleChangeBackgroundButton();
         scaleMathModeButton();
     }
 
@@ -762,6 +833,11 @@ public class KeyboardFrame extends JFrame {
                 panel.add(key);
             }
         }
+        
+        // Add change background button
+        loadChangeBackgroundButton();
+        scaleChangeBackgroundButton();
+        panel.add(changeBackgroundButton);
 
         // Add mode toggle button
         loadMathModeButton();
