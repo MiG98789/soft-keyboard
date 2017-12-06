@@ -15,7 +15,7 @@ These instructions will get the project ready for development, testing, and live
 * [JavaSE-1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 * [Eclipse Mars](https://www.eclipse.org/mars/) -- Other text editors/IDEs with Java support may be used instead. This guide will assume that Eclipse Mars is the IDE being used.
 
-### Setting Up
+### Setting up
 
 1. Open a terminal and type `git clone https://github.com/MiG98789/soft-keyboard`, or download the repository directly.
 2. Launch `Eclipse Mars`. If this is the first time `Eclipse Mars` is launched, follow the on-screen directions to complete its initial setup.
