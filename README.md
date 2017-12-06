@@ -43,4 +43,5 @@ To open the testing interface, navigate to `Soft Keyboard/testing interface`, an
 The test can be started by either pressing `Start` or simply typing into one of the text areas. The time taken for each part will automatically be recorded, and once a part has successfully been completed, it will turn green, and changes made to that part will not be recorded.
 
 ## Documentation
-![](https://mig98789.github.io/soft-keyboard)
+
+https://mig98789.github.io/soft-keyboard
