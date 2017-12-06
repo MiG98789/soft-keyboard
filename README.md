@@ -41,3 +41,6 @@ Prediction functionality is included in the prediction package. However, due to 
 To open the testing interface, navigate to `Soft Keyboard/testing interface`, and open `index.html`. The name of the test taker has to be filled in prior to starting the test.
 
 The test can be started by either pressing `Start` or simply typing into one of the text areas. The time taken for each part will automatically be recorded, and once a part has successfully been completed, it will turn green, and changes made to that part will not be recorded.
+
+## Documentation
+![](https://mig98789.github.io/soft-keyboard)
