@@ -141,7 +141,7 @@ public class KeyboardFrame extends JFrame {
 
     private Row[] rows = new Row[9];
     private ImageIcon[] icons = new ImageIcon[5];
-    private String[] iconURLs = {"/icons/backspace.png", "/icons/space.png", "/icons/enter.png", "/icons/shift.png", "/icons/caps.png"};
+    private String[] iconURLs = {"/icons/white backspace.png", "/icons/space.png", "/icons/enter.png", "/icons/shift.png", "/icons/caps.png"};
     private boolean shiftClick = false;
     private boolean capsClick = false;
     private MouseAdapter keyHighlightMouseAdapter;
@@ -438,9 +438,9 @@ public class KeyboardFrame extends JFrame {
             int tempWidth = (int)(temp.getWidth(null)*(double)(width/450.00));
             int tempHeight = (int)(temp.getHeight(null)*(double)(height/450.0));
             int scale = 7;
-            if (iconURLs[i] == "/icons/enter.png" || iconURLs[i] == "/icons/shift.png") {
+            if (iconURLs[i].equals("/icons/enter.png") || iconURLs[i].equals("/icons/shift.png")) {
                 scale = 20;
-            } else if (iconURLs[i] == "/icons/caps.png") {
+            } else if (iconURLs[i].equals("/icons/caps.png")) {
                 scale = 5;
             } else {
                 scale = 7;
@@ -506,7 +506,11 @@ public class KeyboardFrame extends JFrame {
             for (String item : row) {
                 String name = item;
                 String url = "/icons/" + item + ".png";
-                if(!Arrays.asList(iconURLs).contains(url)) {
+                if (url.equals("/icons/backspace.png")) {
+                    url = "/icons/white backspace.png";
+                }
+                
+                if (!Arrays.asList(iconURLs).contains(url)) {
                     if (item.length() == 1) {
                         rows[rowIndex].keys.add(new JButton(item));
                     }
@@ -633,6 +637,31 @@ public class KeyboardFrame extends JFrame {
                             key.setForeground(Color.BLACK);
                         }
                     }
+                    
+//                    for (Row row : rows) {
+//                        boolean found = false;
+//                        
+//                        for (JButton key : row.keys) {
+//                            if (key.getName().equals("/icons/white backspace.png")) {
+//                                String newName = "/icons/backspace.png";
+//                                Image tempImage = new ImageIcon(getClass().getResource(newName)).getImage();
+//                                int tempWidth = (int)(temp.getWidth(null)*(double)(width/450.00));
+//                                int tempHeight = (int)(temp.getHeight(null)*(double)(height/450.0));
+//                                int scale = 7;
+//                                tempImage = tempImage.getScaledInstance((int)(tempWidth/scale), (int)(tempHeight/scale), Image.SCALE_SMOOTH);
+//                                tempImage = Helper.getScaledImage(tempImage, width - 50, width - 50);
+//                                key.setIcon(new ImageIcon(tempImage));
+//                                key.setName(newName);
+//                                
+//                                found = true;
+//                                break;
+//                            }
+//                        }
+//                        
+//                        if (found) {
+//                            break;
+//                        }
+//                    }
                 } else {
                     for (Row row : rows) {
                         for (JButton key : row.keys) {

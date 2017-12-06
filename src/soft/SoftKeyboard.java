@@ -1,4 +1,6 @@
-package soft.keyboard;
+package soft;
+
+import soft.keyboard.KeyboardFrame;
 
 /**
  * <h1>Soft Keyboard</h1>
@@ -15,10 +17,18 @@ package soft.keyboard;
 public class SoftKeyboard {
     KeyboardFrame keyboardFrame;
     
+    /**
+     * Constructor of SoftKeyboard.
+     * Instatiates the keyboard frame.
+     */
     public SoftKeyboard() {
         keyboardFrame = KeyboardFrame.getInstance();
     }
     
+    /**
+     * Main function.
+     * @param args any arguments passed.
+     */
     public static void main(String[] args) {
         new SoftKeyboard();
     }
