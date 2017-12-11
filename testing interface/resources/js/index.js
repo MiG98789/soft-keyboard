@@ -129,13 +129,15 @@ window.onload = function () {
     var emailSubject = "SIGHT@HKUST Soft Keyboard Test Result (" + utc + "): " + testTakerName + " (" + testTakerSchool + ")";
     var emailBody = "Test taker: " + testTakerName + "\n";
     emailBody += "School: " + testTakerSchool + "\n";
+	emailBody += "Date (YYYY/MM/DD): " + utc + "\n";
     emailBody += "Total number of correct attempts: " + correctCount + "/" + questions.length + "\n";
     emailBody += "Total time taken: " + stopwatch.textContent + "\n";
     emailBody += "Time taken for each question: " + "\n";
     for (i in questions) {
-      emailBody += "Question " + (i + 1) + "(" + questions[i][0] + "):\t" + answerTimes[i] + " seconds\n";
+      emailBody += "Question " + (parseInt(i) + 1) + " (" + questions[i][0] + "):\t" + answerTimes[i] + " seconds\n";
     }
     console.log("Email contents:" + emailBody);
+	emailBody = encodeURIComponent(emailBody);
     window.open("mailto:" + emailTo + "?subject=" + emailSubject + "&body=" + emailBody);
   }
 
