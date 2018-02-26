@@ -140,8 +140,8 @@ public class KeyboardFrame extends JFrame {
     }
 
     private Row[] rows = new Row[9];
-    private ImageIcon[] icons = new ImageIcon[5];
-    private String[] iconURLs = {"/icons/white backspace.png", "/icons/space.png", "/icons/enter.png", "/icons/shift.png", "/icons/caps.png"};
+    private ImageIcon[] icons = new ImageIcon[6];
+    private String[] iconURLs = {"/icons/white backspace.png", "/icons/backspace.png", "/icons/space.png", "/icons/enter.png", "/icons/shift.png", "/icons/caps.png"};
     private boolean shiftClick = false;
     private boolean capsClick = false;
     private MouseAdapter keyHighlightMouseAdapter;
@@ -506,10 +506,10 @@ public class KeyboardFrame extends JFrame {
             for (String item : row) {
                 String name = item;
                 String url = "/icons/" + item + ".png";
-                if (url.equals("/icons/backspace.png")) {
+                if (url.equals("/icons/backspace.png") && backgroundPath != "/backgrounds/wbg.png") {
                     url = "/icons/white backspace.png";
                 }
-                
+
                 if (!Arrays.asList(iconURLs).contains(url)) {
                     if (item.length() == 1) {
                         rows[rowIndex].keys.add(new JButton(item));
@@ -593,7 +593,7 @@ public class KeyboardFrame extends JFrame {
             }
         }
     }
-    
+
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
@@ -608,13 +608,13 @@ public class KeyboardFrame extends JFrame {
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////  
-    
+
     // Change Background variables
     private JButton changeBackgroundButton = new JButton("Change BG");
     private int backgroundIndex = 0;
     private String[] backgroundFilePaths = {"/backgrounds/bg.png",
             "/backgrounds/bbg.png", "/backgrounds/wbg.png"};
-    
+
     /**
      * Loads Change Background button.
      */
@@ -629,57 +629,71 @@ public class KeyboardFrame extends JFrame {
                 label.revalidate();
                 label.repaint();
                 playSound("/sounds/buttons/change background.wav");
-                
+
                 // If white bg, set keys to black
-                if (backgroundPath.equals("/backgrounds/wbg.png")) {
-                    for (Row row : rows) {
-                        for (JButton key : row.keys) {
+                if (backgroundPath.equals("/backgrounds/wbg.png")) {                    
+                    // Right side
+                    for (int i = 0; i <= 5; i++) {
+                        for (JButton key : rows[i].keys) {
                             key.setForeground(Color.BLACK);
                         }
                     }
-                    
-//                    for (Row row : rows) {
-//                        boolean found = false;
-//                        
-//                        for (JButton key : row.keys) {
-//                            if (key.getName().equals("/icons/white backspace.png")) {
-//                                String newName = "/icons/backspace.png";
-//                                Image tempImage = new ImageIcon(getClass().getResource(newName)).getImage();
-//                                int tempWidth = (int)(temp.getWidth(null)*(double)(width/450.00));
-//                                int tempHeight = (int)(temp.getHeight(null)*(double)(height/450.0));
-//                                int scale = 7;
-//                                tempImage = tempImage.getScaledInstance((int)(tempWidth/scale), (int)(tempHeight/scale), Image.SCALE_SMOOTH);
-//                                tempImage = Helper.getScaledImage(tempImage, width - 50, width - 50);
-//                                key.setIcon(new ImageIcon(tempImage));
-//                                key.setName(newName);
-//                                
-//                                found = true;
-//                                break;
-//                            }
-//                        }
-//                        
-//                        if (found) {
-//                            break;
-//                        }
-//                    }
-                } else {
+
+                    // Left side
+                    for (int i = 6; i <= 8; i++) {
+                        for (JButton key : rows[i].keys) {
+                            key.setForeground(Color.BLACK);
+                        }
+                    }
+
                     for (Row row : rows) {
                         for (JButton key : row.keys) {
+                            if (key.getName().equals("/icons/white backspace.png")) {
+                                System.out.println("found");
+                                String newName = "/icons/backspace.png";
+                                int index = Arrays.asList(iconURLs).indexOf(newName);
+                                key.setIcon(icons[index]);
+                                key.setName(newName);
+                            }
+                        }
+                    }
+                } else {
+                    // Right side
+                    for (int i = 0; i <= 5; i++) {
+                        for (JButton key : rows[i].keys) {
                             key.setForeground(Color.WHITE);
+                        }
+                    }
+
+                    // Left side
+                    for (int i = 6; i <= 8; i++) {
+                        for (JButton key : rows[i].keys) {
+                            key.setForeground(Color.BLACK);
+                        }
+                    }
+
+                    for (Row row : rows) {
+                        for (JButton key : row.keys) {
+                            if (key.getName().equals("/icons/backspace.png")) {
+                                String newName = "/icons/white backspace.png";
+                                int index = Arrays.asList(iconURLs).indexOf(newName);
+                                key.setIcon(icons[index]);
+                                key.setName(newName);
+                            }
                         }
                     }
                 }
             }
         });
     }
-    
+
     /**
      * Scales Math Mode button.
      */
     private void scaleChangeBackgroundButton() {
         int changeBackgroundButtonWidth = 110 + currScaleCount*20;
         int changeBackgroundButtonHeight = 30 + currScaleCount*5;
-        
+
         changeBackgroundButton.setBounds((int)(width*0.95 - changeBackgroundButtonWidth), 0, changeBackgroundButtonWidth, changeBackgroundButtonHeight);
         changeBackgroundButton.setFont(new Font("Arial", Font.BOLD, (int)(14*getWidth()/500.0)));
     }
@@ -862,7 +876,7 @@ public class KeyboardFrame extends JFrame {
                 panel.add(key);
             }
         }
-        
+
         // Add change background button
         loadChangeBackgroundButton();
         scaleChangeBackgroundButton();
