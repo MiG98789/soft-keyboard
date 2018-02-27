@@ -571,7 +571,7 @@ public class KeyboardFrame extends JFrame {
         System.out.println("Radius: " + rows[5].radius);
 
         // Left side
-        rows[6].radius = 48;
+        rows[6].radius = 45;
         rows[6].initDegree = 0;
         rows[6].endDegree = 0;
         for (int i = 7; i <= 8; i++) {
