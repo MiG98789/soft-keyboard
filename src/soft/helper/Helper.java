@@ -68,6 +68,15 @@ public class Helper {
     }
     
     /**
+     * Type a matching pair of parenthesses, then bring cursor to the middle.
+     */
+    public static void typeBrackets() {
+        Helper.shiftKey(KeyEvent.VK_9); // (
+        Helper.shiftKey(KeyEvent.VK_0); // )
+        Helper.typeKey(KeyEvent.VK_LEFT); // Go between ( and )
+    }
+    
+    /**
      * Type a Unicode character once.
      * @param unicode   Unicode value.
      */

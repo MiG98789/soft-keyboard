@@ -314,9 +314,7 @@ public class KeyboardFrame extends JFrame {
             // Special case
             else if (actionCommand.equals("(")) { // Autocompletes ), then puts cursor between ( and )
                 if (mathModeButton.isSelected()) {
-                    Helper.shiftKey(KeyEvent.VK_9); // (
-                    Helper.shiftKey(KeyEvent.VK_0); // )
-                    Helper.typeKey(KeyEvent.VK_LEFT); // Go between ( and )
+                    Helper.typeBrackets();
                 } else {
                     Helper.shiftKey(KeyEvent.VK_9);
                 }
@@ -421,6 +419,19 @@ public class KeyboardFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent event) {
                 Helper.typeUnicode(b.getName());
+                
+                if (b.getName().toLowerCase().equals(new String("\\u03b1").toLowerCase())) {
+                    playSound("/sounds/unicode/alpha.wav");
+                } else if (b.getName().toLowerCase().equals(new String("\\u03b2").toLowerCase())) {
+                    playSound("/sounds/unicode/beta.wav");
+                } else if (b.getName().toLowerCase().equals(new String("\\u221a").toLowerCase())) {
+                    playSound("/sounds/unicode/square root.wav");
+                    if (mathModeButton.isSelected()) {
+                        Helper.typeBrackets();
+                    }
+                } else if (b.getName().toLowerCase().equals(new String("\\u00b1").toLowerCase())) {
+                    playSound("/sounds/unicode/plusminus.wav");
+                }
             }  
         };
 
@@ -649,7 +660,6 @@ public class KeyboardFrame extends JFrame {
                     for (Row row : rows) {
                         for (JButton key : row.keys) {
                             if (key.getName().equals("/icons/white backspace.png")) {
-                                System.out.println("found");
                                 String newName = "/icons/backspace.png";
                                 int index = Arrays.asList(iconURLs).indexOf(newName);
                                 key.setIcon(icons[index]);
