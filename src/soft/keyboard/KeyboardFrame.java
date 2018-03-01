@@ -36,7 +36,7 @@ public class KeyboardFrame extends JFrame {
     private int height = 420;
     private JPanel panel;
     private JLabel label;
-    private String backgroundPath = "/backgrounds/bg.png";
+    private String backgroundPath = "/backgrounds/bbg_alt.png";
     private ImageIcon background = new ImageIcon(getClass().getResource(backgroundPath));
 
     /**
@@ -419,7 +419,7 @@ public class KeyboardFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent event) {
                 Helper.typeUnicode(b.getName());
-                
+
                 if (b.getName().toLowerCase().equals(new String("\\u03b1").toLowerCase())) {
                     playSound("/sounds/unicode/alpha.wav");
                 } else if (b.getName().toLowerCase().equals(new String("\\u03b2").toLowerCase())) {
@@ -623,8 +623,12 @@ public class KeyboardFrame extends JFrame {
     // Change Background variables
     private JButton changeBackgroundButton = new JButton("Change BG");
     private int backgroundIndex = 0;
-    private String[] backgroundFilePaths = {"/backgrounds/bg.png",
-            "/backgrounds/bbg.png", "/backgrounds/wbg.png"};
+    private String[] backgroundFilePaths = {
+            "/backgrounds/bbg_alt.png",
+            "/backgrounds/bbg.png",
+            "/backgrounds/wbg_alt.png",
+            "/backgrounds/wbg.png"
+    };
 
     /**
      * Loads Change Background button.
@@ -642,7 +646,8 @@ public class KeyboardFrame extends JFrame {
                 playSound("/sounds/buttons/change background.wav");
 
                 // If white bg, set keys to black
-                if (backgroundPath.equals("/backgrounds/wbg.png")) {                    
+                if (backgroundPath.equals("/backgrounds/wbg.png")
+                        || backgroundPath.equals("/backgrounds/wbg_alt.png")) {                    
                     // Right side
                     for (int i = 0; i <= 5; i++) {
                         for (JButton key : rows[i].keys) {
