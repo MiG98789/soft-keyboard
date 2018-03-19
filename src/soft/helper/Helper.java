@@ -21,6 +21,14 @@ import javax.swing.*;
  */
 public class Helper {
     /**
+     * Keymap to Unicode
+     */
+    
+    /**
+     * Keymap to Equation Editor
+     */
+    
+    /**
      * Unescapes string loaded from file.
      * @param s string to unescape.
      */

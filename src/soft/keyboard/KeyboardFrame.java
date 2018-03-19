@@ -424,6 +424,20 @@ public class KeyboardFrame extends JFrame {
                     playSound("/sounds/unicode/alpha.wav");
                 } else if (b.getName().toLowerCase().equals(new String("\\u03b2").toLowerCase())) {
                     playSound("/sounds/unicode/beta.wav");
+                } else if (b.getName().toLowerCase().equals(new String("\\u0394").toLowerCase())) {
+                    playSound("/sounds/unicode/delta.wav");
+                } else if (b.getName().toLowerCase().equals(new String("\\u03b8").toLowerCase())) {
+                    playSound("/sounds/unicode/theta.wav");
+                } else if (b.getName().toLowerCase().equals(new String("\\u03bc").toLowerCase())) {
+                    playSound("/sounds/unicode/mu.wav");
+                } else if (b.getName().toLowerCase().equals(new String("\\u03c0").toLowerCase())) {
+                    playSound("/sounds/unicode/pi.wav");
+                } else if (b.getName().toLowerCase().equals(new String("\\u03c3").toLowerCase())) {
+                    playSound("/sounds/unicode/sigma.wav");
+                } else if (b.getName().toLowerCase().equals(new String("\\u03a3").toLowerCase())) {
+                    playSound("/sounds/unicode/sigma.wav");
+                } else if (b.getName().toLowerCase().equals(new String("\\u03c6").toLowerCase())) {
+                    playSound("/sounds/unicode/phi.wav");
                 } else if (b.getName().toLowerCase().equals(new String("\\u221a").toLowerCase())) {
                     playSound("/sounds/unicode/square root.wav");
                     if (mathModeButton.isSelected()) {
