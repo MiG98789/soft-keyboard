@@ -125,8 +125,7 @@ public class KeyboardFrame extends JFrame {
         }
 
         // Keys
-        scaleKeyIcons();
-        scaleKeyPositions();
+        scaleKeys();
 
         Row currRows[] = rows.get(getCurrentMode());
         for (Row row : currRows) {
@@ -141,17 +140,8 @@ public class KeyboardFrame extends JFrame {
                 panel.add(key);
             }
         }
-
-        // Add change background button
-        scaleChangeBackgroundButton();
         panel.add(changeBackgroundButton);
-
-        // Add mode toggle button
-        scaleModeButton();
         panel.add(modeButton);
-
-        //change size buttons
-        scaleChangeSizeButtons();
         panel.add(changeSizeButtons[0]);
         panel.add(changeSizeButtons[1]);
 
@@ -453,7 +443,7 @@ public class KeyboardFrame extends JFrame {
                 } catch (NumberFormatException e) {
                     // Special cases
                     if (actionCommand.equals("*")) {
-                        if (!getCurrentMode().equals("normal")) {
+                        if (getCurrentMode().equals("normal")) {
                             soundPath = "/sounds/symbols/asterisk.wav";
                         } else {
                             soundPath = "/sounds/symbols/multiply.wav";
@@ -461,37 +451,37 @@ public class KeyboardFrame extends JFrame {
                     }
 
                     else if (actionCommand.equals("/")) {
-                        if (!getCurrentMode().equals("normal")) {
-                            soundPath = "/sounds/symbols/forward slash.wav";
+                        if (getCurrentMode().equals("normal")) {
+                            soundPath = "/sounds/symbols/slash.wav";
                         } else {
                             soundPath = "/sounds/symbols/divide.wav";
                         }
                     }
 
                     else if (actionCommand.equals("+")) {
-                        // TODO: plus, positive
-                        soundPath = "/sounds/symbols/plus.wav";
+                        // TODO: add, positive
+                        soundPath = "/sounds/symbols/add.wav";
                     }
 
                     else if (actionCommand.equals("-")) {
                         // TODO: hyphen, subtract, negative
-                        if (!getCurrentMode().equals("normal")) {
-                            soundPath = "/sounds/symbols/subtract.wav";
-                        } else {
+                        if (getCurrentMode().equals("normal")) {
                             soundPath = "/sounds/symbols/hyphen.wav";
+                        } else {
+                            soundPath = "/sounds/symbols/subtract.wav";
                         }
                     }
 
                     else if (actionCommand.equals("!")) {
-                        if (!getCurrentMode().equals("normal")) {
-                            soundPath = "/sounds/symbols/factorial.wav";
+                        if (getCurrentMode().equals("normal")) {
+                            soundPath = "/sounds/symbols/exclamation mark.wav";
                         } else {
-                            soundPath = "/sounds/symbols/!.wav";
+                            soundPath = "/sounds/symbols/factorial.wav";
                         }
                     }
 
                     else if (actionCommand.equals("<")) {
-                        if (!getCurrentMode().equals("normal")) {
+                        if (getCurrentMode().equals("normal")) {
                             soundPath = "/sounds/symbols/left arrow.wav";
                         } else {
                             soundPath = "/sounds/symbols/smaller than.wav";
@@ -499,7 +489,7 @@ public class KeyboardFrame extends JFrame {
                     }
 
                     else if (actionCommand.equals(">")) {
-                        if (!getCurrentMode().equals("normal")) {
+                        if (getCurrentMode().equals("normal")) {
                             soundPath = "/sounds/symbols/right arrow.wav";
                         } else {
                             soundPath = "/sounds/symbols/greater than.wav";
@@ -583,11 +573,11 @@ public class KeyboardFrame extends JFrame {
                 String name = b.getName();
                 String soundPath = "/sounds/equation/" + name + ".wav";
 
-                if (name.equals("sqrt") || name.equals("cbrt")) {
+                if (name.equals("sqrt") || name.equals("cbrt") || name.equals("overparen")) { // Functions that are followed with ()
                     Helper.typeEquationEditor(b.getName(), true);
                 } else {
                     Helper.typeEquationEditor(b.getName(), false);
-                    if (name.equals("dot") || name.equals("bar")) {
+                    if (name.equals("dot") || name.equals("bar")) { // Functions that go over the previous letter
                         Helper.typeKey(KeyEvent.VK_SPACE);
                     }
                 }
@@ -722,8 +712,6 @@ public class KeyboardFrame extends JFrame {
             currRows[i].initDegree = 52;
             currRows[i].endDegree = 308;
         }
-        System.out.println("MidX: " + currRows[0].midX);
-        System.out.println("MidY: " + currRows[0].midY);
 
         // Left side
         currRows[6].radius = 45;
@@ -783,7 +771,7 @@ public class KeyboardFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 modeIndex = (modeIndex + 1) % 3;
                 modeButton.setText(modes[modeIndex]);
-                playSound("/sounds/buttons/" + modes[modeIndex].toLowerCase()+ ".wav");
+                playSound("/sounds/buttons/" + modes[modeIndex].toLowerCase() + ".wav");
                 System.out.println("Switching to " + getCurrentMode());
                 loadGUI();
             }
@@ -955,6 +943,7 @@ public class KeyboardFrame extends JFrame {
             changeSizeButtons[x].addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked (MouseEvent e) {
+                    String soundPath = "";
                     if (x == 0) { //If decreasing size
                         if (currScaleCount != 0) {  
                             currScaleCount--;
@@ -974,7 +963,7 @@ public class KeyboardFrame extends JFrame {
                             background.setImage(Helper.getScaledImage(temp, width - 50, width - 50));
                             scaleKeys();
 
-                            playSound("/sounds/buttons/decrease size.wav");
+                            soundPath = "/sounds/buttons/decrease size.wav";
                         }
                     } else { //If increasing size
                         if (currScaleCount != MAX_SCALE_COUNT) {
@@ -995,12 +984,12 @@ public class KeyboardFrame extends JFrame {
                             background.setImage(Helper.getScaledImage(temp, width - 50, width - 50));
                             scaleKeys();
 
-                            playSound("/sounds/buttons/increase size.wav");
+                            soundPath = "/sounds/buttons/increase size.wav";
                         }
                     }
+                    playSound(soundPath);
                 }
             });
-            panel.add(changeSizeButtons[i]);
         }
     }
 

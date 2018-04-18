@@ -5,7 +5,7 @@ backspace
 + - . * / sqrt cbrt plusminus minusplus
 0 1 2 3 4 5 6 7 8 9 infty
 ! [ ] | < > ? % ^ ~ _ { } $ dot bar sum because therefore
-cap cup shift caps angle degree perp parallel approx cong equiv propto
+cap cup shift caps angle degree perp overparen parallel approx cong equiv propto
 alpha beta gamma Delta mu phi pi sigma theta sin cos tan log ln
 
 <% Left-side mapping from innermost to outermost rows
