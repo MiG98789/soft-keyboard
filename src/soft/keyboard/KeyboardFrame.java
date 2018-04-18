@@ -722,7 +722,8 @@ public class KeyboardFrame extends JFrame {
             currRows[i].initDegree = 52;
             currRows[i].endDegree = 308;
         }
-        System.out.println("Radius: " + currRows[5].radius);
+        System.out.println("MidX: " + currRows[0].midX);
+        System.out.println("MidY: " + currRows[0].midY);
 
         // Left side
         currRows[6].radius = 45;
@@ -869,9 +870,10 @@ public class KeyboardFrame extends JFrame {
 
                     for (Row row : currRows) {
                         for (JButton key : row.keys) {
-                            if (key.getName().equals("/icons/white backspace.png")) {
-                                String newName = "/icons/backspace.png";
-                                int index = Arrays.asList(iconURLs).indexOf(newName);
+                            if (key.getName().equals("white backspace")) {
+                                String newName = "backspace";
+                                String newURL = "/icons/" + newName + ".png";
+                                int index = Arrays.asList(iconURLs).indexOf(newURL);
                                 key.setIcon(icons[index]);
                                 key.setName(newName);
                             }
@@ -894,9 +896,10 @@ public class KeyboardFrame extends JFrame {
 
                     for (Row row : currRows) {
                         for (JButton key : row.keys) {
-                            if (key.getName().equals("/icons/backspace.png")) {
-                                String newName = "/icons/white backspace.png";
-                                int index = Arrays.asList(iconURLs).indexOf(newName);
+                            if (key.getName().equals("backspace")) {
+                                String newName = "white backspace";
+                                String newURL = "/icons/" + newName + ".png";
+                                int index = Arrays.asList(iconURLs).indexOf(newURL);
                                 key.setIcon(icons[index]);
                                 key.setName(newName);
                             }
@@ -961,10 +964,11 @@ public class KeyboardFrame extends JFrame {
                             width = getWidth();
                             height = getHeight();
                             
-                            Row currRows[] = rows.get(getCurrentMode());
-                            for (Row row : currRows) {
-                                row.midX = width/2 - 22;
-                                row.midY = height/2 - 40;
+                            for (Row[] currRows : rows.values()) {
+                                for (Row row : currRows) {
+                                    row.midX = width/2 - 22;
+                                    row.midY = height/2 - 40;
+                                }
                             }
                             Image temp = new ImageIcon(getClass().getResource(backgroundPath)).getImage();
                             background.setImage(Helper.getScaledImage(temp, width - 50, width - 50));
@@ -981,10 +985,11 @@ public class KeyboardFrame extends JFrame {
                             width = getWidth();
                             height = getHeight();
                             
-                            Row currRows[] = rows.get(getCurrentMode());
-                            for (Row row : currRows) {
-                                row.midX = width/2 - 22;
-                                row.midY = height/2 - 40;
+                            for (Row[] currRows : rows.values()) {
+                                for (Row row : currRows) {
+                                    row.midX = width/2 - 22;
+                                    row.midY = height/2 - 40;
+                                }
                             }
                             Image temp = new ImageIcon(getClass().getResource(backgroundPath)).getImage();
                             background.setImage(Helper.getScaledImage(temp, width - 50, width - 50));
