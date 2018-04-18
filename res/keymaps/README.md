@@ -34,7 +34,7 @@ Note: Any empty line, or line that starts with <%, is ignored.
 | ∩ | cap |
 | ∪ | cup |
 | ˙ | dot |
-| ‾ | bar |
+| ‾ | overbar |
 | log | log |
 | ln | ln |
 

@@ -38,14 +38,17 @@ public class Helper {
     
     /**
      * Convert from keymap to Equation Editor.
-     * @param key   the symbol to type.
+     * @param key           the symbol to type.
+     * @param withBackslash whether the symbol should be typed as a special symbol.
+     * @param withBracket   whether the symbol should be followed by brackets.
      */
-    public static void typeEquationEditor(String symbol, boolean withBracket) {
-        if (withBracket) {
+    public static void typeEquationEditor(String symbol, boolean withBackslash, boolean withBracket) {
+        if (withBackslash) {
             typeKey(KeyEvent.VK_BACK_SLASH);
         }
         for (char letter : symbol.toCharArray()) {
             int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(letter));
+            System.out.println("Typing " + letter);
             typeKey(keyCode);
         }
         typeKey(KeyEvent.VK_SPACE);

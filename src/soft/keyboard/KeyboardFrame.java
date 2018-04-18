@@ -112,7 +112,7 @@ public class KeyboardFrame extends JFrame {
         // Only have to carry out load functions at startup
         if (isStart) {
             isStart = false;
-            
+
             scaleKeyIcons();
             loadKeyIcons();
             loadKeyListeners();
@@ -152,7 +152,7 @@ public class KeyboardFrame extends JFrame {
         this.revalidate();
         this.repaint();
     }
-    
+
     /**
      * Plays sound.
      * @param soundPath the filepath of the sound to be played.
@@ -290,9 +290,9 @@ public class KeyboardFrame extends JFrame {
                     if (key.getName().length() != 1) {
                         continue;
                     }
-    
+
                     char letter = key.getName().charAt(0);
-    
+
                     if ((letter >= 'a' && letter <= 'z') || (letter >= 'A' && letter <= 'Z')) {
                         if (!shiftClick && !capsClick) { // Lower case
                             key.setText("" + letter);
@@ -308,7 +308,7 @@ public class KeyboardFrame extends JFrame {
             }
         }
     }
-    
+
     /**
      * Highlights key background when cursor is hovering over it.
      * @param b the button to add the MouseAdapter to.
@@ -506,7 +506,7 @@ public class KeyboardFrame extends JFrame {
                 playSound(soundPath);
             }
         };
-        
+
         b.removeActionListener(numberSymbolActionListener);
         b.addActionListener(numberSymbolActionListener);
     }
@@ -567,17 +567,25 @@ public class KeyboardFrame extends JFrame {
      * @param b the button to add the listener to.
      */
     private void addEquationActionListener(JButton b) {
-        iconActionListener = new ActionListener() {
+        equationActionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
                 String name = b.getName();
                 String soundPath = "/sounds/equation/" + name + ".wav";
 
-                if (name.equals("sqrt") || name.equals("cbrt") || name.equals("overparen")) { // Functions that are followed with ()
-                    Helper.typeEquationEditor(b.getName(), true);
+                if (name.equals("log") || name.equals("ln")
+                 || name.equals("sin") || name.equals("cos") || name.equals("tan")) { // Functions that are typed as is
+                    Helper.typeEquationEditor(name, false, false);
                 } else {
-                    Helper.typeEquationEditor(b.getName(), false);
-                    if (name.equals("dot") || name.equals("bar")) { // Functions that go over the previous letter
+                    if (name.equals("sqrt") || name.equals("cbrt")
+                     || name.equals("sum")
+                     || name.equals("overbar") || name.equals("overparen")) { // Functions that are followed with ()
+                        Helper.typeEquationEditor(name, true, true);
+                    } else { // Functions that are not followed with ()
+                        Helper.typeEquationEditor(name, true, false);
+                    }
+                    
+                    if (name.equals("dot")) { // Functions that go over the previous letter
                         Helper.typeKey(KeyEvent.VK_SPACE);
                     }
                 }
@@ -589,7 +597,7 @@ public class KeyboardFrame extends JFrame {
         b.removeActionListener(equationActionListener);
         b.addActionListener(equationActionListener);
     }
-    
+
     /**
      * Loads keys' appropriate listeners.
      */
@@ -599,8 +607,8 @@ public class KeyboardFrame extends JFrame {
             for (Row row : rowGroup) {
                 for (JButton key : row.keys) {
                     addKeyHighlightAdapter(key);
-    
-                    if (Arrays.asList(iconURLs).contains(key.getName())) {
+
+                    if (Arrays.asList(iconURLs).contains("/icons/" + key.getName() + ".png")) {
                         addIconActionListener(key);
                     } else if (key.getName().length() == 1){
                         char letter = key.getName().charAt(0);
@@ -616,7 +624,7 @@ public class KeyboardFrame extends JFrame {
             }
         }
     }
-    
+
     /**
      * Scales icon sizes.
      */
@@ -644,7 +652,7 @@ public class KeyboardFrame extends JFrame {
      */
     private void loadKeyIcons() {
         Key.keymaps = new HashMap<String, ArrayList<ArrayList<String>>>();
-        
+
         Pattern pattern = Pattern.compile("((?:.(?!\\/))+)(?=\\.)");
         for (String keymapURL : keymapURLs) {
             Matcher matcher = pattern.matcher(keymapURL);
@@ -655,11 +663,11 @@ public class KeyboardFrame extends JFrame {
                 System.out.println();
             }
         }
-        
+
         for (String keymap : Key.keymaps.keySet()) {
             ArrayList<ArrayList<String>> keymapRows = Key.keymaps.get(keymap);
             Row currRows[] = new Row[ROW_COUNT];
-            
+
             int rowIndex = 0;
             for (ArrayList<String> keymapRow : keymapRows) {
                 if (rowIndex <= 5) {
@@ -668,7 +676,7 @@ public class KeyboardFrame extends JFrame {
                     currRows[rowIndex] = new Row(6 - rowIndex);
                 }
                 currRows[rowIndex].keys = new ArrayList<JButton>();
-                
+
                 for (String item : keymapRow) {
                     String name = item;
                     String url = "/icons/" + name + ".png";
@@ -676,7 +684,7 @@ public class KeyboardFrame extends JFrame {
                         name = "white backspace";
                         url = "/icons/" + name + ".png";
                     }
-                    
+
                     // TODO: All equation editor symbols
                     if (!Arrays.asList(iconURLs).contains(url)) {
                         if (name.length() == 1) { // Any item on a physical keyboard
@@ -692,18 +700,18 @@ public class KeyboardFrame extends JFrame {
                 }
                 rowIndex++;
             }
-            
+
             rows.put(keymap, currRows);
         }
     }
-    
+
     /**
      * Loads keys' appropriate positions.
      */
     private void scaleKeyPositions() {
         // Right side
         Row currRows[] = rows.get(getCurrentMode());
-        
+
         currRows[0].radius = -10;
         currRows[0].initDegree = 0;
         currRows[0].endDegree = 0;
@@ -736,7 +744,7 @@ public class KeyboardFrame extends JFrame {
             }
         }
     }
-    
+
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
@@ -753,7 +761,7 @@ public class KeyboardFrame extends JFrame {
     ////////////////////////////////////////////////////////////////  
 
     // Mode variables
-    
+
     private String[] modes = {
             "Normal Mode",
             "Math Mode",
@@ -784,7 +792,7 @@ public class KeyboardFrame extends JFrame {
     private void scaleModeButton() {
         int modeButtonWidth = 110 + currScaleCount*20;
         int modeButtonHeight = 30 + currScaleCount*5;
-        
+
         modeButton.setBounds(0, 0, modeButtonWidth, modeButtonHeight);
         modeButton.setFont(new Font("Arial", Font.BOLD, (int)(14*getWidth()/500.0)));
     }
@@ -796,7 +804,7 @@ public class KeyboardFrame extends JFrame {
     private String getCurrentMode() {
         return modeButton.getText().split(" ")[0].toLowerCase();
     }
-    
+
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
@@ -811,9 +819,9 @@ public class KeyboardFrame extends JFrame {
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
-    
+
     // Change Background variables
-    
+
     private JButton changeBackgroundButton = new JButton("Change BG");
     private int backgroundIndex = 0;
     private String[] backgroundFilePaths = {
@@ -837,7 +845,7 @@ public class KeyboardFrame extends JFrame {
                 label.revalidate();
                 label.repaint();
                 playSound("/sounds/buttons/change background.wav");
-                
+
                 Row currRows[] = rows.get(getCurrentMode());
                 // If white bg, set keys to black
                 if (backgroundPath.equals("/backgrounds/wbg.png")
@@ -897,7 +905,7 @@ public class KeyboardFrame extends JFrame {
             }
         });
     }
-    
+
     /**
      * Scales Change Background button.
      */
@@ -908,7 +916,7 @@ public class KeyboardFrame extends JFrame {
         changeBackgroundButton.setBounds((int)(width*0.96 - changeBackgroundButtonWidth), 0, changeBackgroundButtonWidth, changeBackgroundButtonHeight);
         changeBackgroundButton.setFont(new Font("Arial", Font.BOLD, (int)(14*getWidth()/500.0)));
     }
-    
+
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
@@ -923,9 +931,9 @@ public class KeyboardFrame extends JFrame {
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
-    
+
     // Change Size variables
-    
+
     private final double SCALE_FACTOR = 1.15;
     private int currScaleCount = 0;
     private final int MAX_SCALE_COUNT = 2;
@@ -952,7 +960,7 @@ public class KeyboardFrame extends JFrame {
                             Key.height -= 5;
                             width = getWidth();
                             height = getHeight();
-                            
+
                             for (Row[] currRows : rows.values()) {
                                 for (Row row : currRows) {
                                     row.midX = width/2 - 22;
@@ -973,7 +981,7 @@ public class KeyboardFrame extends JFrame {
                             Key.height += 5;
                             width = getWidth();
                             height = getHeight();
-                            
+
                             for (Row[] currRows : rows.values()) {
                                 for (Row row : currRows) {
                                     row.midX = width/2 - 22;
