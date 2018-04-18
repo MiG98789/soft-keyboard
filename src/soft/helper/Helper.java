@@ -20,58 +20,37 @@ import javax.swing.*;
  * @since   2.0
  */
 public class Helper {
-    /**
-     * Keymap to Unicode
-     */
+    public static final Robot robot = createRobot();
     
     /**
-     * Keymap to Equation Editor
+     * Initialise the static Robot object.
+     * @return  the Robot object.
      */
-    
-    /**
-     * Unescapes string loaded from file.
-     * @param s string to unescape.
-     */
-    public static String unicodeUnescape(String s) {
-        s = s.split(" ")[0].replace("\\","");
-        String[] arr = s.split("u");
-        String result = "";
-        for(int i = 1; i < arr.length; i++){
-            int hexVal = Integer.parseInt(arr[i], 16);
-            result += (char)hexVal;
-        }
-        return result;
-    }
-    
-    /**
-     * Type a key once.
-     * @param keyCode   the key code of the corresponding KeyEvent.VK_<CHARACTER> to be typed.
-     * @see             java.awt.event.KeyEvent
-     */
-    public static void typeKey(int keyCode) {
+    private static Robot createRobot() {
+        Robot r = null;
         try {
-            Robot robot = new Robot();
-            robot.keyPress(keyCode);
-            robot.keyRelease(keyCode);
+            r = new Robot();
         } catch (AWTException e) {
             e.printStackTrace();
         }
+        return r;
     }
-
+    
     /**
-     * Type a key once that requires the shift key to be pressed.
-     * @param keyCode   the key code of the corresponding KeyEvent.VK_<CHARACTER> to be typed.
-     * @see             java.awt.event.KeyEvent
+     * Convert from keymap to Equation Editor.
+     * @param key   the symbol to type.
      */
-    public static void shiftKey(int keyCode) {
-        try {
-            Robot robot = new Robot();
-            robot.keyPress(KeyEvent.VK_SHIFT);
+    public static void typeEquationEditor(String symbol, boolean withBracket) {
+        if (withBracket) {
+            typeKey(KeyEvent.VK_BACK_SLASH);
+        }
+        for (char letter : symbol.toCharArray()) {
+            int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(letter));
             typeKey(keyCode);
-            robot.keyRelease(keyCode);
-            robot.keyRelease(KeyEvent.VK_SHIFT);
-        } catch (AWTException e) {
-            e.printStackTrace();
+        }
+        typeKey(KeyEvent.VK_SPACE);
+        if (withBracket) {
+            typeBrackets();
         }
     }
     
@@ -85,26 +64,25 @@ public class Helper {
     }
     
     /**
-     * Type a Unicode character once.
-     * @param unicode   Unicode value.
+     * Type a key once.
+     * @param keyCode   the key code of the corresponding KeyEvent.VK_<CHARACTER> to be typed.
+     * @see             java.awt.event.KeyEvent
      */
-    public static void typeUnicode(String unicode) {
-        try {
-            Robot robot = new Robot();
-            
-            typeKey(KeyEvent.VK_SPACE);
-            for (int i = 2; i < unicode.length(); i++) {
-                typeKey(KeyEvent.getExtendedKeyCodeForChar(unicode.charAt(i)));
-            }
-            robot.keyPress(KeyEvent.VK_ALT);
-            typeKey(KeyEvent.VK_X);
-            robot.keyRelease(KeyEvent.VK_ALT);
-            typeKey(KeyEvent.VK_LEFT);
-            typeKey(KeyEvent.VK_BACK_SPACE);
-            typeKey(KeyEvent.VK_RIGHT);
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
+    public static void typeKey(int keyCode) {
+        robot.keyPress(keyCode);
+        robot.keyRelease(keyCode);
+    }
+
+    /**
+     * Type a key once that requires the shift key to be pressed.
+     * @param keyCode   the key code of the corresponding KeyEvent.VK_<CHARACTER> to be typed.
+     * @see             java.awt.event.KeyEvent
+     */
+    public static void shiftKey(int keyCode) {
+        robot.keyPress(KeyEvent.VK_SHIFT);
+        typeKey(keyCode);
+        robot.keyRelease(keyCode);
+        robot.keyRelease(KeyEvent.VK_SHIFT);
     }
     
     /**

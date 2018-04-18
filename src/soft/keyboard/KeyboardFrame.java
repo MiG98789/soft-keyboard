@@ -3,8 +3,6 @@ package soft.keyboard;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -14,6 +12,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
@@ -26,18 +27,20 @@ import soft.helper.Helper;
  * 
  * @author  Gian Miguel Sero Del Mundo
  * @author  Jin Young Park
- * @since   0.0
  */
 @SuppressWarnings("serial")
 public class KeyboardFrame extends JFrame {
     // Frame variables
     private static KeyboardFrame keyboardFrame = null;
+    private final double DEFAULT_WIDTH = 450.0;
+    private final double DEFAULT_HEIGHT = 420.0;
     private int width = 450;
     private int height = 420;
     private JPanel panel;
     private JLabel label;
     private String backgroundPath = "/backgrounds/bbg_alt.png";
     private ImageIcon background = new ImageIcon(getClass().getResource(backgroundPath));
+    private boolean isStart = true;
 
     /**
      * Private constructor for singleton.
@@ -52,10 +55,10 @@ public class KeyboardFrame extends JFrame {
      * @param w frame width.
      * @param h frame height.
      */
-    private KeyboardFrame(int w, int h) {
+    private KeyboardFrame(int width, int height) {
         super("Soft Keyboard");
-        this.width = w;
-        this.height = h;
+        this.width = width;
+        this.height = height;
         loadGUI();
     }
 
@@ -98,57 +101,68 @@ public class KeyboardFrame extends JFrame {
         // Label
         label = new JLabel(background, JLabel.CENTER);
         label.setBackground(Color.DARK_GRAY);
-        label.repaint();
         label.revalidate();
+        label.repaint();
     }
 
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-
-    // Key variables    
-
-    private static class Key {
-        public static ArrayList<ArrayList<String>> mapping;
-        public static int width = 25;
-        public static int height = 25;
-    }
-
-    private class Row {
-        public ArrayList<JButton> keys;
-        public double initDegree;
-        public double endDegree;
-        public int midX = width/2 - 22;
-        public int midY = height/2 - 40;
-        public int radius;
-        public int rowNum;
-
-        public Row(int rowNum) {
-            this.rowNum = rowNum;
+    /**
+     * Builds the GUI.
+     */
+    private void loadGUI() {
+        // Only have to carry out load functions at startup
+        if (isStart) {
+            isStart = false;
+            
+            scaleKeyIcons();
+            loadKeyIcons();
+            loadKeyListeners();
+            loadBackground();
+            loadChangeBackgroundButton();
+            loadModeButton();
+            loadChangeSizeButtons();
+        } else {
+            panel.removeAll();
         }
+
+        // Keys
+        scaleKeyIcons();
+        scaleKeyPositions();
+
+        Row currRows[] = rows.get(getCurrentMode());
+        for (Row row : currRows) {
+            for (JButton key : row.keys) {
+                if (row.rowNum > 0) {
+                    key.setForeground(Color.WHITE);
+                }
+                key.setBorder(null);
+                key.setBorderPainted(false);
+                key.setContentAreaFilled(false);
+                key.setOpaque(false);
+                panel.add(key);
+            }
+        }
+
+        // Add change background button
+        scaleChangeBackgroundButton();
+        panel.add(changeBackgroundButton);
+
+        // Add mode toggle button
+        scaleModeButton();
+        panel.add(modeButton);
+
+        //change size buttons
+        scaleChangeSizeButtons();
+        panel.add(changeSizeButtons[0]);
+        panel.add(changeSizeButtons[1]);
+
+        panel.add(label);
+        panel.revalidate();
+        panel.repaint();
+        this.add(panel);
+        this.revalidate();
+        this.repaint();
     }
-
-    private Row[] rows = new Row[9];
-    private ImageIcon[] icons = new ImageIcon[6];
-    private String[] iconURLs = {"/icons/white backspace.png", "/icons/backspace.png", "/icons/space.png", "/icons/enter.png", "/icons/shift.png", "/icons/caps.png"};
-    private boolean shiftClick = false;
-    private boolean capsClick = false;
-    private MouseAdapter keyHighlightMouseAdapter;
-    private ActionListener letterActionListener;
-    private ActionListener specialActionListener;
-    private ActionListener unicodeActionListener;
-
+    
     /**
      * Plays sound.
      * @param soundPath the filepath of the sound to be played.
@@ -169,6 +183,142 @@ public class KeyboardFrame extends JFrame {
         }
     }
 
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////  
+
+    // Key variables    
+
+    private static class Key {
+        /* Currently have 3 keymaps
+         * 1) Normal Keymap
+         * 2) Math Keymap
+         * 3) Greek Keymap
+         * 
+         * First (innermost) ArrayList: row of letters
+         * Second ArrayList: rows of keymap
+         * Third (outermost) HashMap: name of keymap, all keymaps
+         */ 
+        public static HashMap<String, ArrayList<ArrayList<String>>> keymaps;
+        public static int width = 25;
+        public static int height = 25;
+    }
+
+    private class Row {
+        public ArrayList<JButton> keys;
+        public double initDegree;
+        public double endDegree;
+        public int midX = width/2 - 22;
+        public int midY = height/2 - 40;
+        public int radius;
+        public int rowNum;
+
+        public Row(int rowNum) {
+            this.rowNum = rowNum;
+        }
+    }
+
+    private HashMap<String, Row[]> rows = new HashMap<String, Row[]>();
+    private final int ROW_COUNT = 9;
+    private ImageIcon[] icons = new ImageIcon[6];
+    private String[] iconURLs = { 
+            "/icons/white backspace.png",
+            "/icons/backspace.png",
+            "/icons/space.png",
+            "/icons/enter.png",
+            "/icons/shift.png",
+            "/icons/caps.png" 
+    };
+    private String[] keymapURLs = {
+            "/keymaps/normal.txt",
+            "/keymaps/math.txt",
+            "/keymaps/greek.txt"
+    };
+    private boolean shiftClick = false;
+    private boolean capsClick = false;
+    private MouseAdapter keyHighlightMouseAdapter;
+    private ActionListener letterActionListener; // a - z
+    private ActionListener numberSymbolActionListener; // keyboard symbols
+    private ActionListener iconActionListener; // backspace, shift, etc.
+    private ActionListener equationActionListener; // Equation Editor symbols
+
+    /**
+     * Loads key mapping from a text file.
+     * @param path key mapping file location.
+     */
+    private ArrayList<ArrayList<String>> getKeyMapping(String path) {
+        ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
+        try {
+            InputStream is = getClass().getResourceAsStream(path);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.startsWith("<%") || line.isEmpty()) {
+                    continue;
+                }
+
+                String[] tempArray = line.split("\\s+");
+                ArrayList<String> tempArrayList = new ArrayList<String>();
+                for (String item : tempArray) {
+                    tempArrayList.add(item);
+                }
+                result.add(tempArrayList);
+            }
+
+            for (ArrayList<String> row : result) {
+                for (String item : row) {
+                    System.out.print(item + " ");
+                }
+                System.out.print("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    /**
+     * Toggles letters between uppercase and lowercase.
+     */
+    private void toggleLetterCase() {
+        for (Row[] rowGroup : rows.values()) {
+            for (Row row : rowGroup) {
+                for (JButton key : row.keys) {
+                    if (key.getName().length() != 1) {
+                        continue;
+                    }
+    
+                    char letter = key.getName().charAt(0);
+    
+                    if ((letter >= 'a' && letter <= 'z') || (letter >= 'A' && letter <= 'Z')) {
+                        if (!shiftClick && !capsClick) { // Lower case
+                            key.setText("" + letter);
+                        } else if (!shiftClick && capsClick) { // Upper case
+                            key.setText("" + Character.toUpperCase(letter));
+                        } else if (shiftClick && !capsClick) { // Upper case
+                            key.setText("" + Character.toUpperCase(letter));
+                        } else { // Lower case
+                            key.setText("" + Character.toLowerCase(letter));
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     /**
      * Highlights key background when cursor is hovering over it.
      * @param b the button to add the MouseAdapter to.
@@ -193,266 +343,290 @@ public class KeyboardFrame extends JFrame {
     }
 
     /**
-     * Toggles letters between uppercase and lowercase.
-     */
-    private void toggleLetters() {
-        for (Row row : rows) {
-            for (JButton key : row.keys) {
-                char letter = key.getName().charAt(0);
-
-                if ((letter >= 'a' && letter <= 'z') || (letter >= 'A' && letter <= 'Z')) {
-                    if (!shiftClick && !capsClick) { // Lower case
-                        key.setText("" + letter);
-                    } else if (!shiftClick && capsClick) { // Upper case
-                        key.setText("" + Character.toUpperCase(letter));
-                    } else if (shiftClick && !capsClick) { // Upper case
-                        key.setText("" + Character.toUpperCase(letter));
-                    } else { // Lower case
-                        key.setText("" + Character.toLowerCase(letter));
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Action listener for letter keys that handles uppercase/lowercase letters.
+     * Action listener for letter keys. 
+     * Handles uppercase/lowercase letters.
+     * @param b the letter button.
      */
     private void addLetterActionListener(JButton b) {
         char letter = b.getName().charAt(0);
 
-        letterActionListener = (new ActionListener() {
+        letterActionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
                 // Deal with letter case
+                int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(letter));
                 if (!shiftClick && !capsClick) { // Caps lower case
-                    int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(letter));
                     Helper.typeKey(keyCode);
                 } else if (!shiftClick && capsClick) { // Caps upper case
-                    int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(letter));
                     Helper.shiftKey(keyCode);
                 } else if (shiftClick && !capsClick) { // Shift upper case
-                    int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(letter));
                     Helper.shiftKey(keyCode);
                     shiftClick = false;
-                    toggleLetters();
+                    toggleLetterCase();
                 } else { // Shift lower case
-                    int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(letter));
                     Helper.typeKey(keyCode);
                     shiftClick = false;
-                    toggleLetters();
+                    toggleLetterCase();
                 }
 
                 // Add sounds
-                String tempPath = "/sounds/letters/" + Character.toLowerCase(letter) + ".wav";
-                playSound(tempPath);
+                String soundPath = "/sounds/letters/" + Character.toLowerCase(letter) + ".wav";
+                playSound(soundPath);
             }
-        });
+        };
 
         b.removeActionListener(letterActionListener);
         b.addActionListener(letterActionListener);
     }
 
     /**
-     * Converts Soft Keyboard non-alphabetical key input into actual keyboard input.
+     * Converts Soft Keyboard non-alphabetical (i.e. numbers/symbols) key input into actual keyboard input.
      */
-    private ActionListener numericSymbolicActionListener = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent event) {
-            String actionCommand = event.getActionCommand();
+    private void addNumberSymbolActionListener(JButton b) {
+        numberSymbolActionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                String actionCommand = event.getActionCommand();
 
-            // Numbers
-            if (actionCommand.equals("0")) {Helper.typeKey(KeyEvent.VK_0);}
-            else if (actionCommand.equals("1")) {Helper.typeKey(KeyEvent.VK_1);}
-            else if (actionCommand.equals("2")) {Helper.typeKey(KeyEvent.VK_2);}
-            else if (actionCommand.equals("3")) {Helper.typeKey(KeyEvent.VK_3);}
-            else if (actionCommand.equals("4")) {Helper.typeKey(KeyEvent.VK_4);}
-            else if (actionCommand.equals("5")) {Helper.typeKey(KeyEvent.VK_5);}
-            else if (actionCommand.equals("6")) {Helper.typeKey(KeyEvent.VK_6);}
-            else if (actionCommand.equals("7")){Helper.typeKey(KeyEvent.VK_7);}
-            else if (actionCommand.equals("8")) {Helper.typeKey(KeyEvent.VK_8);}
-            else if (actionCommand.equals("9")) {Helper.typeKey(KeyEvent.VK_9);}
+                // Numbers
+                if (actionCommand.equals("0")) { Helper.typeKey(KeyEvent.VK_0); }
+                else if (actionCommand.equals("1")) { Helper.typeKey(KeyEvent.VK_1); }
+                else if (actionCommand.equals("2")) { Helper.typeKey(KeyEvent.VK_2); }
+                else if (actionCommand.equals("3")) { Helper.typeKey(KeyEvent.VK_3); }
+                else if (actionCommand.equals("4")) { Helper.typeKey(KeyEvent.VK_4); }
+                else if (actionCommand.equals("5")) { Helper.typeKey(KeyEvent.VK_5); }
+                else if (actionCommand.equals("6")) { Helper.typeKey(KeyEvent.VK_6); }
+                else if (actionCommand.equals("7")){ Helper.typeKey(KeyEvent.VK_7); }
+                else if (actionCommand.equals("8")) { Helper.typeKey(KeyEvent.VK_8); }
+                else if (actionCommand.equals("9")) { Helper.typeKey(KeyEvent.VK_9); }
 
-            // Symbols
-            else if (actionCommand.equals("`")) {Helper.typeKey(KeyEvent.VK_BACK_QUOTE);}
-            else if (actionCommand.equals("~")) {Helper.shiftKey(KeyEvent.VK_BACK_QUOTE);}
-            else if (actionCommand.equals("!")) {Helper.shiftKey(KeyEvent.VK_1);}
-            else if (actionCommand.equals("@")) {Helper.shiftKey(KeyEvent.VK_2);}
-            else if (actionCommand.equals("#")) {Helper.shiftKey(KeyEvent.VK_3);}
-            else if (actionCommand.equals("$")) {Helper.shiftKey(KeyEvent.VK_4);}
-            else if (actionCommand.equals("%")) {Helper.shiftKey(KeyEvent.VK_5);}
-            else if (actionCommand.equals("^")) {Helper.shiftKey(KeyEvent.VK_6);}
-            else if (actionCommand.equals("&")) {Helper.shiftKey(KeyEvent.VK_7);}
-            else if (actionCommand.equals("*")) {Helper.shiftKey(KeyEvent.VK_8);}                
-            else if (actionCommand.equals(")")) {Helper.shiftKey(KeyEvent.VK_0);}
-            else if (actionCommand.equals("-")) {Helper.typeKey(KeyEvent.VK_MINUS);}
-            else if (actionCommand.equals("_")) {Helper.shiftKey(KeyEvent.VK_MINUS);}
-            else if (actionCommand.equals("=")) {
-                Helper.typeKey(KeyEvent.VK_EQUALS);
-                if (mathModeButton.isSelected()) {
-                    Helper.typeKey(KeyEvent.VK_SPACE);
-                }     
-            }
-            else if (actionCommand.equals("+")) {Helper.shiftKey(KeyEvent.VK_EQUALS);}
-            else if (actionCommand.equals("[")) {Helper.typeKey(KeyEvent.VK_OPEN_BRACKET);}
-            else if (actionCommand.equals("{")) {Helper.shiftKey(KeyEvent.VK_OPEN_BRACKET);}
-            else if (actionCommand.equals("]")) {Helper.typeKey(KeyEvent.VK_CLOSE_BRACKET);}
-            else if (actionCommand.equals("}")) {Helper.shiftKey(KeyEvent.VK_CLOSE_BRACKET);}
-            else if (actionCommand.equals("\\")) {Helper.typeKey(KeyEvent.VK_BACK_SLASH);}
-            else if (actionCommand.equals("|")) {Helper.shiftKey(KeyEvent.VK_BACK_SLASH);}
-            else if (actionCommand.equals(";")) {Helper.typeKey(KeyEvent.VK_SEMICOLON);}
-            else if (actionCommand.equals(":")) {Helper.shiftKey(KeyEvent.VK_SEMICOLON);}
-            else if (actionCommand.equals("'")) {Helper.typeKey(KeyEvent.VK_QUOTE);}
-            else if (actionCommand.equals("\"")) {Helper.shiftKey(KeyEvent.VK_QUOTE);}
-            else if (actionCommand.equals(",")) {Helper.typeKey(KeyEvent.VK_COMMA);}
-            else if (actionCommand.equals("<")) {Helper.shiftKey(KeyEvent.VK_COMMA);}
-            else if (actionCommand.equals(".")) {Helper.typeKey(KeyEvent.VK_PERIOD);}
-            else if (actionCommand.equals(">")) {Helper.shiftKey(KeyEvent.VK_PERIOD);}
-            else if (actionCommand.equals("/")) {Helper.typeKey(KeyEvent.VK_SLASH);}
-            else if (actionCommand.equals("?")) {Helper.shiftKey(KeyEvent.VK_SLASH);}
+                // Symbols
+                else if (actionCommand.equals("`")) { Helper.typeKey(KeyEvent.VK_BACK_QUOTE); }
+                else if (actionCommand.equals("~")) { Helper.shiftKey(KeyEvent.VK_BACK_QUOTE); }
+                else if (actionCommand.equals("!")) { Helper.shiftKey(KeyEvent.VK_1); }
+                else if (actionCommand.equals("@")) { Helper.shiftKey(KeyEvent.VK_2); }
+                else if (actionCommand.equals("#")) { Helper.shiftKey(KeyEvent.VK_3); }
+                else if (actionCommand.equals("$")) { Helper.shiftKey(KeyEvent.VK_4); }
+                else if (actionCommand.equals("%")) { Helper.shiftKey(KeyEvent.VK_5); }
+                else if (actionCommand.equals("^")) { Helper.shiftKey(KeyEvent.VK_6); }
+                else if (actionCommand.equals("&")) { Helper.shiftKey(KeyEvent.VK_7); }
+                else if (actionCommand.equals("*")) { Helper.shiftKey(KeyEvent.VK_8); }                
+                else if (actionCommand.equals(")")) { Helper.shiftKey(KeyEvent.VK_0); }
+                else if (actionCommand.equals("-")) { Helper.typeKey(KeyEvent.VK_MINUS); }
+                else if (actionCommand.equals("_")) { Helper.shiftKey(KeyEvent.VK_MINUS); }
+                else if (actionCommand.equals("=")) { Helper.typeKey(KeyEvent.VK_EQUALS);}
+                else if (actionCommand.equals("+")) { Helper.shiftKey(KeyEvent.VK_EQUALS); }
+                else if (actionCommand.equals("[")) { Helper.typeKey(KeyEvent.VK_OPEN_BRACKET); }
+                else if (actionCommand.equals("{")) { Helper.shiftKey(KeyEvent.VK_OPEN_BRACKET); }
+                else if (actionCommand.equals("]")) { Helper.typeKey(KeyEvent.VK_CLOSE_BRACKET); }
+                else if (actionCommand.equals("}")) { Helper.shiftKey(KeyEvent.VK_CLOSE_BRACKET); }
+                else if (actionCommand.equals("\\")) { Helper.typeKey(KeyEvent.VK_BACK_SLASH); }
+                else if (actionCommand.equals("|")) { Helper.shiftKey(KeyEvent.VK_BACK_SLASH); }
+                else if (actionCommand.equals(";")) { Helper.typeKey(KeyEvent.VK_SEMICOLON); }
+                else if (actionCommand.equals(":")) { Helper.shiftKey(KeyEvent.VK_SEMICOLON); }
+                else if (actionCommand.equals("'")) { Helper.typeKey(KeyEvent.VK_QUOTE); }
+                else if (actionCommand.equals("\"")) { Helper.shiftKey(KeyEvent.VK_QUOTE); }
+                else if (actionCommand.equals(",")) { Helper.typeKey(KeyEvent.VK_COMMA); }
+                else if (actionCommand.equals("<")) { Helper.shiftKey(KeyEvent.VK_COMMA); }
+                else if (actionCommand.equals(".")) { Helper.typeKey(KeyEvent.VK_PERIOD); }
+                else if (actionCommand.equals(">")) { Helper.shiftKey(KeyEvent.VK_PERIOD); }
+                else if (actionCommand.equals("/")) { Helper.typeKey(KeyEvent.VK_SLASH); }
+                else if (actionCommand.equals("?")) { Helper.shiftKey(KeyEvent.VK_SLASH); }
 
-            // Special case
-            else if (actionCommand.equals("(")) { // Autocompletes ), then puts cursor between ( and )
-                if (mathModeButton.isSelected()) {
-                    Helper.typeBrackets();
-                } else {
-                    Helper.shiftKey(KeyEvent.VK_9);
+                // Special case
+                else if (actionCommand.equals("(")) { // Autocompletes ), then puts cursor between ( and )
+                    if (!getCurrentMode().equals("normal")) {
+                        Helper.typeBrackets();
+                    } else {
+                        Helper.shiftKey(KeyEvent.VK_9);
+                    }
                 }
-            }
 
-            // Add sounds
-            // Numbers
-            try {
-                if (Integer.parseInt(actionCommand) >= 0 && Integer.parseInt(actionCommand) <= 9) {
-                    playSound("/sounds/numbers/" + actionCommand + ".wav");
-                }
-            } catch (NumberFormatException e) {
-                // Special cases
-                if (actionCommand.equals("*")) { playSound("/sounds/symbols/asterisk.wav"); }
-                else if (actionCommand.equals("/")) { playSound("/sounds/symbols/back slash.wav"); }
-                else if (actionCommand.equals(":")) { playSound("/sounds/symbols/colon.wav"); }
-                else if (actionCommand.equals("\\")) { playSound("/sounds/symbols/forward slash.wav"); }
-                else if (actionCommand.equals("<")) { playSound("/sounds/symbols/left arrow.wav"); }
-                else if (actionCommand.equals("|")) { playSound("/sounds/symbols/pipe.wav"); }
-                else if (actionCommand.equals("?")) { playSound("/sounds/symbols/question mark.wav"); }
-                else if (actionCommand.equals("\"")) { playSound("/sounds/symbols/quote.wav"); }
-                else if (actionCommand.equals(">")) { playSound("/sounds/symbols/right arrow.wav"); }
+                // Add sounds
+                String soundPath = "";
 
-                else {
-                    playSound("/sounds/symbols/" + actionCommand + ".wav");
+                // Numbers
+                try {
+                    if (Integer.parseInt(actionCommand) >= 0 && Integer.parseInt(actionCommand) <= 9) {
+                        soundPath = "/sounds/numbers/" + actionCommand + ".wav";
+                    }
+                } catch (NumberFormatException e) {
+                    // Special cases
+                    if (actionCommand.equals("*")) {
+                        if (!getCurrentMode().equals("normal")) {
+                            soundPath = "/sounds/symbols/asterisk.wav";
+                        } else {
+                            soundPath = "/sounds/symbols/multiply.wav";
+                        }
+                    }
+
+                    else if (actionCommand.equals("/")) {
+                        if (!getCurrentMode().equals("normal")) {
+                            soundPath = "/sounds/symbols/forward slash.wav";
+                        } else {
+                            soundPath = "/sounds/symbols/divide.wav";
+                        }
+                    }
+
+                    else if (actionCommand.equals("+")) {
+                        // TODO: plus, positive
+                        soundPath = "/sounds/symbols/plus.wav";
+                    }
+
+                    else if (actionCommand.equals("-")) {
+                        // TODO: hyphen, subtract, negative
+                        if (!getCurrentMode().equals("normal")) {
+                            soundPath = "/sounds/symbols/subtract.wav";
+                        } else {
+                            soundPath = "/sounds/symbols/hyphen.wav";
+                        }
+                    }
+
+                    else if (actionCommand.equals("!")) {
+                        if (!getCurrentMode().equals("normal")) {
+                            soundPath = "/sounds/symbols/factorial.wav";
+                        } else {
+                            soundPath = "/sounds/symbols/!.wav";
+                        }
+                    }
+
+                    else if (actionCommand.equals("<")) {
+                        if (!getCurrentMode().equals("normal")) {
+                            soundPath = "/sounds/symbols/left arrow.wav";
+                        } else {
+                            soundPath = "/sounds/symbols/smaller than.wav";
+                        }
+                    }
+
+                    else if (actionCommand.equals(">")) {
+                        if (!getCurrentMode().equals("normal")) {
+                            soundPath = "/sounds/symbols/right arrow.wav";
+                        } else {
+                            soundPath = "/sounds/symbols/greater than.wav";
+                        }
+                    }
+
+                    else if (actionCommand.equals(":")) { soundPath = "/sounds/symbols/colon.wav"; }
+                    else if (actionCommand.equals("\\")) { soundPath = "/sounds/symbols/back slash.wav"; }
+                    else if (actionCommand.equals("|")) { soundPath = "/sounds/symbols/pipe.wav"; }
+                    else if (actionCommand.equals("?")) { soundPath = "/sounds/symbols/question mark.wav"; }
+                    else if (actionCommand.equals("\"")) { soundPath = "/sounds/symbols/quotation mark.wav"; }
+                    else { soundPath = "/sounds/symbols/" + actionCommand + ".wav"; }
                 }
+                playSound(soundPath);
             }
-        }
-    };
+        };
+        
+        b.removeActionListener(numberSymbolActionListener);
+        b.addActionListener(numberSymbolActionListener);
+    }
 
     /**
-     * Sets listeners for non-numeric/symbolic/alphabetic keys.
-     * @param b the button to add the ener to.
+     * Sets listeners for icons.
+     * @param b the button to add the listener to.
      */
-    private void addSpecialActionListener(JButton b) {
-        if (b.getName().contains("backspace")) {
-            specialActionListener = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent event) {
+    private void addIconActionListener(JButton b) {
+        iconActionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                String name = b.getName();
+                if (name.equals("white backspace")) {
+                    name = "backspace";
+                }
+                String soundPath = "/sounds/icons/" + name + ".wav";
+
+                if (name.equals("backspace")) {
                     Helper.typeKey(KeyEvent.VK_BACK_SPACE);
-                    playSound("/sounds/icons/backspace.wav");
                 }
-            };
-        } else if (b.getName().contains("space")) {
-            specialActionListener = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent event) {
+
+                else if (name.equals("space")) {
                     Helper.typeKey(KeyEvent.VK_SPACE);
-                    playSound("/sounds/icons/space.wav");
                 }
-            };
-        } else if (b.getName().contains("enter")) {
-            specialActionListener = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent event) {
-                    if (mathModeButton.isSelected()) { // Math mode
-                        try {
-                            Robot robot = new Robot();
-                            Helper.typeKey(KeyEvent.VK_ENTER);
-                            robot.keyPress(KeyEvent.VK_ALT);
-                            Helper.typeKey(KeyEvent.VK_EQUALS);
-                            robot.keyRelease(KeyEvent.VK_ALT);
-                        } catch (AWTException e) {
-                            e.printStackTrace();
-                        }
+
+                else if (name.equals("enter")) {
+                    if (!getCurrentMode().equals("normal")) { // Math and Greek Mode
+                        Helper.typeKey(KeyEvent.VK_ENTER);
+                        Helper.robot.keyPress(KeyEvent.VK_ALT);
+                        Helper.typeKey(KeyEvent.VK_EQUALS);
+                        Helper.robot.keyRelease(KeyEvent.VK_ALT);
                     } else { // Normal mode
                         Helper.typeKey(KeyEvent.VK_ENTER);
                     }
-                    playSound("/sounds/icons/enter.wav");
                 }
-            };
-        } else if (b.getName().contains("shift")) {
-            specialActionListener = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent event) {
-                    shiftClick = !shiftClick;
-                    toggleLetters();
-                    playSound("/sounds/icons/shift.wav");
-                }
-            };
-        } else if (b.getName().contains("caps")) {
-            specialActionListener = new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent event) {
-                    capsClick = !capsClick;
-                    toggleLetters();
-                    playSound("/sounds/icons/caps.wav");
-                }  
-            };
-        }
 
-        b.removeActionListener(specialActionListener);
-        b.addActionListener(specialActionListener);
+                else if (name.equals("shift")) {
+                    shiftClick = !shiftClick;
+                    toggleLetterCase();
+                }
+
+                else if (name.equals("caps")) {
+                    capsClick = !capsClick;
+                    toggleLetterCase();
+                }
+
+                playSound(soundPath);
+            }
+        };
+
+        b.removeActionListener(iconActionListener);
+        b.addActionListener(iconActionListener);
     }
 
     /**
-     * Type Unicode characters.
+     * Sets listeners for Equation Editor symbols.
      * @param b the button to add the listener to.
      */
-    private void addUnicodeActionListener(JButton b) {
-        unicodeActionListener = new ActionListener() {
+    private void addEquationActionListener(JButton b) {
+        iconActionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
-                Helper.typeUnicode(b.getName());
+                String name = b.getName();
+                String soundPath = "/sounds/equation/" + name + ".wav";
 
-                if (b.getName().toLowerCase().equals(new String("\\u03b1").toLowerCase())) {
-                    playSound("/sounds/unicode/alpha.wav");
-                } else if (b.getName().toLowerCase().equals(new String("\\u03b2").toLowerCase())) {
-                    playSound("/sounds/unicode/beta.wav");
-                } else if (b.getName().toLowerCase().equals(new String("\\u0394").toLowerCase())) {
-                    playSound("/sounds/unicode/delta.wav");
-                } else if (b.getName().toLowerCase().equals(new String("\\u03b8").toLowerCase())) {
-                    playSound("/sounds/unicode/theta.wav");
-                } else if (b.getName().toLowerCase().equals(new String("\\u03bc").toLowerCase())) {
-                    playSound("/sounds/unicode/mu.wav");
-                } else if (b.getName().toLowerCase().equals(new String("\\u03c0").toLowerCase())) {
-                    playSound("/sounds/unicode/pi.wav");
-                } else if (b.getName().toLowerCase().equals(new String("\\u03c3").toLowerCase())) {
-                    playSound("/sounds/unicode/sigma.wav");
-                } else if (b.getName().toLowerCase().equals(new String("\\u03a3").toLowerCase())) {
-                    playSound("/sounds/unicode/sigma.wav");
-                } else if (b.getName().toLowerCase().equals(new String("\\u03c6").toLowerCase())) {
-                    playSound("/sounds/unicode/phi.wav");
-                } else if (b.getName().toLowerCase().equals(new String("\\u221a").toLowerCase())) {
-                    playSound("/sounds/unicode/square root.wav");
-                    if (mathModeButton.isSelected()) {
-                        Helper.typeBrackets();
+                if (name.equals("sqrt") || name.equals("cbrt")) {
+                    Helper.typeEquationEditor(b.getName(), true);
+                } else {
+                    Helper.typeEquationEditor(b.getName(), false);
+                    if (name.equals("dot") || name.equals("bar")) {
+                        Helper.typeKey(KeyEvent.VK_SPACE);
                     }
-                } else if (b.getName().toLowerCase().equals(new String("\\u00b1").toLowerCase())) {
-                    playSound("/sounds/unicode/plusminus.wav");
                 }
-            }  
+
+                playSound(soundPath);
+            }
         };
 
-        b.removeActionListener(unicodeActionListener);
-        b.addActionListener(unicodeActionListener);
+        b.removeActionListener(equationActionListener);
+        b.addActionListener(equationActionListener);
     }
-
+    
+    /**
+     * Loads keys' appropriate listeners.
+     */
+    private void loadKeyListeners() {
+        // Typing listeners
+        for (Row[] rowGroup : rows.values()) {
+            for (Row row : rowGroup) {
+                for (JButton key : row.keys) {
+                    addKeyHighlightAdapter(key);
+    
+                    if (Arrays.asList(iconURLs).contains(key.getName())) {
+                        addIconActionListener(key);
+                    } else if (key.getName().length() == 1){
+                        char letter = key.getName().charAt(0);
+                        if ((letter >= 'a' && letter <= 'z') || (letter >= 'A' && letter <= 'Z')) {
+                            addLetterActionListener(key);
+                        } else {
+                            addNumberSymbolActionListener(key);
+                        }
+                    } else {
+                        addEquationActionListener(key);
+                    }
+                }
+            }
+        }
+    }
+    
     /**
      * Scales icon sizes.
      */
@@ -460,8 +634,8 @@ public class KeyboardFrame extends JFrame {
         for (int i = 0; i < icons.length; i++) {
             icons[i] = new ImageIcon(getClass().getResource(iconURLs[i]));
             Image temp = icons[i].getImage();    
-            int tempWidth = (int)(temp.getWidth(null)*(double)(width/450.00));
-            int tempHeight = (int)(temp.getHeight(null)*(double)(height/450.0));
+            int tempWidth = (int)(temp.getWidth(null)*(double)(width/DEFAULT_WIDTH));
+            int tempHeight = (int)(temp.getHeight(null)*(double)(height/DEFAULT_HEIGHT));
             int scale = 7;
             if (iconURLs[i].equals("/icons/enter.png") || iconURLs[i].equals("/icons/shift.png")) {
                 scale = 20;
@@ -476,137 +650,92 @@ public class KeyboardFrame extends JFrame {
     }
 
     /**
-     * Loads key mapping from a text file,
-     * and stores it in <code>Key.mapping</code>.
-     * @param path key mapping file location.
-     */
-    private ArrayList<ArrayList<String>> getKeyMapping(String path) {
-        ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
-        try {
-            InputStream is = getClass().getResourceAsStream(path);
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
-            String line;
-
-            while ((line = bufferedReader.readLine()) != null) {
-                if (line.startsWith("<%") || line.isEmpty()) {
-                    continue;
-                }
-
-                String[] tempArray = line.split("\\s+");
-                ArrayList<String> tempArrayList = new ArrayList<String>();
-                for (String item : tempArray) {
-                    tempArrayList.add(item);
-                }
-                result.add(tempArrayList);
-            }
-
-            System.out.println("Mapping:");
-            for (ArrayList<String> row : result) {
-                for (String item : row) {
-                    System.out.print(item + " ");
-                }
-                System.out.print("\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return result;
-    }
-
-    /**
      * Loads keys' appropriate letters or icons.
      */
     private void loadKeyIcons() {
-        Key.mapping = getKeyMapping("/keymap.txt");
-        int rowIndex = 0;
-        for (ArrayList<String> row : Key.mapping) {
-            if (rowIndex <= 5) {
-                rows[rowIndex] = new Row(rowIndex + 1);
-            } else {
-                rows[rowIndex] = new Row(6 - rowIndex);
-            }        
-            rows[rowIndex].keys = new ArrayList<JButton>();
-
-            for (String item : row) {
-                String name = item;
-                String url = "/icons/" + item + ".png";
-                if (url.equals("/icons/backspace.png") && backgroundPath != "/backgrounds/wbg.png") {
-                    url = "/icons/white backspace.png";
-                }
-
-                if (!Arrays.asList(iconURLs).contains(url)) {
-                    if (item.length() == 1) {
-                        rows[rowIndex].keys.add(new JButton(item));
-                    }
-                    else if (item.contains("\\u")) {
-                        String unicode = Helper.unicodeUnescape(item);
-                        rows[rowIndex].keys.add(new JButton(unicode));
-                    }
-                } else {
-                    name = url;
-                    int index = Arrays.asList(iconURLs).indexOf(name);
-                    rows[rowIndex].keys.add(new JButton(icons[index]));
-                }
-                rows[rowIndex].keys.get(rows[rowIndex].keys.size() - 1).setName(name);
+        Key.keymaps = new HashMap<String, ArrayList<ArrayList<String>>>();
+        
+        Pattern pattern = Pattern.compile("((?:.(?!\\/))+)(?=\\.)");
+        for (String keymapURL : keymapURLs) {
+            Matcher matcher = pattern.matcher(keymapURL);
+            if (matcher.find()) {
+                String name = matcher.group(0).substring(1);
+                System.out.println("Mapping for " + name + ":");
+                Key.keymaps.put(name, getKeyMapping(keymapURL));
+                System.out.println();
             }
-            rowIndex++;
         }
-    }
-
-    /**
-     * Loads keys' appropriate listeners.
-     */
-    private void loadKeyListeners() {
-        // Typing listeners
-        for (Row row : rows) {
-            for (JButton key : row.keys) {
-                addKeyHighlightAdapter(key);
-
-                if (key.getName().contains(".png")) {
-                    addSpecialActionListener(key);
-                } else if (key.getName().contains("\\u")) {
-                    addUnicodeActionListener(key);
+        
+        for (String keymap : Key.keymaps.keySet()) {
+            ArrayList<ArrayList<String>> keymapRows = Key.keymaps.get(keymap);
+            Row currRows[] = new Row[ROW_COUNT];
+            
+            int rowIndex = 0;
+            for (ArrayList<String> keymapRow : keymapRows) {
+                if (rowIndex <= 5) {
+                    currRows[rowIndex] = new Row(rowIndex + 1);
                 } else {
-                    char letter = key.getName().charAt(0);
-                    if ((letter >= 'a' && letter <= 'z') || (letter >= 'A' && letter <= 'Z')) {
-                        addLetterActionListener(key);
+                    currRows[rowIndex] = new Row(6 - rowIndex);
+                }
+                currRows[rowIndex].keys = new ArrayList<JButton>();
+                
+                for (String item : keymapRow) {
+                    String name = item;
+                    String url = "/icons/" + name + ".png";
+                    if (url.equals("/icons/backspace.png") && backgroundPath != "/backgrounds/wbg.png") {
+                        name = "white backspace";
+                        url = "/icons/" + name + ".png";
+                    }
+                    
+                    // TODO: All equation editor symbols
+                    if (!Arrays.asList(iconURLs).contains(url)) {
+                        if (name.length() == 1) { // Any item on a physical keyboard
+                            currRows[rowIndex].keys.add(new JButton(name));
+                        } else {
+                            currRows[rowIndex].keys.add(new JButton(name));
+                        }
                     } else {
-                        key.removeActionListener(numericSymbolicActionListener);
-                        key.addActionListener(numericSymbolicActionListener);
+                        int index = Arrays.asList(iconURLs).indexOf(url);
+                        currRows[rowIndex].keys.add(new JButton(icons[index]));
                     }
+                    currRows[rowIndex].keys.get(currRows[rowIndex].keys.size() - 1).setName(name);
                 }
+                rowIndex++;
             }
+            
+            rows.put(keymap, currRows);
         }
     }
-
+    
     /**
      * Loads keys' appropriate positions.
      */
     private void scaleKeyPositions() {
         // Right side
-        rows[0].radius = -10;
-        rows[0].initDegree = 0;
-        rows[0].endDegree = 0;
+        Row currRows[] = rows.get(getCurrentMode());
+        
+        currRows[0].radius = -10;
+        currRows[0].initDegree = 0;
+        currRows[0].endDegree = 0;
         for (int i = 1; i <= 5; i++) {
-            rows[i].radius = width/10 + 30*(i - 1) + 5*currScaleCount*(i - 1);
-            rows[i].initDegree = 52;
-            rows[i].endDegree = 308;
+            currRows[i].radius = width/10 + 30*(i - 1) + 5*currScaleCount*(i - 1);
+            currRows[i].initDegree = 52;
+            currRows[i].endDegree = 308;
         }
-        System.out.println("Radius: " + rows[5].radius);
+        System.out.println("Radius: " + currRows[5].radius);
 
         // Left side
-        rows[6].radius = 45;
-        rows[6].initDegree = 0;
-        rows[6].endDegree = 0;
+        currRows[6].radius = 45;
+        currRows[6].initDegree = 0;
+        currRows[6].endDegree = 0;
         for (int i = 7; i <= 8; i++) {
-            rows[i].radius = width/4 - 15 + 60*(i - 7);
-            rows[i].initDegree = -25;
-            rows[i].endDegree = 25;
+            currRows[i].radius = width/4 - 15 + 60*(i - 7);
+            currRows[i].initDegree = -25;
+            currRows[i].endDegree = 25;
         }
 
         // Place keys
-        for (Row row : rows) {
+        for (Row row : currRows) {
             double radian = Math.toRadians(row.initDegree);
             double incrementDegree = Math.toRadians((row.endDegree - row.initDegree)/(row.keys.size() - 1));
             for (JButton key : row.keys) {
@@ -618,7 +747,7 @@ public class KeyboardFrame extends JFrame {
             }
         }
     }
-
+    
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
@@ -634,7 +763,68 @@ public class KeyboardFrame extends JFrame {
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////  
 
+    // Mode variables
+    
+    private String[] modes = {
+            "Normal Mode",
+            "Math Mode",
+            "Greek Mode"
+    };
+    private int modeIndex = 0;
+    private JButton modeButton = new JButton(modes[modeIndex]);
+
+    /**
+     * Loads Mode button.
+     */
+    private void loadModeButton() {
+        modeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                modeIndex = (modeIndex + 1) % 3;
+                modeButton.setText(modes[modeIndex]);
+                playSound("/sounds/buttons/" + modes[modeIndex].toLowerCase()+ ".wav");
+                System.out.println("Switching to " + getCurrentMode());
+                loadGUI();
+            }
+        });
+    }
+
+    /**
+     * Scales Mode button.
+     */
+    private void scaleModeButton() {
+        int modeButtonWidth = 110 + currScaleCount*20;
+        int modeButtonHeight = 30 + currScaleCount*5;
+        
+        modeButton.setBounds(0, 0, modeButtonWidth, modeButtonHeight);
+        modeButton.setFont(new Font("Arial", Font.BOLD, (int)(14*getWidth()/500.0)));
+    }
+
+    /**
+     * Get the current mode in lower case without "Mode".
+     * @return the current mode.
+     */
+    private String getCurrentMode() {
+        return modeButton.getText().split(" ")[0].toLowerCase();
+    }
+    
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////
+    
     // Change Background variables
+    
     private JButton changeBackgroundButton = new JButton("Change BG");
     private int backgroundIndex = 0;
     private String[] backgroundFilePaths = {
@@ -658,25 +848,26 @@ public class KeyboardFrame extends JFrame {
                 label.revalidate();
                 label.repaint();
                 playSound("/sounds/buttons/change background.wav");
-
+                
+                Row currRows[] = rows.get(getCurrentMode());
                 // If white bg, set keys to black
                 if (backgroundPath.equals("/backgrounds/wbg.png")
                         || backgroundPath.equals("/backgrounds/wbg_alt.png")) {                    
                     // Right side
                     for (int i = 0; i <= 5; i++) {
-                        for (JButton key : rows[i].keys) {
+                        for (JButton key : currRows[i].keys) {
                             key.setForeground(Color.BLACK);
                         }
                     }
 
                     // Left side
                     for (int i = 6; i <= 8; i++) {
-                        for (JButton key : rows[i].keys) {
+                        for (JButton key : currRows[i].keys) {
                             key.setForeground(Color.BLACK);
                         }
                     }
 
-                    for (Row row : rows) {
+                    for (Row row : currRows) {
                         for (JButton key : row.keys) {
                             if (key.getName().equals("/icons/white backspace.png")) {
                                 String newName = "/icons/backspace.png";
@@ -689,19 +880,19 @@ public class KeyboardFrame extends JFrame {
                 } else {
                     // Right side
                     for (int i = 0; i <= 5; i++) {
-                        for (JButton key : rows[i].keys) {
+                        for (JButton key : currRows[i].keys) {
                             key.setForeground(Color.WHITE);
                         }
                     }
 
                     // Left side
                     for (int i = 6; i <= 8; i++) {
-                        for (JButton key : rows[i].keys) {
+                        for (JButton key : currRows[i].keys) {
                             key.setForeground(Color.BLACK);
                         }
                     }
 
-                    for (Row row : rows) {
+                    for (Row row : currRows) {
                         for (JButton key : row.keys) {
                             if (key.getName().equals("/icons/backspace.png")) {
                                 String newName = "/icons/white backspace.png";
@@ -715,18 +906,18 @@ public class KeyboardFrame extends JFrame {
             }
         });
     }
-
+    
     /**
-     * Scales Math Mode button.
+     * Scales Change Background button.
      */
     private void scaleChangeBackgroundButton() {
         int changeBackgroundButtonWidth = 110 + currScaleCount*20;
         int changeBackgroundButtonHeight = 30 + currScaleCount*5;
 
-        changeBackgroundButton.setBounds((int)(width*0.95 - changeBackgroundButtonWidth), 0, changeBackgroundButtonWidth, changeBackgroundButtonHeight);
+        changeBackgroundButton.setBounds((int)(width*0.96 - changeBackgroundButtonWidth), 0, changeBackgroundButtonWidth, changeBackgroundButtonHeight);
         changeBackgroundButton.setFont(new Font("Arial", Font.BOLD, (int)(14*getWidth()/500.0)));
     }
-
+    
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
@@ -740,59 +931,10 @@ public class KeyboardFrame extends JFrame {
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////  
-
-    // Math Mode variables
-    private JToggleButton mathModeButton = new JToggleButton("Normal Mode", false);
-
-    /**
-     * Loads Math Mode button.
-     */
-    private void loadMathModeButton() {
-        mathModeButton.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent itemEvent) {
-                int state = itemEvent.getStateChange();
-                if (state == ItemEvent.SELECTED) { // In Math Mode
-                    System.out.println("Math Mode");
-                    mathModeButton.setText("Math Mode");
-                    playSound("/sounds/buttons/math mode.wav");
-                } else { // In Normal Mode
-                    System.out.println("Normal Mode");
-                    mathModeButton.setText("Normal Mode");
-                    playSound("/sounds/buttons/normal mode.wav");
-                }
-            }
-        });
-    }
-
-    /**
-     * Scales Math Mode button.
-     */
-    private void scaleMathModeButton() {
-        int mathButtonWidth = 110 + currScaleCount*20;
-        int mathButtonHeight = 30 + currScaleCount*5;
-
-        mathModeButton.setBounds(0, 0, mathButtonWidth, mathButtonHeight);
-        mathModeButton.setFont(new Font("Arial", Font.BOLD, (int)(14*getWidth()/500.0)));
-    }
-
     ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////  
-
+    
     // Change Size variables
+    
     private final double SCALE_FACTOR = 1.15;
     private int currScaleCount = 0;
     private final int MAX_SCALE_COUNT = 2;
@@ -818,7 +960,9 @@ public class KeyboardFrame extends JFrame {
                             Key.height -= 5;
                             width = getWidth();
                             height = getHeight();
-                            for (Row row : rows) {
+                            
+                            Row currRows[] = rows.get(getCurrentMode());
+                            for (Row row : currRows) {
                                 row.midX = width/2 - 22;
                                 row.midY = height/2 - 40;
                             }
@@ -836,7 +980,9 @@ public class KeyboardFrame extends JFrame {
                             Key.height += 5;
                             width = getWidth();
                             height = getHeight();
-                            for (Row row : rows) {
+                            
+                            Row currRows[] = rows.get(getCurrentMode());
+                            for (Row row : currRows) {
                                 row.midX = width/2 - 22;
                                 row.midY = height/2 - 40;
                             }
@@ -879,54 +1025,6 @@ public class KeyboardFrame extends JFrame {
         scaleKeyPositions();
         scaleChangeSizeButtons();
         scaleChangeBackgroundButton();
-        scaleMathModeButton();
-    }
-
-    /**
-     * Builds the GUI.
-     */
-    private void loadGUI() {
-        // Graphics
-        loadBackground();
-        scaleKeyIcons();
-        loadKeyIcons();
-        loadKeyListeners();
-        scaleKeyPositions();
-
-        for (Row row : rows) {
-            for (JButton key : row.keys) {
-                if (row.rowNum > 0) {
-                    key.setForeground(Color.WHITE);
-                }
-                key.setBorder(null);
-                key.setBorderPainted(false);
-                key.setContentAreaFilled(false);
-                key.setOpaque(false);
-                panel.add(key);
-            }
-        }
-
-        // Add change background button
-        loadChangeBackgroundButton();
-        scaleChangeBackgroundButton();
-        panel.add(changeBackgroundButton);
-
-        // Add mode toggle button
-        loadMathModeButton();
-        scaleMathModeButton();
-        panel.add(mathModeButton);
-
-        //change size buttons
-        System.out.println("Width = " + width);
-        System.out.println("Height = " + height);
-        loadChangeSizeButtons();
-        scaleChangeSizeButtons();
-
-        panel.add(label);
-        panel.revalidate();
-        panel.repaint();
-        this.add(panel);
-        this.revalidate();
-        this.repaint();
+        scaleModeButton();
     }
 }
