@@ -501,6 +501,7 @@ public class KeyboardFrame extends JFrame {
                     else if (actionCommand.equals("|")) { soundPath = "/sounds/symbols/pipe.wav"; }
                     else if (actionCommand.equals("?")) { soundPath = "/sounds/symbols/question mark.wav"; }
                     else if (actionCommand.equals("\"")) { soundPath = "/sounds/symbols/quotation mark.wav"; }
+                    else if (actionCommand.equals("'")) { soundPath = "/sounds/symbols/quotation mark.wav"; }
                     else { soundPath = "/sounds/symbols/" + actionCommand + ".wav"; }
                 }
                 playSound(soundPath);
