@@ -34,8 +34,8 @@ public class KeyboardFrame extends JFrame {
     private static KeyboardFrame keyboardFrame = null;
     private final double DEFAULT_WIDTH = 450.0;
     private final double DEFAULT_HEIGHT = 420.0;
-    private int width = 450;
-    private int height = 420;
+    private int width = (int)DEFAULT_WIDTH;
+    private int height = (int)DEFAULT_HEIGHT;
     private JPanel panel;
     private JLabel label;
     private String backgroundPath = "/backgrounds/bbg_alt.png";
@@ -575,7 +575,8 @@ public class KeyboardFrame extends JFrame {
                 String soundPath = "/sounds/equation/" + name + ".wav";
 
                 if (name.equals("log") || name.equals("ln")
-                 || name.equals("sin") || name.equals("cos") || name.equals("tan")) { // Functions that are typed as is
+                 || name.equals("sin") || name.equals("cos") || name.equals("tan")
+                 || name.equals("asin") || name.equals("acos") || name.equals("atan")) { // Functions that are typed as is
                     Helper.typeEquationEditor(name, false, false);
                 } else {
                     if (name.equals("sqrt") || name.equals("cbrt")
@@ -686,10 +687,13 @@ public class KeyboardFrame extends JFrame {
                         url = "/icons/" + name + ".png";
                     }
 
-                    // TODO: All equation editor symbols
                     if (!Arrays.asList(iconURLs).contains(url)) {
                         if (name.length() == 1) { // Any item on a physical keyboard
                             currRows[rowIndex].keys.add(new JButton(name));
+                        } else if (Helper.getUnicode(name) != null) {
+                            // TODO: All equation editor symbols
+                            String unicode = Helper.getUnicode(name);
+                            currRows[rowIndex].keys.add(new JButton(unicode));
                         } else {
                             currRows[rowIndex].keys.add(new JButton(name));
                         }
@@ -736,12 +740,22 @@ public class KeyboardFrame extends JFrame {
         for (Row row : currRows) {
             double radian = Math.toRadians(row.initDegree);
             double incrementDegree = Math.toRadians((row.endDegree - row.initDegree)/(row.keys.size() - 1));
-            for (JButton key : row.keys) {
+            for (JButton key : row.keys) {                
                 int x = -1*(int)(Math.cos(radian)*row.radius) + row.midX;
                 int y = -1*(int)(Math.sin(radian)*row.radius) + row.midY;
+                
                 radian += incrementDegree;
                 key.setBounds(x, y, Key.width, Key.height);
-                key.setFont(new Font("Arial Unicode MS", Font.BOLD, (int)(25*width/500.0)));
+                
+                String name = key.getName();
+                if (name.equals("sin") || name.equals("cos") || name.equals("tan")
+                        || name.equals("log")) {
+                    key.setFont(new Font("Arial Unicode MS", Font.BOLD, (int)(15*width/500.0)));
+                } else if (name.equals("asin") || name.equals("acos") || name.equals("atan")) {
+                    key.setFont(new Font("Arial Unicode MS", Font.BOLD, (int)(10*width/500.0)));
+                } else {
+                    key.setFont(new Font("Arial Unicode MS", Font.BOLD, (int)(25*width/500.0)));
+                }
             }
         }
     }
@@ -937,7 +951,7 @@ public class KeyboardFrame extends JFrame {
 
     private final double SCALE_FACTOR = 1.15;
     private int currScaleCount = 0;
-    private final int MAX_SCALE_COUNT = 2;
+    private final int MAX_SCALE_COUNT = 3;
     private JButton[] changeSizeButtons = new JButton[2];
 
     /**

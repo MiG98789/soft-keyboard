@@ -11,7 +11,7 @@ Note: Any empty line, or line that starts with <%, is ignored.
 | γ | gamma |
 | Δ | Delta |
 | μ | mu |
-| φ | phi |
+| ϕ | phi |
 | π | pi |
 | σ | sigma |
 | θ | theta |
@@ -24,8 +24,8 @@ Note: Any empty line, or line that starts with <%, is ignored.
 | √ | sqrt |
 | ∛ | cbrt |
 | ∑ | sum |
-| ± | plusminus |
-| ∓ | minusplus |
+| ± | pm |
+| ∓ | mp |
 | ∵ | because |
 | ∴ | therefore |
 | ≡ | equiv |

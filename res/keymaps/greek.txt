@@ -2,7 +2,7 @@
 
 <% Right-side mapping from innermost to outermost rows
 backspace
-+ - . * / sqrt cbrt plusminus minusplus
++ - . * / sqrt cbrt pm mp
 0 1 2 3 4 5 6 7 8 9 infty
 ! [ ] | < > ? % ^ ~ _ { } $ dot overbar sum because therefore
 cap cup shift caps angle degree perp overparen parallel approx cong equiv propto

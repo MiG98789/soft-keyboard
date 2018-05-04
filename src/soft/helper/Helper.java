@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 
 import javax.swing.*;
 
@@ -21,10 +22,11 @@ import javax.swing.*;
  */
 public class Helper {
     public static final Robot robot = createRobot();
+    private static final HashMap<String, String> unicodeMap = createUnicodeMap();
     
     /**
      * Initialise the static Robot object.
-     * @return  the Robot object.
+     * @return the Robot object.
      */
     private static Robot createRobot() {
         Robot r = null;
@@ -34,6 +36,61 @@ public class Helper {
             e.printStackTrace();
         }
         return r;
+    }
+    
+    /**
+     * Initialise the static HashMap object.
+     * @return the HashMap object.
+     */
+    private static HashMap<String, String> createUnicodeMap() {
+        HashMap<String, String> map = new HashMap<String, String>();
+        
+        // Greek Alphabet        
+        map.put("alpha", "α");
+        map.put("beta", "β");
+        map.put("gamma", "γ");
+        map.put("Delta", "Δ");
+        map.put("mu", "μ");
+        map.put("Phi", "ϕ");
+        map.put("pi", "π");
+        map.put("sigma", "σ");
+        map.put("theta", "θ");
+        
+        // Mathematics Operators
+        map.put("infty", "∞");
+        map.put("sqrt", "√");
+        map.put("cbrt", "∛");
+        map.put("sum", "∑");
+        map.put("pm", "±");
+        map.put("mp", "∓");
+        map.put("because", "∵");
+        map.put("therefore", "∴");
+        map.put("equiv", "≡");
+        map.put("approx", "≈");
+        map.put("propto", "∝");
+        map.put("cap", "∩");
+        map.put("cup", "∪");
+        map.put("dot", "˙");
+        map.put("overbar", "‾");
+        
+        // Geometry and Trigonometry
+        map.put("degree", "∘");
+        map.put("angle", "∠");
+        map.put("overparen", "⌒");
+        map.put("perp", "⊥");
+        map.put("parallel", "∥");
+        map.put("cong", "≅");
+        
+        return map;
+    }
+    
+    /**
+     * Convert plain English symbol names into Unicode.
+     * @param name the symbol name in plain English.
+     * @return the name in Unicode.
+     */
+    public static String getUnicode(String name) {        
+        return unicodeMap.get(name);
     }
     
     /**
@@ -48,8 +105,11 @@ public class Helper {
         }
         for (char letter : symbol.toCharArray()) {
             int keyCode = KeyEvent.getExtendedKeyCodeForChar((int)(letter));
-            System.out.println("Typing " + letter);
-            typeKey(keyCode);
+            if (Character.isUpperCase(letter)) {
+                shiftKey(keyCode);
+            } else {
+                typeKey(keyCode);
+            }
         }
         typeKey(KeyEvent.VK_SPACE);
         if (withBracket) {
