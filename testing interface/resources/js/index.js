@@ -1,23 +1,43 @@
 window.onload = function () {
 
   var names = [
-    ["Hong Kong Red Cross John F. Kennedy Centre", "John Doe"],
-    ["Hong Kong University of Science and Technology", "Erika Mustermann"],
-    ["Hong Kong Red Cross John F. Kennedy Centre", "Jane Doe"]
+    "JFK1034",
+	"JFK9235"
   ];
 
   var unicodeSymbols = [
-    [" 031", "\u03B1"], // Alpha
-    [" 032", "\u03B2"], // Beta
-    [" 22a", "\u221A"], // Square root
-    [" 001", "\u00B1"] // Plus minus
+    [" 031", "\u03b1"], // Alpha
+    [" 032", "\u03b2"], // Beta
+    [" 22a", "\u221a"], // Square root
+    [" 001", "\u00b1"] // Plus minus
   ];
 
-  var questions = [
-    ["y=mx+c", "slope-equation.png"],
-    ["x=(-b\u00B1\u221A(b^2-4ac))/2a", "quadratic-equation.png"],
-    ["\u03B1^2-\u03B2^2=(\u03B1-\u03B2)(\u03B1+\u03B2)", "factorisation.png"]
+  // TODO: Improve hints
+  var allQuestions = [
+    ["y=mx+c", "questions/slope-equation.png"],
+    ["x=(-b\u00b1\u221A(b^2-4ac))/2a", "questions/quadratic-equation.png"],
+    ["\u03b1^2-\u03b2^2=(\u03b1-\u03b2)(\u03b1+\u03b2)", "questions/factorisation.png"],
+	["a^3+b^3\u2261(a+b)(a^2-ab+b^2)", "questions/Indice_function_2.PNG"],
+	["AB=\u221A((x_1–x_2)^2+(y_1-y_2)^2)", "questions/Distance_formula.PNG"],
+	["sin^2\u03b8+cos^2\u03b8=1", "questions/sin_cosine_function.PNG"],
+	["c^2=a^2+b^2-2abcosC", "questions/cosine_function.PNG"],
+	//["P(A\u2229\u0100)=0", "questions/mutually_exclusive.PNG"], TODO: Find Unicode for overbar
+	["S(n)=(a(r^n-1))/(r-1)", "questions/geometric_sequence.PNG"],
+	["Ax+By+C=0", "questions/2_unknown_equation.PNG"],
+	// ["", "questions/Log_function.PNG"], TODO: Check correct equation
+	// ["", "questions/sd.PNG"] TODO: Type Unicode equation
   ];
+  
+  var numQuestionsToUse = 5;
+  var allQuestionsLength = allQuestions.length;
+  var questions = new Array(numQuestionsToUse);
+  var takenQuestions = new Array(allQuestionsLength);
+  while (numQuestionsToUse--) {
+	  var randomQuestion = Math.floor(Math.random()*allQuestionsLength);
+	  questions[numQuestionsToUse] = allQuestions[randomQuestion in takenQuestions ? takenQuestions[randomQuestion] : randomQuestion];
+	  takenQuestions[randomQuestion] = --allQuestionsLength in takenQuestions ? takenQuestions[allQuestionsLength] : allQuestionsLength;
+  }
+  console.log(questions);
 
   var emailTo = "gmsdelmundo@connect.ust.hk";
 
@@ -128,7 +148,6 @@ window.onload = function () {
     var utc = new Date().toJSON().slice(0,10).replace(/-/g,'/');
     var emailSubject = "SIGHT@HKUST Soft Keyboard Test Result (" + utc + "): " + testTakerName + " (" + testTakerSchool + ")";
     var emailBody = "Test taker: " + testTakerName + "\n";
-    emailBody += "School: " + testTakerSchool + "\n";
 	emailBody += "Date (YYYY/MM/DD): " + utc + "\n";
     emailBody += "Total number of correct attempts: " + correctCount + "/" + questions.length + "\n";
     emailBody += "Total time taken: " + stopwatch.textContent + "\n";
@@ -271,25 +290,11 @@ window.onload = function () {
   // NAMES
   // https://stackoverflow.com/questions/13437446/how-to-display-selected-item-in-bootstrap-button-dropdown-title
 
-  names.sort((a, b) => (a[0] == b[0] ? 0 : (a[0] < b[0] ? -1 : 1)) || (a[1] == b[1] ? 0 : (a[1] < b[1] ? -1 : 1)));
+  names.sort((a, b) => (a == b ? 0 : (a < b ? -1 : 1)));
 
   // Set up all the schools in the dropdown menu
-  var currentSchool = names[0][0];
-  $(".dropdown-menu").append("<li style='white-space: normal; font-weight: bold; font-size: 1.2em' class='dropdown-header'>" + currentSchool + "</li>");
-  var isFirst = true;
   for (i in names) {
-    if (names[i][0] !== currentSchool) {
-      currentSchool = names[i][0];
-
-      if (isFirst) {
-        isFirst = false;
-        $(".dropdown-menu").append("<li class='divider'></li>");
-      }
-
-      $(".dropdown-menu").append("<li style='white-space: normal; font-weight: bold; font-size: 1.2em' class='dropdown-header'>" + currentSchool + "</li>");
-    }
-
-    $(".dropdown-menu").append("<li role='presentation'><a style='white-space: normal; font-weight: bold' role='menuitem' tabindex='-1' href='#'>" + names[i][1] + "</a></li>")
+    $(".dropdown-menu").append("<li role='presentation'><a style='white-space: normal; font-weight: bold' role='menuitem' tabindex='-1' href='#'>" + names[i] + "</a></li>")
   }
 
   $(function () {
@@ -297,13 +302,6 @@ window.onload = function () {
       $(".btn:first-child").text($(this).text());
       $(".btn:first-child").val($(this).text());
       testTakerName = $(this).text();
-
-      for (i in names) {
-        if (names[i][1] === testTakerName) {
-          testTakerSchool = names[i][0];
-          break;
-        }
-      }
     });
   });
 

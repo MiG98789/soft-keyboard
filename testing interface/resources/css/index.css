@@ -1,10 +1,12 @@
+/* Page-wide styling */
+
 body {
     position: relative;
 }
 
 body:after {
     /* https://stackoverflow.com/questions/4183948/css-set-background-image-with-opacity */
-    background-image: url("../images/background.jpg");
+    background-image: url("images/index/background.jpg");
     content : "";
     display: block;
     position: absolute;
@@ -23,11 +25,19 @@ hr {
     background-color: #333; /* Modern Browsers */
 }
 
+/***********************************************************************************************/
+
+/* Titles and headers */
+
 #title {
     font-weight: bold;
     text-align: center;
     font-size: 2em;
 }
+
+/***********************************************************************************************/
+
+/* Right-side stopwatch floater */
 
 #stopwatch-floater {
     /* http://jsfiddle.net/samuraii/sc9jycd7/2/ */
@@ -67,37 +77,31 @@ hr {
     font-weight: bold;
 }
 
-#hkust-logo {
-    width: auto;
-    max-width: 25%;
-    height: auto;
+/***********************************************************************************************/
+
+/* Left-side logo floater */
+
+.logo {
+    width: 50%;
+	height: 50%;
 }
 
-#hkust-logo-floater {
+#logo-floater {
     /* http://jsfiddle.net/samuraii/sc9jycd7/2/ */
     position: fixed;
     top: 1px;
     left: 1px;
+	width: 400px;
     -webkit-transition: all 2s ease-in-out;
     transition: all 2s ease-in-out;
     z-index: 1;
+	border-radius: 3px 0 0 3px;
+    box-sizing: border-box;
 }
 
-#sight-logo {
-    width: auto;
-    max-width: 20%;
-    height: auto;
-}
+/***********************************************************************************************/
 
-#sight-logo-floater {
-    /* http://jsfiddle.net/samuraii/sc9jycd7/2/ */
-    position: fixed;
-    top: 100px;
-    left: 1px;
-    -webkit-transition: all 2s ease-in-out;
-    transition: all 2s ease-in-out;
-    z-index: 1;
-}
+/* Form */
 
 .question {
     font-size: 1.5em;
@@ -121,8 +125,8 @@ hr {
 
 .question-images {
     width: auto;
-    max-width: 50%;
-    height: auto;
+    max-width: 100%;
+    height: 100px;
     border: 3px solid #000;
     padding: 10px;
 }

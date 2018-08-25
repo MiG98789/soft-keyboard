@@ -17,16 +17,6 @@
 </head>
 
 <body>
-  <!-- Floater for HKUST logo -->
-  <div id="hkust-logo-floater">
-    <img src="resources/images/hkust-logo.png" id="hkust-logo" />
-  </div>
-
-  <!-- Floater for SIGHT logo -->
-  <div id="sight-logo-floater">
-    <img src="resources/images/sight-logo.png" id="sight-logo" />
-  </div>
-
   <!-- Floater for stopwatch -->
   <div id="stopwatch-floater">
     <p id="stopwatch">00:00.00</p>
@@ -70,7 +60,13 @@
   <div class="container-fluid">
     <!-- Row for title -->
     <div class="row">
-      <div class="col-sm-3"></div>
+      <div class="col-sm-3">
+	    <!-- Floater for HKUST and SIGHT logo -->
+        <div id="logo-floater">
+          <img class="img-responsive logo" src="resources/images/hkust-logo.png" />
+		  <img class="img-responsive logo" src="resources/images/sight-logo.png" />
+        </div>
+	  </div>
 
       <div class="col-sm-6">
         <h1 id="title">SIGHT@HKUST Soft Keyboard Testing Interface</h1>
