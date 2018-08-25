@@ -51,7 +51,7 @@ public class Helper {
         map.put("gamma", "γ");
         map.put("Delta", "Δ");
         map.put("mu", "μ");
-        map.put("Phi", "ϕ");
+        map.put("phi", "ϕ");
         map.put("pi", "π");
         map.put("sigma", "σ");
         map.put("theta", "θ");

@@ -99,6 +99,8 @@ public class KeyboardFrame extends JFrame {
         panel.setLayout(new BorderLayout());
 
         // Label
+        Image temp = new ImageIcon(getClass().getResource(backgroundPath)).getImage();
+        background.setImage(Helper.getScaledImage(temp, width - 50, width - 50));
         label = new JLabel(background, JLabel.CENTER);
         label.setBackground(Color.DARK_GRAY);
         label.revalidate();
@@ -113,10 +115,10 @@ public class KeyboardFrame extends JFrame {
         if (isStart) {
             isStart = false;
 
+            loadBackground();
             scaleKeyIcons();
             loadKeyIcons();
             loadKeyListeners();
-            loadBackground();
             loadChangeBackgroundButton();
             loadModeButton();
             loadChangeSizeButtons();
@@ -157,6 +159,7 @@ public class KeyboardFrame extends JFrame {
      * Plays sound.
      * @param soundPath the filepath of the sound to be played.
      */
+    // TODO: Sound for asin, acos, atan
     private void playSound(String soundPath) {
         try {
             AudioInputStream tempAudioIn = AudioSystem.getAudioInputStream(getClass().getResource(soundPath));
@@ -188,7 +191,8 @@ public class KeyboardFrame extends JFrame {
     ////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////  
 
-    // Key variables    
+    // Key variables
+    // TODO: Save mode, background, size settings in external file outside .jar
 
     private static class Key {
         /* Currently have 3 keymaps
@@ -247,6 +251,7 @@ public class KeyboardFrame extends JFrame {
      * Loads key mapping from a text file.
      * @param path key mapping file location.
      */
+    // TODO: Find files outside of .jar folder
     private ArrayList<ArrayList<String>> getKeyMapping(String path) {
         ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
         try {
@@ -317,6 +322,7 @@ public class KeyboardFrame extends JFrame {
         keyHighlightMouseAdapter = new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
+                // TODO: Change colour based on background
                 b.setBackground(Color.PINK);
                 b.setContentAreaFilled(true);
             }
@@ -875,6 +881,7 @@ public class KeyboardFrame extends JFrame {
                     // Left side
                     for (int i = 6; i <= 8; i++) {
                         for (JButton key : currRows[i].keys) {
+                            // TODO: Change colour based on background
                             key.setForeground(Color.BLACK);
                         }
                     }
@@ -951,12 +958,13 @@ public class KeyboardFrame extends JFrame {
 
     private final double SCALE_FACTOR = 1.15;
     private int currScaleCount = 0;
-    private final int MAX_SCALE_COUNT = 3;
+    private final int MAX_SCALE_COUNT = 10;
     private JButton[] changeSizeButtons = new JButton[2];
 
     /**
      * Sets key text/image.
      */
+    // TODO: Change row.radius
     private void loadChangeSizeButtons() {
         changeSizeButtons[0] = new JButton("-");
         changeSizeButtons[1] = new JButton("+");
